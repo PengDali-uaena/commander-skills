@@ -1,0 +1,5 @@
+{
+  "pi": {
+    "frontmatter": "name: receiving-code-review\ndescription: >-\n  Use when receiving code review feedback, before implementing suggestions —\n  verify against the codebase first; no performative agreement or blind implementation."
+  }
+}
