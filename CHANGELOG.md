@@ -2,6 +2,14 @@
 
 Format: newest first. Versions follow `VERSION`; every release is tagged.
 
+## 1.1.3
+
+- `multi-model-review` no longer carries one agent's implementation in its body: the fallback for a side
+  without a headless CLI now says "use this side's parallel read-only reviewer mechanism, see `TOOL-MAP.md`".
+- Its description lost the implementation detail (`pi -p` / Task subagents) and is now identical per side,
+  trigger first.
+- `TOOL-MAP.md` / `TOOL-MAP.en.md` gained a "parallel read-only review" row.
+
 ## 1.1.2
 
 - `tools/verify.mjs` now compares the side set of `META.<lang>.json` against `META.json`, so an English

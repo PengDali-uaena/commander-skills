@@ -31,7 +31,7 @@ pi -p --no-session -nt --no-mcp -nc -ns --mode text \
 
 `--append-system-prompt` is not optional: without tools, some models emit `tool_calls` XML as body text.
 
-On Cursor and other sides without `pi -p`: launch parallel readonly Task subagents (`run_in_background: false`, one model slug each) on the same `prompt.md`; never wait serially; synthesis rules unchanged.
+When this side has no headless CLI, use its parallel read-only reviewer mechanism to fan the same `prompt.md` out to different models; which mechanism each side uses is in `{{SRC_ROOT}}/TOOL-MAP.md`. Never wait serially; synthesis rules are unchanged.
 
 **Parallel is mandatory**: in one `codemode` script, fire every call at once with `Promise.allSettled`; never await them one by one. Differences must come from the models, not from swapping personas.
 

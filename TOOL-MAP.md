@@ -13,6 +13,7 @@
 | 名字与目录名 | 不强制一致 | 未确认 | 必须一致 | 未确认（同名两份都会列出，不合并） | 目录名或 frontmatter `name` 决定命令名 |
 | 步骤清单 | 无 todo 工具，步骤写在回复里 | `todo_write` | 可用 todo | 有（待验证） | 有（TodoWrite） |
 | 派子 agent | 无内建，需 SDK / codemode | 未确认 | 可用 subagent | 无（待验证） | 可用 Task |
+| 并行只读评审 | `pi -p` 子进程（同一脚本 `Promise.allSettled` 一次发） | 未验证 | subagent，只读、并行（待验证具体参数） | 无（待验证） | Task 并行（只读） |
 | 用户级规则入口 | `~/.pi/agent/AGENTS.md` | `~/.dsh/AGENTS.md` | Cursor User Rules + `~/.cursor/rules/*.mdc` | `~/.codex/AGENTS.md` | `~/.claude/CLAUDE.md` |
 | 本仓实测程度 | 完整 | 未验证 | 部分 | 未验证 | 未验证 |
 

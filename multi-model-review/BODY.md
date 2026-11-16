@@ -31,7 +31,7 @@ pi -p --no-session -nt --no-mcp -nc -ns --mode text \
 
 `--append-system-prompt` 不能省：不带工具时部分模型会把 `tool_calls` XML 当正文吐出来。
 
-Cursor 等无 `pi -p` 的侧：同一 `prompt.md` 上并行起多个只读 Task（`run_in_background: false`、各选不同 model slug），禁止串行等待；汇总结论规则不变。
+当前侧没有 headless CLI 时，用该侧的并行只读 reviewer 机制把同一份 `prompt.md` 分发给不同模型；各侧具体机制见 `{{SRC_ROOT}}/TOOL-MAP.md`，禁止串行等待，汇总结论规则不变。
 
 **必须并行**：同一轮 `codemode` 脚本里用 `Promise.allSettled` 一次发出全部调用，禁止逐个等待。差异来自模型，不人为换 persona。
 

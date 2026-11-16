@@ -15,6 +15,7 @@ or `{{SRC_ROOT}}` and let `dist.mjs` substitute them per side.
 | Name vs directory | not enforced | unconfirmed | must match | unconfirmed (two copies with the same name are both listed, never merged) | the directory name or the frontmatter `name` decides the command |
 | Step list | no todo tool; steps go in the reply | `todo_write` | todo available | available (unverified) | available (TodoWrite) |
 | Subagents | none built in; needs the SDK / codemode | unconfirmed | subagent available | none (unverified) | Task available |
+| Parallel read-only review | `pi -p` subprocesses (all fired in one script via `Promise.allSettled`) | unverified | subagent, read-only, parallel (exact knobs unverified) | none (unverified) | parallel Task, read-only |
 | User-level rules | `~/.pi/agent/AGENTS.md` | `~/.dsh/AGENTS.md` | Cursor User Rules + `~/.cursor/rules/*.mdc` | `~/.codex/AGENTS.md` | `~/.claude/CLAUDE.md` |
 | Verified here | fully | not verified | partially | not verified | not verified |
 

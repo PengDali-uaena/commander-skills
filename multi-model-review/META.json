@@ -1,14 +1,14 @@
 {
   "pi": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Pick models (inline question), then run parallel headless `pi -p` reviewers on the\n  same diff; parent agent synthesizes consensus and lone-model findings.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  用户明确要求多模型 / 对抗式 review 时使用：选好模型后并行跑只读 reviewer 审同一份 diff，主 agent 汇总结论与独有发现。触发：多模型评审 / 对抗式 review\ndisable-model-invocation: true"
   },
   "cursor": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Pick models (inline question), then run parallel headless reviewers on the\n  same diff (Pi `pi -p` or parallel readonly Task subagents); parent synthesizes\n  consensus and lone-model findings.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  用户明确要求多模型 / 对抗式 review 时使用：选好模型后并行跑只读 reviewer 审同一份 diff，主 agent 汇总结论与独有发现。触发：多模型评审 / 对抗式 review\ndisable-model-invocation: true"
   },
   "agents": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Pick models (inline question), then run parallel headless `pi -p` reviewers on the\n  same diff; parent agent synthesizes consensus and lone-model findings.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  用户明确要求多模型 / 对抗式 review 时使用：选好模型后并行跑只读 reviewer 审同一份 diff，主 agent 汇总结论与独有发现。触发：多模型评审 / 对抗式 review\ndisable-model-invocation: true"
   },
   "claude": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Pick models (inline question), then run parallel headless `pi -p` reviewers on the\n  same diff; parent agent synthesizes consensus and lone-model findings.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  用户明确要求多模型 / 对抗式 review 时使用：选好模型后并行跑只读 reviewer 审同一份 diff，主 agent 汇总结论与独有发现。触发：多模型评审 / 对抗式 review\ndisable-model-invocation: true"
   }
 }

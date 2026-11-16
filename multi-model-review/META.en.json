@@ -1,14 +1,14 @@
 {
   "pi": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless pi -p reviewers over the same diff, then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Use only when the user explicitly asks for a multi-model or adversarial review: pick models, run parallel read-only reviewers over the same diff, then synthesize consensus and lone-model findings.\ndisable-model-invocation: true"
   },
   "cursor": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless reviewers over the same diff (Pi pi -p or parallel readonly Task subagents), then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Use only when the user explicitly asks for a multi-model or adversarial review: pick models, run parallel read-only reviewers over the same diff, then synthesize consensus and lone-model findings.\ndisable-model-invocation: true"
   },
   "agents": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless pi -p reviewers over the same diff, then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Use only when the user explicitly asks for a multi-model or adversarial review: pick models, run parallel read-only reviewers over the same diff, then synthesize consensus and lone-model findings.\ndisable-model-invocation: true"
   },
   "claude": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless pi -p reviewers over the same diff, then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Use only when the user explicitly asks for a multi-model or adversarial review: pick models, run parallel read-only reviewers over the same diff, then synthesize consensus and lone-model findings.\ndisable-model-invocation: true"
   }
 }
