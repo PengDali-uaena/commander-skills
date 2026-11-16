@@ -19,8 +19,27 @@ secrets — machine-specific paths and repository names belong in your own rules
 | Codex | Unverified | Directory (`~/.agents/skills`) and frontmatter follow the official docs; behavior untested |
 | Claude Code | Unverified | Only reads `~/.claude/skills`, so it needs a second copy; behavior untested |
 
-Skill bodies are currently Chinese only; English bodies and hands-on verification for the remaining
-agents will follow as needed.
+Skill bodies are Chinese by default, with English available for the skills listed under Languages.
+
+## Languages
+
+A localized body sits next to the original as `BODY.<lang>.md`, with its own frontmatter in
+`META.<lang>.json`. The renderer picks the language per run; a skill with no localized body falls
+back to Chinese.
+
+```bash
+node dist.mjs --lang en            # render English, fall back to Chinese per skill
+node dist.mjs --lang en --strict   # exit non-zero instead of falling back
+SKILL_LANG=en node dist.mjs        # same via environment variable
+```
+
+| Language | Coverage |
+|---|---|
+| zh (default) | all 23 skills |
+| en | commander, reply-brief, file-locate, code-logic, commit-message, bugfix-probe, coding-handoff-plan, coding-handoff-execute |
+
+Switching language overwrites the same `SKILL.md`, so re-render instead of keeping both side by
+side — two languages in one skills directory collide by name.
 
 ## Layout
 

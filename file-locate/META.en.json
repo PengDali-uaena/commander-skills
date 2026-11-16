@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: file-locate\ndescription: >-\n  Find the file or Widget implementing something and return one main path, with no call chain and no logs. Use when the user asks which file or where a component lives."
+  },
+  "cursor": {
+    "frontmatter": "name: file-locate\ndescription: >-\n  Find the file or Widget implementing something and return one main path, with no call chain and no logs. Use when the user asks which file or where a component lives.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: file-locate\ndescription: >-\n  Find the file or Widget implementing something and return one main path, with no call chain and no logs. Use when the user asks which file or where a component lives."
+  }
+}

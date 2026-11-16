@@ -17,7 +17,24 @@
 | Codex | 未验证 | 按官方文档写了目录（`~/.agents/skills`）与 frontmatter，行为未实测 |
 | Claude Code | 未验证 | 只认 `~/.claude/skills`，需单独一份；行为未实测 |
 
-正文目前只有中文版；英文版与其余 agent 的实测按需补。
+正文默认中文，另有英文版的 skill 见下方「语言」。
+
+## 语言
+
+翻译放在原文旁边：正文 `BODY.<lang>.md`，对应的 frontmatter 放 `META.<lang>.json`。渲染时按语言选取，没有对应语言版的 skill 回落中文。
+
+```bash
+node dist.mjs --lang en            # 渲染英文，缺英文版的逐个回落中文
+node dist.mjs --lang en --strict   # 缺英文版就非 0 退出，不回落
+SKILL_LANG=en node dist.mjs        # 同一个开关的环境变量写法
+```
+
+| 语言 | 覆盖 |
+|---|---|
+| zh（默认） | 全部 23 个 skill |
+| en | commander、reply-brief、file-locate、code-logic、commit-message、bugfix-probe、coding-handoff-plan、coding-handoff-execute |
+
+切语言是覆盖同一个 `SKILL.md`，所以要用重渲染而不是两种语言并存——同一个 skills 目录里两种语言会同名冲突。
 
 ## 目录
 

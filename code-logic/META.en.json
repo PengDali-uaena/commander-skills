@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: code-logic\ndescription: >-\n  Explain how a code path flows: entry point, steps, key branches; summary layer by default, full field-block layer on request. Use when the user asks how it flows or where it enters."
+  },
+  "cursor": {
+    "frontmatter": "name: code-logic\ndescription: >-\n  Explain how a code path flows: entry point, steps, key branches; summary layer by default, full field-block layer on request. Use when the user asks how it flows or where it enters.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: code-logic\ndescription: >-\n  Explain how a code path flows: entry point, steps, key branches; summary layer by default, full field-block layer on request. Use when the user asks how it flows or where it enters."
+  }
+}
