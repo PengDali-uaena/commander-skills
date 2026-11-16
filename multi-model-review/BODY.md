@@ -1,6 +1,6 @@
 # multi-model-review
 
-用户要对抗式多模型代码审查：多个独立模型各审一遍，再由主 agent 汇总结论。仅在用户显式 `/skill:multi-model-review`、点名本 skill 或明确要求多模型并行 review 时使用。
+用户要对抗式多模型代码审查：多个独立模型各审一遍，再由主 agent 汇总结论。仅在用户显式点名本 skill（或本侧等价显式加载语法，见 `{{SRC_ROOT}}/TOOL-MAP.md`）或明确要求多模型并行 review 时使用。
 
 默认**不改文件、不自动修**，除非用户另说。
 
@@ -30,6 +30,8 @@ pi -p --no-session -nt --no-mcp -nc -ns --mode text \
 ```
 
 `--append-system-prompt` 不能省：不带工具时部分模型会把 `tool_calls` XML 当正文吐出来。
+
+Cursor 等无 `pi -p` 的侧：同一 `prompt.md` 上并行起多个只读 Task（`run_in_background: false`、各选不同 model slug），禁止串行等待；汇总结论规则不变。
 
 **必须并行**：同一轮 `codemode` 脚本里用 `Promise.allSettled` 一次发出全部调用，禁止逐个等待。差异来自模型，不人为换 persona。
 

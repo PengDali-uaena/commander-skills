@@ -1,6 +1,6 @@
 # multi-model-review
 
-The user wants adversarial multi-model code review: several independent models each review once, then the parent agent synthesizes the conclusions. Use only when the user explicitly runs `/skill:multi-model-review`, names this skill, or clearly asks for a parallel multi-model review.
+The user wants adversarial multi-model code review: several independent models each review once, then the parent agent synthesizes the conclusions. Use only when the user explicitly names this skill (or this side's explicit load syntax in `{{SRC_ROOT}}/TOOL-MAP.md`) or clearly asks for a parallel multi-model review.
 
 By default **no file changes and no automatic fixes**, unless the user says otherwise.
 
@@ -30,6 +30,8 @@ pi -p --no-session -nt --no-mcp -nc -ns --mode text \
 ```
 
 `--append-system-prompt` is not optional: without tools, some models emit `tool_calls` XML as body text.
+
+On Cursor and other sides without `pi -p`: launch parallel readonly Task subagents (`run_in_background: false`, one model slug each) on the same `prompt.md`; never wait serially; synthesis rules unchanged.
 
 **Parallel is mandatory**: in one `codemode` script, fire every call at once with `Promise.allSettled`; never await them one by one. Differences must come from the models, not from swapping personas.
 

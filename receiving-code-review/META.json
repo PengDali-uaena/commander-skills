@@ -2,6 +2,9 @@
   "pi": {
     "frontmatter": "name: receiving-code-review\ndescription: >-\n  收到代码评审意见（对话里、PR 里、子 agent 输出）时按它核对与回应：先验证再改，不表演式附和。触发：收到 review 意见 / 处理评审反馈\ndisable-model-invocation: true"
   },
+  "cursor": {
+    "frontmatter": "name: receiving-code-review\ndescription: >-\n  收到代码评审意见（对话里、PR 里、子 agent 输出）时按它核对与回应：先验证再改，不表演式附和。触发：收到 review 意见 / 处理评审反馈\ndisable-model-invocation: true"
+  },
   "agents": {
     "frontmatter": "name: receiving-code-review\ndescription: >-\n  收到代码评审意见（对话里、PR 里、子 agent 输出）时按它核对与回应：先验证再改，不表演式附和。触发：收到 review 意见 / 处理评审反馈\ndisable-model-invocation: true"
   },
