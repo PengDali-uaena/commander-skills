@@ -146,6 +146,27 @@ Editing a rendered `SKILL.md` or a file under `assets/` is a no-op: the next `di
 it and `--check` reports drift. Anything else in an agent's skill directory (`learned.md`,
 `tune-log.md`, local notes) is yours and is never touched.
 
+## Profile (your own defaults)
+
+`profile.default.json` ships the defaults; `profile.local.json` (gitignored) overrides them per machine.
+The renderer flattens both into placeholders — camelCase becomes `_`, so `style.maxLines` is
+`{{STYLE_MAX_LINES}}`:
+
+| Key | Placeholder | Default |
+|---|---|---|
+| `docPrefix` | `{{DOC_PREFIX}}` | `""` — document paths render as `docs/task-<date>-<feature>.md` |
+| `style.maxLines` | `{{STYLE_MAX_LINES}}` | `8` — the reply line budget in the visible-reply contract |
+| `style.maxBold` | `{{STYLE_MAX_BOLD}}` | `5` — how many bold spots a reply may carry |
+| `lang` | — | `zh`; `--lang` wins |
+
+```bash
+echo '{"docPrefix":"myname-","style":{"maxLines":6}}' > profile.local.json
+node dist.mjs
+```
+
+An undefined placeholder fails the render with the skill name and token, so a half-configured profile
+never ships silently.
+
 ## Before you commit
 
 ```bash
@@ -162,3 +183,19 @@ bundled scripts before adopting someone else's skill.
 
 Agent differences are allowed only in the `TOOL-MAP.md` table. An agent-specific path or tool name
 inside a body is a bug.
+
+## Layout notes
+
+- `_template/` is the starting point for a new skill; directories starting with `_` are never rendered.
+- `legacy/` holds one-off scripts from building the repo (the first migration and normalisation passes). They are kept for traceability and are not used day to day.
+- `tools/verify.mjs` is the structural check: five-side frontmatter, heading parity between languages, placeholder definitions, leak scan.
+
+## Contributing
+
+See `CONTRIBUTING.md`. The short version: no personal or company information, agent differences only in
+`TOOL-MAP.md`, one new row in `commander` per new skill, and `node tools/verify.mjs && node dist.mjs --check`
+before pushing.
+
+## License
+
+MIT — see `LICENSE`.

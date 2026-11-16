@@ -47,7 +47,38 @@ function collectAssets(root) {
   walk(root, "");
   return out;
 }
+
+// 替换 profile 占位符；剩下的 {{X}} 一律算错，不静默发出去。
+function applyProfile(text, name) {
+  let out = text;
+  for (const [key, value] of Object.entries(PROFILE)) {
+    out = out.split(`{{${key}}}`).join(value);
+  }
+  const left = [...new Set((out.match(/\{\{[A-Z0-9_]+\}\}/g) || []))];
+  for (const token of left) unknown.push(`${name}: ${token}`);
+  return out;
+}
 const check = process.argv.includes("--check");
+
+// 本机覆盖值：profile.default.json 进仓，profile.local.json 只在本机存在（已 gitignore）。
+function loadProfile() {
+  const read = (f) => (existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : {});
+  const merged = { ...read(join(SRC, "profile.default.json")), ...read(join(SRC, "profile.local.json")) };
+  merged.style = { ...(read(join(SRC, "profile.default.json")).style || {}), ...(read(join(SRC, "profile.local.json")).style || {}) };
+  return merged;
+}
+
+function flatten(obj, prefix = "", out = {}) {
+  for (const [k, v] of Object.entries(obj)) {
+    const key = `${prefix}${k.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toUpperCase()}`;
+    if (v && typeof v === "object") flatten(v, `${key}_`, out);
+    else out[key] = String(v);
+  }
+  return out;
+}
+
+const PROFILE = flatten(loadProfile());
+const unknown = [];
 const langArg = process.argv.indexOf("--lang");
 const langFile = join(SRC, ".skill-lang");
 const langDefault = existsSync(langFile) ? readFileSync(langFile, "utf8").trim() : "zh";
@@ -64,6 +95,7 @@ for (const name of readdirSync(SRC)) {
   if (name.startsWith(".")) continue;
   const dir = join(SRC, name);
   if (!statSync(dir).isDirectory()) continue;
+  if (name.startsWith("_") || name.startsWith(".")) continue;
   if (!existsSync(join(dir, "BODY.md"))) continue;
   const localized = lang === "zh" ? null : join(dir, `BODY.${lang}.md`);
   const hasLocalized = localized && existsSync(localized);
@@ -87,11 +119,11 @@ for (const name of readdirSync(SRC)) {
     if (!front) continue;
     if (!existsSync(join(outRoot, name))) { skipped++; continue; }
 
-    const rendered = `---\n${front}\n---\n\n${MARK}\n\n${body
+    const rendered = `---\n${applyProfile(front, name)}\n---\n\n${MARK}\n\n${applyProfile(body
       .split("{{SKILL_DIR}}")
       .join(root + name + "/")
       .split("{{SKILLS_ROOT}}")
-      .join(root)}\n`;
+      .join(root), name)}\n`;
 
     const current = existsSync(outPath) ? readFileSync(outPath, "utf8") : null;
     if (current !== rendered) {
@@ -122,11 +154,13 @@ for (const name of readdirSync(SRC)) {
 
 if (check) {
   if (fellBack.length) console.log(`fallback to zh (${lang} missing): ${fellBack.join(", ")}`);
+  if (unknown.length) { console.error(`未定义的 profile 占位符：\n  ${unknown.join("\n  ")}`); process.exit(1); }
   if (drifted) { console.error(`\n${drifted} 个生成物与 BODY.md 不一致`); process.exit(1); }
   if (missingStrict.length) { console.error(`--strict: 缺 ${lang} 版：${missingStrict.join(", ")}`); process.exit(1); }
   console.log("ok: 生成物与主体一致");
 } else {
   if (fellBack.length) console.log(`fallback to zh (${lang} missing): ${fellBack.join(", ")}`);
+  if (unknown.length) { console.error(`未定义的 profile 占位符：\n  ${unknown.join("\n  ")}`); process.exit(1); }
   if (missingStrict.length) { console.error(`--strict: 缺 ${lang} 版：${missingStrict.join(", ")}`); process.exit(1); }
   console.log(`wrote ${written} file(s), skipped ${skipped} missing side dir(s)`);
 }

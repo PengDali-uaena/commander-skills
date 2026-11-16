@@ -130,6 +130,25 @@ node ~/.agents/skill-src/dist.mjs --check   # 生成物与 BODY.md 不一致时�
 直接改各侧的 `SKILL.md` 或 `assets/` 下的文件属于无效修改：下一次 `dist.mjs` 会覆盖，`--check` 也会报 drift。
 各侧目录里其它文件（`learned.md`、`tune-log.md`、本机笔记）属于你自己，渲染不会碰。
 
+## profile（本机默认值）
+
+`profile.default.json` 是进仓的默认值，`profile.local.json`（已 gitignore）按机器覆盖。渲染器把两者拍平成占位符，
+camelCase 会变成 `_`，所以 `style.maxLines` 对应 `{{STYLE_MAX_LINES}}`：
+
+| 键 | 占位符 | 默认值 |
+|---|---|---|
+| `docPrefix` | `{{DOC_PREFIX}}` | `""`，文档路径渲染成 `docs/task-<date>-<feature>.md` |
+| `style.maxLines` | `{{STYLE_MAX_LINES}}` | `8`，可见回复的行数预算 |
+| `style.maxBold` | `{{STYLE_MAX_BOLD}}` | `5`，一条回复最多几处加粗 |
+| `lang` | — | `zh`；`--lang` 优先 |
+
+```bash
+echo '{"docPrefix":"myname-","style":{"maxLines":6}}' > profile.local.json
+node dist.mjs
+```
+
+占位符没定义时渲染直接报错并点名 skill 与 token，不会把半配置的产物悄悄发出去。
+
 ## 提交前自查
 
 ```bash
@@ -143,3 +162,18 @@ git config core.hooksPath .githooks   # 启用一次即可
 
 skill 只是提示词层：它不执行代码，也不承诺安全边界。引入别人的 skill 前先读一遍正文和它附带的脚本。
 各侧行为差异只允许出现在 `TOOL-MAP.md` 那张表里；正文里出现某一侧的路径或工具名就是 bug。
+
+## 目录约定
+
+- `_template/` 是新增 skill 的起点；以 `_` 开头的目录不会被渲染。
+- `legacy/` 放建仓时的一次性脚本（最初的迁移与归一化），只为可追溯，日常不用。
+- `tools/verify.mjs` 是结构自检：五侧 frontmatter、两语文档的标题树一致、占位符有定义、敏感词扫描。
+
+## 贡献
+
+见 `CONTRIBUTING.md`。短版：不带个人信息与公司信息；agent 差异只写进 `TOOL-MAP.md`；每加一个 skill 就在
+`commander` 里加一行；推之前跑 `node tools/verify.mjs && node dist.mjs --check`。
+
+## 许可证
+
+MIT，见 `LICENSE`。

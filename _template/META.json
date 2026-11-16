@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: my-skill\ndescription: >-\n  One sentence on what this skill produces and when it applies; put the trigger words first."
+  },
+  "cursor": {
+    "frontmatter": "name: my-skill\ndescription: >-\n  One sentence on what this skill produces and when it applies; put the trigger words first."
+  },
+  "dsh": {
+    "frontmatter": "name: my-skill\ndescription: >-\n  One sentence on what this skill produces and when it applies; put the trigger words first."
+  },
+  "agents": {
+    "frontmatter": "name: my-skill\ndescription: >-\n  One sentence on what this skill produces and when it applies; put the trigger words first."
+  },
+  "claude": {
+    "frontmatter": "name: my-skill\ndescription: >-\n  One sentence on what this skill produces and when it applies; put the trigger words first."
+  }
+}

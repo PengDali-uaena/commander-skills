@@ -1,0 +1,37 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify structure, placeholders, heading parity, leaks
+        run: node tools/verify.mjs
+
+      - name: Render and drift-check every language
+        run: |
+          set -euo pipefail
+          for lang in zh en; do
+            rm -rf /tmp/out
+            mkdir -p /tmp/out/agents
+            for d in */; do
+              [ -f "$d/BODY.md" ] && mkdir -p "/tmp/out/agents/${d%/}"
+            done
+            echo "--- $lang render"
+            AGENTS_SKILLS_DIR=/tmp/out/agents node dist.mjs --lang "$lang"
+            echo "--- $lang check"
+            AGENTS_SKILLS_DIR=/tmp/out/agents node dist.mjs --check --lang "$lang"
+          done
+
+      - name: Legacy scripts still parse
+        run: |
+          for f in legacy/*.mjs; do node --check "$f"; done

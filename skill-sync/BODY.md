@@ -9,7 +9,7 @@
 | 入口 | Pi / DSH 各自的 `AGENTS.md` 路由表 → 本侧 `commander/SKILL.md` | Cursor User Rules → `~/.cursor/skills/commander/SKILL.md`（`commander-first.mdc` 已 `alwaysApply: false`） |
 | 调用 | Pi 按 description 自动加载或 `/skill:<name>`；DSH 用 `skill` 工具 | 用户 `@<name>`；skill 可带 `disable-model-invocation: true` |
 | 偏好沉淀 | 规则直接进 AGENTS.md 或 SKILL.md | 各 skill 的 `learned.md`、`commander-tune/tune-log.md` |
-| 回复预算 | AGENTS.md「可见回复」≤ 8 行 | 由各 skill 合同控制 |
+| 回复预算 | AGENTS.md「可见回复」≤ {{STYLE_MAX_LINES}} 行 | 由各 skill 合同控制 |
 
 工具名与调用语法的差异只记在 `~/.agents/skill-src/TOOL-MAP.md`，不往正文里搬。
 
@@ -21,7 +21,7 @@
 4. 每条一句话：对侧 `文件:行` → 本地点 → 搬过来怎么写 → 预期效果。最多 5 条，按影响排序。
 5. 应用：先备份要改的那一侧（`tar czf <侧根>/commander-backup-<ts>.tgz -C <侧根> AGENTS.md skills`，侧根为 `~/.pi/agent` 或 `~/.dsh`）；再改 `commander/SKILL.md` 的表与硬规则、对应 skill。路由表改了的，同一轮改 description；只搬判据，不整份覆盖。只有确认是用户偏好、不是通用合同时才写 `learned.md`，并标「来源：对侧，<日期>」。
 6. 记录：向 `sync-log.md` 追加一行 `日期 | 方向 | 条目 | 对侧来源:行`。
-7. 回复 ≤ 8 行：改了哪几个文件、搬了哪几条；不贴 diff。
+7. 回复 ≤ {{STYLE_MAX_LINES}} 行：改了哪几个文件、搬了哪几条；不贴 diff。
 
 ## 去重
 

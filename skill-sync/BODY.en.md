@@ -9,7 +9,7 @@ Default direction: read Cursor, change this side (Pi / DSH). When the user says 
 | Entry | the side's `AGENTS.md` routing table → this side's `commander/SKILL.md` | Cursor User Rules → `~/.cursor/skills/commander/SKILL.md` (`commander-first.mdc` has `alwaysApply: false`) |
 | Invocation | Pi auto-loads by description or `/skill:<name>`; DSH uses the `skill` tool | the user's `@<name>`; a skill may carry `disable-model-invocation: true` |
 | Preference capture | rules go straight into AGENTS.md or SKILL.md | each skill's `learned.md`, plus `commander-tune/tune-log.md` |
-| Reply budget | AGENTS.md "visible reply" ≤ 8 lines | controlled by each skill's contract |
+| Reply budget | AGENTS.md "visible reply" ≤ {{STYLE_MAX_LINES}} lines | controlled by each skill's contract |
 
 Tool names and invocation syntax differ only in `~/.agents/skill-src/TOOL-MAP.md` and never move into a body.
 
@@ -21,7 +21,7 @@ Tool names and invocation syntax differ only in `~/.agents/skill-src/TOOL-MAP.md
 4. One line per item: opposing `file:line` → local spot → how to write it here → expected effect. At most 5 items, ordered by impact.
 5. Apply: back up the side being changed first (`tar czf <side-root>/commander-backup-<ts>.tgz -C <side-root> AGENTS.md skills`, where the side root is `~/.pi/agent` or `~/.dsh`); then edit `commander/SKILL.md`'s table and hard rules, plus the affected skill. When the routing table changes, change descriptions in the same turn; carry criteria only, never overwrite a whole file. Write `learned.md` only when the item is confirmed to be a user preference rather than a general contract, and tag it `source: other side, <date>`.
 6. Record: append one line to `sync-log.md` — `date | direction | item | opposing source:line`.
-7. Reply in ≤8 lines: which files changed, which items were carried over; no diff.
+7. Reply in ≤{{STYLE_MAX_LINES}} lines: which files changed, which items were carried over; no diff.
 
 ## Dedup
 
