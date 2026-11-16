@@ -8,7 +8,7 @@
   python3 audit.py --skill explain # 打印该 skill 每一轮的提问与下一条反应
   python3 audit.py --json          # 输出机器可读结果
 
-只读 ~/.pi/agent/sessions，不写任何文件。
+只读某一侧的 sessions 目录（默认 Pi 的 ~/.pi/agent/sessions，用 --sessions 指定别的），不写任何文件。
 本文件是 commander-tune 的附属脚本，不属于 dist.mjs 生成物，可直接手改。
 """
 
@@ -20,8 +20,8 @@ import re
 import statistics
 from collections import Counter
 
-SESSIONS = os.path.expanduser("~/.pi/agent/sessions")
-SKILLS = os.path.expanduser("~/.pi/agent/skills")
+SESSIONS = os.path.expanduser("~/.pi/agent/sessions")  # 可被 --sessions 覆盖
+SKILLS = os.path.expanduser("~/.pi/agent/skills")  # 可被 --skills 覆盖
 SKILL_PATH = re.compile(r"skills/([a-z0-9][a-z0-9-]*)/SKILL\.md")
 ATTACHED = re.compile(r"^<skill name=")
 ACK = re.compile(r"^(好|好的|好滴|嗯+|ok|okay|行|可以|继续|是|对|谢谢|收到|y|yes|no|不|别|等一下|稍等)[。！!,.，\s]*$", re.I)
@@ -82,14 +82,18 @@ def reaction(text):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--skills", default=SKILLS, help="skills 目录，默认 Pi 的 ~/.pi/agent/skills")
+    ap.add_argument("--sessions", default=SESSIONS, help="sessions 目录，默认 Pi 的 ~/.pi/agent/sessions")
     ap.add_argument("--days", type=int, default=14, help="0 = 不限")
     ap.add_argument("--repo", default="")
     ap.add_argument("--skill", default="")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
-    known = set(os.listdir(SKILLS)) if os.path.isdir(SKILLS) else set()
-    files = sorted(glob.glob(os.path.join(SESSIONS, "**", "*.jsonl"), recursive=True))
+    skills_dir = os.path.expanduser(args.skills)
+    known = set(os.listdir(skills_dir)) if os.path.isdir(skills_dir) else set()
+    sessions_dir = os.path.expanduser(args.sessions)
+    files = sorted(glob.glob(os.path.join(sessions_dir, "**", "*.jsonl"), recursive=True))
     if args.repo:
         files = [f for f in files if args.repo in os.path.basename(os.path.dirname(f))]
 

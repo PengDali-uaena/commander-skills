@@ -15,7 +15,7 @@ python3 {{SKILL_DIR}}audit.py --repo <name>  # one repo only (matches the sessio
 python3 {{SKILL_DIR}}audit.py --skill explain
 ```
 
-The script reads `~/.pi/agent/sessions/**/*.jsonl` and reports: session count and real request count, how many turns each skill was read, what you said right after each call (continue / push back), repeated reads within one turn, the share of bold first lines / over-8-line replies / absolute paths, and the share of turns with no skill.
+The script reads one side's `sessions/**/*.jsonl` (Pi's `~/.pi/agent/sessions` by default; point it elsewhere with `--sessions` / `--skills`) and reports: session count and real request count, how many turns each skill was read, what you said right after each call (continue / push back), repeated reads within one turn, the share of bold first lines / over-8-line replies / absolute paths, and the share of turns with no skill.
 
 - Script missing or failing: recompute with `rg` / `python3 -c` per "Manual recipe" below, and **never skip the evidence and go straight to a conclusion**. The script is a Pi-side attachment (like `tune-log.md`, not produced by `dist.mjs`); on dsh / cursor where it does not exist, use the manual recipe.
 - **Non-Pi sides (Cursor / DSH) have no parsable session logs**: do not run pi's `audit.py`; use the external stats you paste plus this conversation as evidence and mark the first line of the diagnosis "sample provided by the user" (with no external stats, audit this conversation only and state that coverage is limited).
@@ -50,8 +50,8 @@ Each change item states: **where** (file + section), **what** (before → after)
 
 - By default output the diagnosis plus the list, and end with one question: "Apply the list? (yes / no / only item N)"
 - If you already said "just change it / apply / write it": execute only the items you explicitly approved.
-- Editing a `SKILL.md` produced by `dist.mjs` is a no-op: edit `~/.agents/skill-src/<name>/BODY.md`, run `node ~/.agents/skill-src/dist.mjs`, then finish with `--check`.
-- New skill: `~/.agents/skill-src/<kebab-name>/{BODY.md,META.json}` + one row in commander's artifact table + `dist.mjs`.
+- Editing a `SKILL.md` produced by `dist.mjs` is a no-op: edit `{{SRC_ROOT}}/<name>/BODY.md`, run `node {{SRC_ROOT}}/dist.mjs`, then finish with `--check`.
+- New skill: `{{SRC_ROOT}}/<kebab-name>/{BODY.md,META.json}` + one row in commander's artifact table + `dist.mjs`.
 - After applying, append a section to `{{SKILL_DIR}}tune-log.md`: date, trigger summary, files changed, rejected proposals.
 
 ## Manual recipe (when the script is unavailable)

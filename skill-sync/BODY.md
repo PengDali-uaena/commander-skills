@@ -1,6 +1,6 @@
 某个 skill 刚用完不满意，或两边规则开始分叉时，把对侧已经用出效果的判据搬进本地；不整份复制。
 
-默认方向：读 Cursor，改本侧（Pi / DSH）。用户说「反过来 / 推到 cursor」时方向取反。三家共用的正文在 `~/.agents/skill-src/`，改判据优先改那里再跑 `dist.mjs`；本 skill 只处理「一侧已有、另一侧还没有」的新条目。
+默认方向：读 Cursor，改本侧（Pi / DSH）。用户说「反过来 / 推到 cursor」时方向取反。三家共用的正文在 `{{SRC_ROOT}}/`，改判据优先改那里再跑 `dist.mjs`；本 skill 只处理「一侧已有、另一侧还没有」的新条目。
 
 ## 两边的习惯（只搬判据，不搬写法）
 
@@ -11,7 +11,7 @@
 | 偏好沉淀 | 规则直接进 AGENTS.md 或 SKILL.md | 各 skill 的 `learned.md`、`commander-tune/tune-log.md` |
 | 回复预算 | AGENTS.md「可见回复」≤ {{STYLE_MAX_LINES}} 行 | 由各 skill 合同控制 |
 
-工具名与调用语法的差异只记在 `~/.agents/skill-src/TOOL-MAP.md`，不往正文里搬。
+工具名与调用语法的差异只记在 `{{SRC_ROOT}}/TOOL-MAP.md`，不往正文里搬。
 
 ## 步骤
 

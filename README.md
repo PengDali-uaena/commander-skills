@@ -184,6 +184,19 @@ bundled scripts before adopting someone else's skill.
 Agent differences are allowed only in the `TOOL-MAP.md` table. An agent-specific path or tool name
 inside a body is a bug.
 
+## Scope and limits
+
+- Five sides are supported, but only Pi is verified in real sessions here. Cursor, Codex and Claude Code
+  are verified at the directory and frontmatter level; `TOOL-MAP.md` marks each cell as measured or pending.
+- Three skills — `multi-model-review`, `receiving-code-review`, `requesting-code-review` — need a second
+  model or a subagent, so they ship for Pi only and are skipped when rendering Cursor/DSH.
+- Those two review skills have no English body yet: `--lang en` falls back to Chinese and prints which
+  skills fell back. `--strict` turns the fallback into an error.
+- `prd-to-task` uses the codegraph MCP server and asks for Figma node IDs; without them it stops and asks
+  instead of guessing.
+- Uninstall: delete the generated `SKILL.md` / `assets/` from the skills directories, or remove the skill
+  folders. The only thing written outside a skills directory is `git config core.hooksPath .githooks`.
+
 ## Layout notes
 
 - `_template/` is the starting point for a new skill; directories starting with `_` are never rendered.

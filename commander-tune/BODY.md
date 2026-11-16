@@ -15,7 +15,7 @@ python3 {{SKILL_DIR}}audit.py --repo <name>  # 只看某个仓库（匹配会话
 python3 {{SKILL_DIR}}audit.py --skill explain
 ```
 
-脚本读 `~/.pi/agent/sessions/**/*.jsonl`，输出：会话数与真实请求数、每个 skill 被读的轮次、调用后你下一条的反应（继续 / 打回）、同轮重复读、首句加粗 / 超 8 行 / 绝对路径比例、无 skill 轮次占比。
+脚本读某一侧的 `sessions/**/*.jsonl`（默认 Pi 的 `~/.pi/agent/sessions`，别的侧用 `--sessions`／`--skills` 指过去），输出：会话数与真实请求数、每个 skill 被读的轮次、调用后你下一条的反应（继续 / 打回）、同轮重复读、首句加粗 / 超 8 行 / 绝对路径比例、无 skill 轮次占比。
 
 - 脚本缺失或报错：按下面「手工口径」用 `rg` / `python3 -c` 重算，**不得跳过证据直接给结论**。脚本是 pi 侧附属文件（同 `tune-log.md`，不进 `dist.mjs` 生成物），dsh / cursor 侧没有就走手工口径。
 - **非 Pi 侧（Cursor / DSH）没有可解析的会话日志**：不要跑 pi 的 `audit.py`，改为以你贴的外部统计 + 本对话作证据，并在诊断首行标「样本来自用户提供」（无外部统计时就只审计本对话，并写明覆盖率有限）。
@@ -50,8 +50,8 @@ python3 {{SKILL_DIR}}audit.py --skill explain
 
 - 默认只输出诊断 + 清单，末尾问一句：「按清单改吗？（是 / 否 / 只改第 N 条）」
 - 你已说「直接改 / apply / 落盘」：只执行你明确同意的条目。
-- 改由 `dist.mjs` 生成的 `SKILL.md` 无效：改 `~/.agents/skill-src/<name>/BODY.md`，再跑 `node ~/.agents/skill-src/dist.mjs`，收尾跑 `--check`。
-- 新增 skill：`~/.agents/skill-src/<kebab-name>/{BODY.md,META.json}` + commander 产物表加一行 + `dist.mjs`。
+- 改由 `dist.mjs` 生成的 `SKILL.md` 无效：改 `{{SRC_ROOT}}/<name>/BODY.md`，再跑 `node {{SRC_ROOT}}/dist.mjs`，收尾跑 `--check`。
+- 新增 skill：`{{SRC_ROOT}}/<kebab-name>/{BODY.md,META.json}` + commander 产物表加一行 + `dist.mjs`。
 - 落盘后追加一节到 `{{SKILL_DIR}}tune-log.md`：日期、触发摘要、改了哪些文件、未采纳的提案。
 
 ## 手工口径（脚本不可用时）

@@ -1,6 +1,6 @@
 When a skill just disappointed you, or the two sides' rules start to diverge, bring over the criteria the other side has already proven; never copy a whole file.
 
-Default direction: read Cursor, change this side (Pi / DSH). When the user says "the other way / push it to cursor", invert the direction. Shared bodies live in `~/.agents/skill-src/`; criteria changes go there first, then run `dist.mjs`. This skill handles only "the other side has a new item, this side does not".
+Default direction: read Cursor, change this side (Pi / DSH). When the user says "the other way / push it to cursor", invert the direction. Shared bodies live in `{{SRC_ROOT}}/`; criteria changes go there first, then run `dist.mjs`. This skill handles only "the other side has a new item, this side does not".
 
 ## Conventions of both sides (carry criteria, not syntax)
 
@@ -11,7 +11,7 @@ Default direction: read Cursor, change this side (Pi / DSH). When the user says 
 | Preference capture | rules go straight into AGENTS.md or SKILL.md | each skill's `learned.md`, plus `commander-tune/tune-log.md` |
 | Reply budget | AGENTS.md "visible reply" ≤ {{STYLE_MAX_LINES}} lines | controlled by each skill's contract |
 
-Tool names and invocation syntax differ only in `~/.agents/skill-src/TOOL-MAP.md` and never move into a body.
+Tool names and invocation syntax differ only in `{{SRC_ROOT}}/TOOL-MAP.md` and never move into a body.
 
 ## Steps
 

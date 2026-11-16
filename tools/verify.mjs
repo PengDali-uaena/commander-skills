@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SIDES = ["pi", "cursor", "dsh", "agents", "claude"];
-const BUILTIN = new Set(["SKILL_DIR", "SKILLS_ROOT"]);
+const BUILTIN = new Set(["SKILL_DIR", "SKILLS_ROOT", "SRC_ROOT"]);
 const LEAK =
   "pengdali|kitar|@gmail|prod_aws_deploy|deploy_web_prod|sk-[A-Za-z0-9]{24,}|api[_-]?key|BEGIN (RSA|OPENSSH|PRIVATE)";
 

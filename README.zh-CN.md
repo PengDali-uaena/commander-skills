@@ -163,6 +163,17 @@ git config core.hooksPath .githooks   # 启用一次即可
 skill 只是提示词层：它不执行代码，也不承诺安全边界。引入别人的 skill 前先读一遍正文和它附带的脚本。
 各侧行为差异只允许出现在 `TOOL-MAP.md` 那张表里；正文里出现某一侧的路径或工具名就是 bug。
 
+## 适用范围与已知限制
+
+- 支持五侧，但真实会话里只验证过 Pi。Cursor / Codex / Claude Code 只验证到「目录与 frontmatter 能落」，
+  `TOOL-MAP.md` 里逐格标了「已验证 / 未验证」。
+- `multi-model-review`、`receiving-code-review`、`requesting-code-review` 需要第二个模型或子 agent，
+  所以只分发给 Pi，渲染 Cursor / DSH 时跳过。
+- 后两个 review skill 还没有英文正文：`--lang en` 会回落中文并打印回落清单；`--strict` 让回落直接报错。
+- `prd-to-task` 依赖 codegraph MCP，并会要 Figma node-id；没有这两个工具时它停下来问，不猜。
+- 卸载：删掉 skills 目录里的 `SKILL.md` 与 `assets/`，或直接删 skill 目录。除 skills 目录外只写过一个东西——
+  `git config core.hooksPath .githooks`。
+
 ## 目录约定
 
 - `_template/` 是新增 skill 的起点；以 `_` 开头的目录不会被渲染。

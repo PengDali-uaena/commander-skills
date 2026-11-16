@@ -8,14 +8,17 @@
 //   node dist.mjs --check            只检查，生成物与主体不一致就非 0 退出
 //   目标目录用环境变量覆盖：PI_SKILLS_DIR / DSH_SKILLS_DIR / CURSOR_SKILLS_DIR /
 //   AGENTS_SKILLS_DIR / CLAUDE_SKILLS_DIR。目标目录不存在就跳过；
+//   正文里可用 {{SRC_ROOT}}（源仓路径）指回本仓，克隆在哪都对。
 //   ~/.agents/skills 是 Pi / Cursor / Codex 共用的那个。
 // 侧里只有 SKILL.md 和 assets/ 是生成物，其余文件（learned.md、tune-log.md 等）本机自己维护。
 
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { homedir } from "node:os";
+import { fileURLToPath } from "node:url";
 
-const SRC = process.env.SKILL_SRC || join(homedir(), ".agents", "skill-src");
+// 源仓就是 dist.mjs 自己所在的目录：仓克隆在哪都能跑；SKILL_SRC 可覆盖。
+const SRC = process.env.SKILL_SRC || dirname(fileURLToPath(import.meta.url));
 const home = homedir();
 const side = (envName, ...fallback) => {
   const dir = process.env[envName] || join(home, ...fallback);
@@ -29,7 +32,7 @@ const SIDES = {
   agents: side("AGENTS_SKILLS_DIR", ".agents", "skills"),
   claude: side("CLAUDE_SKILLS_DIR", ".claude", "skills"),
 };
-const MARK = "<!-- GENERATED：本文件由 ~/.agents/skill-src/dist.mjs 生成，改 BODY.md 后重跑；手改会被覆盖 -->";
+const MARK = "<!-- GENERATED：本文件由 skill 源仓的 dist.mjs 生成，改 BODY.md 后重跑；手改会被覆盖 -->";
 
 // <name>/assets/** 里的附件（脚本、references/）同样分发，路径原样保留，只去掉 assets/ 这一层。
 function collectAssets(root) {
@@ -123,7 +126,9 @@ for (const name of readdirSync(SRC)) {
       .split("{{SKILL_DIR}}")
       .join(root + name + "/")
       .split("{{SKILLS_ROOT}}")
-      .join(root), name)}\n`;
+      .join(root)
+      .split("{{SRC_ROOT}}")
+      .join(SRC), name)}\n`;
 
     const current = existsSync(outPath) ? readFileSync(outPath, "utf8") : null;
     if (current !== rendered) {
