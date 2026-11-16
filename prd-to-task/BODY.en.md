@@ -10,7 +10,7 @@ Triggers: importing a PRD / splitting requirements / pinning down requirement de
 
 - No business code, no editing the PRD source, no branches, no builds.
 - Read only code the PRD points at: pages and components it names, same-name or adjacent features, API definitions, l10n files, event constants. Stop once the current question is answered.
-- Write one file only: `docs/{{DOC_PREFIX}}task-<date>-<feature>.md`. `<date>` is `YYYYMMDD`, `<feature>` is a short English kebab-case name; create `docs/` when the project has none.
+- Write one file only: `docs/{{DOC_PREFIX}}<date>-task-<feature>.md`. `<date>` is `YYYYMMDD`, `<feature>` is a short English kebab-case name; create `docs/` when the project has none.
 - **When the same feature has a document in several clones**, write only this repo's copy; never copy to or track the others, and when sharing is needed write "read-only reference to this document" in the current one. Same-name documents must keep an empty diff, or differ only in repo-local paths.
 - Document state machine: `in progress` → `pending input` → `executable` → `implemented` → `verified`. The state is never written by hand; derive it from the counts and check results of "check before writing".
 - Events and bilingual text may be `pending`; logic and UI must reach a conclusion on every item, and undecided APIs still need their fallback written down.
@@ -295,7 +295,7 @@ When writing the `### Events` section, use tracking-doc-format's layout and flow
 
 - **Layout unchanged**: the event name is bold on its own line; `**Report timing:**`; `**Params:**`; parameter rows `- **name**: type. description`; value rows `  - Value: <expression> (<file>:<line>)`. Segments are separated by `-----------` with a blank line above and below.
 - **One at a time unchanged**: confirm one event per turn, then the next; the conversation carries only the current event plus the task document path.
-- **No separate document**: do not create `docs/{{DOC_PREFIX}}tracking-<date>-<feature>.md` and do not print the full events text in the conversation. Only when the user explicitly says "events should be their own document" does tracking-doc-format's own writing rule apply.
+- **No separate document**: do not create `docs/{{DOC_PREFIX}}<date>-tracking-<feature>.md` and do not print the full events text in the conversation. Only when the user explicitly says "events should be their own document" does tracking-doc-format's own writing rule apply.
 - **The report point is the boundary**: every event states its `Report point` — an existing `file:line`, or `to be added` (naming which feature point's which entry). A file outside the "Change boundary" table may not be edited just to add an event.
 - **No invented parameters**: values need code evidence (`rg` the report key, then read the arguments); when nothing is found write `Value: not found` / `to implement (candidate X)` and never substitute an approximate field.
 - When the events table itself is missing, record pending first and do not fill the section with assumed parameters.

@@ -20,7 +20,7 @@ Also used for the after-development pass: when the events are implemented and th
 
 When prd-to-task writes the `### Events` section it uses this skill's layout and one-at-a-time checking, but **the output lands in the task document**:
 
-- Output goes into the task document's `### Events` section; do not write `docs/{{DOC_PREFIX}}tracking-<date>-<feature>.md`, and do not print the full text in the conversation — the conversation carries only the current event plus the task document path.
+- Output goes into the task document's `### Events` section; do not write `docs/{{DOC_PREFIX}}<date>-tracking-<feature>.md`, and do not print the full text in the conversation — the conversation carries only the current event plus the task document path.
 - Checking one at a time is unchanged: one event, wait for confirmation, then the next; after all are done the full text is still not printed separately (the full text is that section of the task document).
 - Each event gains one extra line `- **Report point**: <file:line>` or `to be added (<feature point / entry>)`; the report point must exist in prd-to-task's change-boundary table, otherwise record it as undecided.
 - Layout, bold, value provenance and counter-examples are all unchanged.
@@ -177,14 +177,14 @@ This skill's **segmented body** is not bound by commander's "≤{{STYLE_MAX_LINE
 
 - **First line**: one sentence of result (segment count; mention column-order fallback or missing timing if any), then the progress line `N events total, i/N | confirmed a, skipped b (<key>), undecided c`.
 - **Per-event stage**: the body holds **only the current event**, written out per the layout; stop there and ask "is this right / next one?". Never preview later segments, never summarize, never say "the full text is somewhere else".
-- **Full-document stage**: only after everything is confirmed, print the **full text** in the conversation (including the "Check record" and "Definition changes" sections), `-----------` between segments, no truncation, no skipped segments; then ask "write it to `docs/{{DOC_PREFIX}}tracking-<date>-<feature>.md`?" and write the file only after the user clearly agrees in the next message or names the file (path under "Output location"). Never write the file unasked this turn.
+- **Full-document stage**: only after everything is confirmed, print the **full text** in the conversation (including the "Check record" and "Definition changes" sections), `-----------` between segments, no truncation, no skipped segments; then ask "write it to `docs/{{DOC_PREFIX}}<date>-tracking-<feature>.md`?" and write the file only after the user clearly agrees in the next message or names the file (path under "Output location"). Never write the file unasked this turn.
 - Skip the per-event stage only when the user explicitly says "just give me the whole thing / all at once / no need to check one by one".
 - **Implementation-check turn**: do not re-output the event table; give the numbered W/I list first (at most 5 items plus a total count, each with `file:line`) and wait for the user to pick.
 
 ## Output location
 
 1. **Default**: print the full text in the conversation first (so the user can review and comment in this session); do not write a file.
-2. **Written path (fixed)**: when the user explicitly says "write it as a doc / save it / export it / to markdown / confirm save / write to file", write `docs/{{DOC_PREFIX}}tracking-<date>-<feature>.md` in the current repo:
+2. **Written path (fixed)**: when the user explicitly says "write it as a doc / save it / export it / to markdown / confirm save / write to file", write `docs/{{DOC_PREFIX}}<date>-tracking-<feature>.md` in the current repo:
    - Structure: title + source and timestamp + event segments (`-----------` between them) + "Check record" + "Definition changes".
    - When a file of that name exists, read its old "Check record" first, change only the differing segments and add definition changes; never rewrite the whole file, never drop the source of an old conclusion.
    - `<date>` is `YYYYMMDD` (e.g. `20261113`); `<feature>` is a short English kebab-case name (e.g. `pdp-video-perf`).
