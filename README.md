@@ -36,7 +36,7 @@ SKILL_LANG=en node dist.mjs        # same via environment variable
 | Language | Coverage |
 |---|---|
 | zh (default) | all 23 skills |
-| en | commander, reply-brief, file-locate, code-logic, commit-message, bugfix-probe, coding-handoff-plan, coding-handoff-execute |
+| en | 21 skills — every skill except `receiving-code-review` and `requesting-code-review`, whose bodies are already English |
 
 Switching language overwrites the same `SKILL.md`, so re-render instead of keeping both side by
 side — two languages in one skills directory collide by name.

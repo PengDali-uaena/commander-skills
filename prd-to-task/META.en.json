@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: prd-to-task\ndescription: >-\n  Turn a PRD into one executable task-<feature>.md, one question per turn: challenge the change boundary first, pin down UI elements and asset sources, map every backend state to visuals, and cover interaction states, permissions, API failure paths, events and bilingual copy. No code changes. Use when importing a PRD, splitting requirements, adding events or copy to a task, or asking whether an implementation missed something."
+  },
+  "cursor": {
+    "frontmatter": "name: prd-to-task\ndescription: >-\n  Turn a PRD into one executable task-<feature>.md, one question per turn: challenge the change boundary first, pin down UI elements and asset sources, map every backend state to visuals, and cover interaction states, permissions, API failure paths, events and bilingual copy. No code changes. Use when importing a PRD, splitting requirements, adding events or copy to a task, or asking whether an implementation missed something."
+  },
+  "dsh": {
+    "frontmatter": "name: prd-to-task\ndescription: >-\n  Turn a PRD into one executable task-<feature>.md, one question per turn: challenge the change boundary first, pin down UI elements and asset sources, map every backend state to visuals, and cover interaction states, permissions, API failure paths, events and bilingual copy. No code changes. Use when importing a PRD, splitting requirements, adding events or copy to a task, or asking whether an implementation missed something."
+  }
+}

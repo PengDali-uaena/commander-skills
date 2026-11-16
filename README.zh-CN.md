@@ -32,7 +32,7 @@ SKILL_LANG=en node dist.mjs        # 同一个开关的环境变量写法
 | 语言 | 覆盖 |
 |---|---|
 | zh（默认） | 全部 23 个 skill |
-| en | commander、reply-brief、file-locate、code-logic、commit-message、bugfix-probe、coding-handoff-plan、coding-handoff-execute |
+| en | 21 个，只有 `receiving-code-review`、`requesting-code-review` 没有英文版（正文原本就是英文） |
 
 切语言是覆盖同一个 `SKILL.md`，所以要用重渲染而不是两种语言并存——同一个 skills 目录里两种语言会同名冲突。
 
