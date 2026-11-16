@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: code-logic\ndescription: \"讲清一条代码路径怎么走：入口、流程、关键分支。触发：怎么走 / 从哪进 / 哪个分支处理\""
+  },
+  "cursor": {
+    "frontmatter": "name: code-logic\ndescription: >-\n  Explains how a named code path runs. Default is a summary layer; entry /\n  flow / per-branch lines only when the user asks to expand or commander\n  routes depth=完整层. Does not add logs or edit files.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: code-logic\ndescription: \"讲清一条代码路径怎么走：入口、流程、关键分支。触发：怎么走 / 从哪进 / 哪个分支处理\""
+  }
+}

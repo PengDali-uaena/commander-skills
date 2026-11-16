@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: reply-brief\ndescription: \"直接给短答：结论 + 支撑理由，不铺过程。触发：简短回答 / 是否题 / 根因+修复建议 / 有没有做 / 审计盘点 / 对不上产物表的其余问答兜底\""
+  },
+  "cursor": {
+    "frontmatter": "name: reply-brief\ndescription: >-\n  Answers in ordinary prose: integrate the point, drop anything the reader\n  does not need, and choose paragraphs, lists, or tables by what is easiest\n  to read. Does not force a fixed field template. Use when the user names\n  reply-brief, wants a direct answer, asks 为什么 / 怎么回事 / 能不能 /\n  够不够, or when no row of the product table matches and the message is not\n  a code change (catch-all).\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: reply-brief\ndescription: \"直接给短答：结论 + 支撑理由，不铺过程。触发：简短回答 / 是否题 / 根因+修复建议 / 有没有做 / 审计盘点 / 对不上产物表的其余问答兜底\""
+  }
+}

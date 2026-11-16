@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: commit-message\ndescription: \"写一行英文 commit message：type(module): description。触发：commit message / 提交说明\""
+  },
+  "cursor": {
+    "frontmatter": "name: commit-message\ndescription: >-\n  Writes one English commit subject from the relevant part of the\n  conversation, in the form type(module): description. Types are feat, fix,\n  refactor, opt, perf, docs, style, or chore, or a type the user already\n  used in the conversation. Use when the user names commit-message or asks\n  for that commit line. Does not read the workspace or diff to draft it.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commit-message\ndescription: \"写一行英文 commit message：type(module): description。触发：commit message / 提交说明\""
+  }
+}

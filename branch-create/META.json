@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: branch-create\ndescription: \"从 dev 或 release 开分支并 checkout：按 type/version_slug 起名、确认基线、检查工作区。触发：建分支 / 开分支 / 从 dev 拉分支 / 从 release 开 hotfix / 切个分支做 xxx\""
+  },
+  "cursor": {
+    "frontmatter": "name: branch-create\ndescription: >-\n  Creates and checks out one branch from origin/dev or origin/release, named\n  type/version_slug. Use when the user names branch-create or asks to open a\n  branch from dev or release, including a hotfix off release. Does not rename,\n  switch to an existing branch, create a worktree, commit, or push. Asks\n  before creating unless the user already said to create it directly.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: branch-create\ndescription: \"从 dev 或 release 开分支并 checkout：按 type/version_slug 起名、确认基线、检查工作区。触发：建分支 / 开分支 / 从 dev 拉分支 / 从 release 开 hotfix / 切个分支做 xxx\""
+  }
+}

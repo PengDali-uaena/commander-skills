@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: bugfix-logclean\ndescription: \"收掉本轮诊断日志：找到 Tag，删、降级或保留。触发：清理日志 / 收日志 / 删 probe\""
+  },
+  "cursor": {
+    "frontmatter": "name: bugfix-logclean\ndescription: >-\n  After a confirmed fix, finds this task's diagnostic tags from the message,\n  the conversation, or the uncommitted diff, then deletes one-shot logs or\n  drops them to debug. Use when the user names bugfix-logclean, says the fix\n  is confirmed and the probe logs can go, or asks to remove or downgrade\n  diagnostic logs. Edits the repo.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: bugfix-logclean\ndescription: \"收掉本轮诊断日志：找到 Tag，删、降级或保留。触发：清理日志 / 收日志 / 删 probe\""
+  }
+}

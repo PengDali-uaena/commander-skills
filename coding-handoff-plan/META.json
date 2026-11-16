@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: coding-handoff-plan\ndescription: \"把改代码的请求写成一份自包含 Handoff。触发：先别写代码 / 写交接稿 / 先规划\""
+  },
+  "cursor": {
+    "frontmatter": "name: coding-handoff-plan\ndescription: >-\n  Talks through a coding task and writes one self-contained Handoff\n  for an executor model. Use when the user asks to plan, 规划, 出方案,\n  交接稿, 先别写代码, or names coding-handoff-plan. Does not edit code.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: coding-handoff-plan\ndescription: \"把改代码的请求写成一份自包含 Handoff。触发：先别写代码 / 写交接稿 / 先规划\""
+  }
+}

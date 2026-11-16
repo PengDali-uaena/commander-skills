@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: explain\ndescription: \"拆开上一条回复，或按点名只展开其中一项。触发：看不懂 / 解释一下 / 展开第二点\""
+  },
+  "cursor": {
+    "frontmatter": "name: explain\ndescription: >-\n  Unpacks an unclear previous reply, or drills into one named item of a\n  previous summary. Use when the user names explain, says 看不懂 / 解释一下,\n  or points at one item (展开第二点 / 细说这个). Not for expanding a whole\n  plan, branch list, or code path — that stays on the original skill's\n  完整层. Does not start a new investigation or edit code.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: explain\ndescription: \"拆开上一条回复，或按点名只展开其中一项。触发：看不懂 / 解释一下 / 展开第二点\""
+  }
+}

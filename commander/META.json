@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: commander\ndescription: >-\n  Pi 每轮路由入口：按用户本条要的产物选出至多一个 personal skill（找文件、代码怎么走、\n  排查日志、research、短答、解释、交接、分支、commit message 等）。用户规则要求\n  commander-first 或用户点名 commander 时加载。判据以本文件产物表为准，不按关键词计分。"
+  },
+  "cursor": {
+    "frontmatter": "name: commander\ndescription: >-\n  Routes each turn to one personal skill by the artifact the user wants\n  (code path, diagnostic logs, log cleanup, research, a segmented answer,\n  unpacking a short reply, session handoff, coding handoff, branch merge,\n  opening a branch from dev or release, or a one-line commit message).\n  Clarifies intent (artifact, depth, evidence,\n  format) before routing. Use when User Rules require commander-first\n  or the user names commander. Read this file, pick one skill, Read its\n  SKILL.md, then act. Does not score keywords.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commander\ndescription: >-\n  按用户本条要的产物路由到至多一个 personal skill（找文件、代码怎么走、排查日志、\n  research、短答、解释、交接、分支、commit message 等）。User Rules 要求\n  commander-first 或用户点名 commander 时加载。判据以本文件产物表为准，不按关键词计分。"
+  }
+}

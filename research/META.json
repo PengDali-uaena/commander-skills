@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: research\ndescription: \"比较两种以上做法并推荐一个，只读不改。触发：哪个好 / 选哪个 / 两种做法 / 利弊\""
+  },
+  "cursor": {
+    "frontmatter": "name: research\ndescription: >-\n  Compares two or more approaches without editing code. Use when the user\n  asks 哪个好 / 选哪个 / 两种做法 / 利弊 / 方案对比, or names research. Not\n  for a single factual answer or a yes/no question. Default reply is the\n  summary layer; full 做法/收益/代价/风险 fields only when the user asks to\n  expand the whole comparison.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: research\ndescription: \"比较两种以上做法并推荐一个，只读不改。触发：哪个好 / 选哪个 / 两种做法 / 利弊\""
+  }
+}

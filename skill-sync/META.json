@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: skill-sync\ndescription: \"从 Cursor 搬回路由与输出判据，单向、记日志。触发：同步技能 / 从 cursor 学 / 对比两边\""
+  },
+  "cursor": {
+    "frontmatter": "name: skill-sync\ndescription: >-\n  Imports proven routing and output-contract improvements from the DSH copy\n  under ~/.dsh into Cursor, one direction per run, and logs what was taken\n  so the two sides do not ping-pong. Invoke with @skill-sync when the user\n  asks to 同步技能 / 从 dsh 学 / 对齐两边规则 / 更新 skill 集合 / 看看 dsh 怎么写.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: skill-sync\ndescription: \"从 Cursor 搬回路由与输出判据，单向、记日志。触发：同步技能 / 从 cursor 学 / 对比两边\""
+  }
+}

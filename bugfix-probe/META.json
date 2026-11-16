@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: bugfix-probe\ndescription: \"定位故障：先读代码，证据不足就加带 Tag 的诊断日志并停，等日志回来再定因。触发：定位 / 查一下为什么 / 加日志 / 筛选\""
+  },
+  "cursor": {
+    "frontmatter": "name: bugfix-probe\ndescription: >-\n  Locates a bug by reading the relevant code, adding debug logs, and stopping\n  with platform filter lines until the user returns logs. Android logcat OR is\n  `|` with no spaces; iOS and Web get one search string per line unless the\n  user says iOS regex is on. Use when the user wants diagnostic logs and\n  filters, pastes logs from a previous round, or names bugfix-probe. Does not\n  claim a root cause from code reading alone. Pair with bugfix-logclean after\n  the fix is confirmed.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: bugfix-probe\ndescription: \"定位故障：先读代码，证据不足就加带 Tag 的诊断日志并停，等日志回来再定因。触发：定位 / 查一下为什么 / 加日志 / 筛选\""
+  }
+}
