@@ -75,6 +75,9 @@ cd ~/.agents/skill-src && ./install.sh
 ./install.sh --version               # 打印 VERSION
 ```
 
+依赖：`bash` 与 `node`（>= 18）。支持 macOS、Linux、WSL；Windows 原生不行——`install.sh` 是 bash 脚本，
+侧目录也是 POSIX 路径，请在 WSL 或 Git Bash 里跑。
+
 不给 `--dirs` 时的落点规则：只探测到一个 agent 就写它自己的目录；Pi / Cursor / DSH 探到两个及以上就写共享的
 `~/.agents/skills`（避免同一个 skill 被两个目录各发现一次）；一个都没探到也回落到 `~/.agents/skills`。
 只要 `~/.claude` 存在就额外写 `~/.claude/skills`，因为 Claude Code 不读别的位置。
@@ -175,8 +178,8 @@ skill 只是提示词层：它不执行代码，也不承诺安全边界。引�
   所以只分发给 Pi，渲染 Cursor / DSH 时跳过。
 - 后两个 review skill 还没有英文正文：`--lang en` 会回落中文并打印回落清单；`--strict` 让回落直接报错。
 - `prd-to-task` 依赖 codegraph MCP，并会要 Figma node-id；没有这两个工具时它停下来问，不猜。
-- 卸载：`./install.sh --uninstall` 会清掉它写过的各侧 `SKILL.md` 与 `assets/`；本机自有文件（`learned.md`、
-  `tune-log.md`）保留，目录空了才删。除 skills 目录外只写过一个东西——`git config core.hooksPath .githooks`，
+- 卸载：`./install.sh --uninstall` 按各 skill 目录里 `.generated` 清单（`dist.mjs` 写的生成物列表）逐条删；
+  本机自有文件（`learned.md`、`tune-log.md`）不在清单里，所以会保留，目录空了才删。除 skills 目录外只写过一个东西——`git config core.hooksPath .githooks`，
   `--uninstall` 也会把它清掉。
 
 ## 目录约定

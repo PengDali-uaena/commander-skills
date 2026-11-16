@@ -84,6 +84,9 @@ sets `core.hooksPath`, and re-runs the drift check at the end. Useful flags:
 ./install.sh --version          # print VERSION
 ```
 
+Requirements: `bash` and `node` (>= 18). macOS, Linux and WSL are supported; native Windows is not —
+`install.sh` is a bash script and the side directories are POSIX paths. Run it from WSL or Git Bash.
+
 Where it writes when you pass no `--dirs`: a single detected agent gets its own directory; two or more
 of Pi / Cursor / DSH get the shared `~/.agents/skills` (so one skill is not discovered twice); nothing
 detected falls back to `~/.agents/skills`. `~/.claude/skills` is added whenever `~/.claude` exists,
@@ -198,8 +201,8 @@ inside a body is a bug.
   skills fell back. `--strict` turns the fallback into an error.
 - `prd-to-task` uses the codegraph MCP server and asks for Figma node IDs; without them it stops and asks
   instead of guessing.
-- Uninstall: `./install.sh --uninstall` removes the generated `SKILL.md` and `assets/` from every side it
-  wrote to; files a skill owns locally (`learned.md`, `tune-log.md`) stay, and a skill directory is only
+- Uninstall: `./install.sh --uninstall` deletes exactly what `.generated` (a per-skill list `dist.mjs`
+  writes) names on every side it installed to; files a skill owns locally (`learned.md`, `tune-log.md`) stay, and a skill directory is only
   removed when it is empty. The only thing written outside a skills directory is
   `git config core.hooksPath .githooks`, which `--uninstall` also clears.
 
