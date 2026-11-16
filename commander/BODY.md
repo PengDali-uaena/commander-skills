@@ -92,15 +92,6 @@
 | 评估某模块现有实现是否合理 / 有哪些缺陷（无 diff、未点名项目 review skill） | reply-brief（审计层） |
 | 其余问答（为什么 / 怎么回事 / 能不能 / 够不够），且对不上更具体的行 | reply-brief |
 
-**只在用户点名时用，不参与自动路由**（描述里写了触发词也不主动选；用户没点名时按上表照常走）：
-
-| 用户点名 | skill |
-|---|---|
-| `spec-features` / 列功能点 / 拆功能点 | spec-features |
-| 多模型并行 review / 对抗式审查 / 让几个模型各审一遍 | multi-model-review |
-| 收到审查意见要处理（贴了 review 评论、PR 意见，问怎么改） | receiving-code-review |
-| 要发起审查（功能做完、合并前，要求 review 交付物） | requesting-code-review |
-
 「展开代码」「展开分支」「展开方案」「细化」「下一层」→ 仍用**同一** skill 的**完整层**（见各 skill「递进」），不是 explain。只点名上轮总结里的某一项（一句、一个方案、一个分支）→ explain，只写该项，不重述其余，不升成完整层。
 
 「看假设表」「展开假设」走 bugfix-probe。二者都不是 explain。
