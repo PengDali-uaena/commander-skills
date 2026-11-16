@@ -36,6 +36,8 @@ SKILL_LANG=en node dist.mjs        # 同一个开关的环境变量写法
 
 切语言是覆盖同一个 `SKILL.md`，所以要用重渲染而不是两种语言并存——同一个 skills 目录里两种语言会同名冲突。
 
+`install.sh` 会把选定的语言写进 `.skill-lang`（已 gitignore），之后 `dist.mjs` 与预提交的漂移检查都沿用它，不用每次带 `--lang`。
+
 ## 目录
 
 ```

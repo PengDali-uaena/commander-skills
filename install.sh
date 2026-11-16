@@ -113,6 +113,8 @@ pick() {
   esac
 }
 
+printf '%s\n' "$LANG_SEL" > "$REPO/.skill-lang"
+
 run_dist
 
 if [ "$HOOKS" = "1" ]; then

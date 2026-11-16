@@ -41,6 +41,9 @@ SKILL_LANG=en node dist.mjs        # same via environment variable
 Switching language overwrites the same `SKILL.md`, so re-render instead of keeping both side by
 side — two languages in one skills directory collide by name.
 
+`install.sh` records the chosen language in `.skill-lang` (gitignored), so later `dist.mjs` runs and
+the pre-commit drift check keep using it without repeating `--lang`.
+
 ## Layout
 
 ```

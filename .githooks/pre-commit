@@ -12,7 +12,8 @@ if git grep -nIE "$pat" -- . ':(exclude).githooks' >/tmp/leak-scan.$$ 2>/dev/nul
 fi
 rm -f /tmp/leak-scan.$$
 
-node "$root/dist.mjs" --check || {
+lang=$(cat "$root/.skill-lang" 2>/dev/null || echo zh)
+node "$root/dist.mjs" --check --lang "$lang" || {
   echo "pre-commit: BODY.md / META.json 改了但没重跑 dist.mjs" >&2
   exit 1
 }

@@ -49,7 +49,9 @@ function collectAssets(root) {
 }
 const check = process.argv.includes("--check");
 const langArg = process.argv.indexOf("--lang");
-const lang = (langArg > -1 ? process.argv[langArg + 1] : process.env.SKILL_LANG || "zh").toLowerCase();
+const langFile = join(SRC, ".skill-lang");
+const langDefault = existsSync(langFile) ? readFileSync(langFile, "utf8").trim() : "zh";
+let lang = (langArg > -1 ? process.argv[langArg + 1] : process.env.SKILL_LANG || langDefault || "zh").toLowerCase();
 const strict = process.argv.includes("--strict");
 
 let written = 0;
