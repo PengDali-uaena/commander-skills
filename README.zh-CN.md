@@ -49,6 +49,8 @@ SKILL_LANG=en node dist.mjs        # 同一个开关的环境变量写法
 install.sh               # 一键安装：探测 agent、建目录、渲染、设 hook
 dist.mjs                 # 渲染器：BODY + META + assets → 各侧 skill 目录
 TOOL-MAP.md              # 各侧工具名与显式调用方式的对照，正文里不写某侧的写法
+TOOL-MAP.en.md           # 同一张表的英文版
+VERSION                  # 版本号，install.sh --version 读取
 ```
 
 `migrate.mjs`、`normalize.mjs`、`add-side.mjs` 是建立本仓时的一次性脚本，保留只为可追溯，日常不用。
@@ -69,6 +71,8 @@ cd ~/.agents/skill-src && ./install.sh
 ./install.sh --lang en               # 渲染英文
 ./install.sh --dirs agents,claude    # 只写这两处（pi / cursor / dsh / agents / claude）
 ./install.sh --no-hooks              # 不动 git 配置
+./install.sh --uninstall             # 撤掉生成物（本机自有文件不动）
+./install.sh --version               # 打印 VERSION
 ```
 
 不给 `--dirs` 时的落点规则：只探测到一个 agent 就写它自己的目录；Pi / Cursor / DSH 探到两个及以上就写共享的
@@ -119,7 +123,7 @@ node ~/.agents/skill-src/dist.mjs --check   # 生成物与 BODY.md 不一致时�
 |---|---|
 | 判据 / 流程 / 输出合同 | `<name>/BODY.md` |
 | 某一侧的 frontmatter（description 语言、`disable-model-invocation`） | `<name>/META.json` |
-| 工具名 / 显式调用方式 | `TOOL-MAP.md`（不写进 BODY） |
+| 工具名 / 显式调用方式 | `TOOL-MAP.md` / `TOOL-MAP.en.md`（不写进 BODY） |
 | 只有某一侧才有的 skill | 各自的 skills 目录，不进本仓 |
 
 `BODY.md` 里可写两个占位符，渲染时按侧替换：
@@ -171,8 +175,9 @@ skill 只是提示词层：它不执行代码，也不承诺安全边界。引�
   所以只分发给 Pi，渲染 Cursor / DSH 时跳过。
 - 后两个 review skill 还没有英文正文：`--lang en` 会回落中文并打印回落清单；`--strict` 让回落直接报错。
 - `prd-to-task` 依赖 codegraph MCP，并会要 Figma node-id；没有这两个工具时它停下来问，不猜。
-- 卸载：删掉 skills 目录里的 `SKILL.md` 与 `assets/`，或直接删 skill 目录。除 skills 目录外只写过一个东西——
-  `git config core.hooksPath .githooks`。
+- 卸载：`./install.sh --uninstall` 会清掉它写过的各侧 `SKILL.md` 与 `assets/`；本机自有文件（`learned.md`、
+  `tune-log.md`）保留，目录空了才删。除 skills 目录外只写过一个东西——`git config core.hooksPath .githooks`，
+  `--uninstall` 也会把它清掉。
 
 ## 目录约定
 

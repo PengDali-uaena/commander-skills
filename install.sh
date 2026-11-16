@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 一键把本仓渲染进各 agent 的 skills 目录。
+# 一键把本仓渲染进各 agent 的 skills 目录，或把装进去的东西撤掉。
 #
 # 用法：
 #   ./install.sh                 自动探测已装的 agent，逐个渲染（默认中文）
@@ -7,6 +7,8 @@
 #   ./install.sh --dirs agents,claude   只写这两处（可选：pi / cursor / dsh / agents / claude）
 #   ./install.sh --dry-run       只打印将要做什么
 #   ./install.sh --no-hooks      不设置 core.hooksPath
+#   ./install.sh --uninstall     删掉装进去的 SKILL.md 与 assets/，本机自有文件不动
+#   ./install.sh --version       打印版本
 #
 # 侧与目录的对应：
 #   agents -> ~/.agents/skills   Pi / Cursor / Codex 共用，推荐只装这一份
@@ -18,11 +20,13 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")" && pwd)"
+VERSION="$(cat "$REPO/VERSION" 2>/dev/null || echo dev)"
 SIDE_NAMES="pi cursor dsh agents claude"
 LANG_SEL="${SKILL_LANG:-zh}"
 DIRS=""
 DRY_RUN=""
 HOOKS=1
+UNINSTALL=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -32,7 +36,9 @@ while [ $# -gt 0 ]; do
     --dirs=*) DIRS="${1#*=}"; shift ;;
     --dry-run|-n) DRY_RUN=1; shift ;;
     --no-hooks) HOOKS=0; shift ;;
-    -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --uninstall) UNINSTALL=1; shift ;;
+    --version) echo "commander-skills $VERSION"; exit 0 ;;
+    -h|--help) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "未知参数：$1" >&2; exit 2 ;;
   esac
 done
@@ -55,29 +61,96 @@ if [ -z "$DIRS" ]; then
   has_claude=""
   if [ -d "$HOME/.claude" ]; then has_claude="claude"; fi
 
-  own=$(printf '%s\n' $detected | grep -c . || true)
-  if [ -z "$detected" ]; then
-    # 什么都没装：按推荐布局写共享目录
-    DIRS="agents"
-  elif [ "$own" -ge 2 ]; then
-    # 装了多个：写共享目录，避免同一个 skill 被两个目录各发现一次
-    DIRS="agents"
+  # 卸载时还要覆盖上次装过的侧，否则残留找不到
+  if [ "$UNINSTALL" = "1" ] && [ -f "$REPO/.installed" ]; then
+    DIRS="$(cat "$REPO/.installed")"
   else
-    DIRS="$(echo $detected)"
+    own=$(printf '%s\n' $detected | grep -c . || true)
+    if [ -z "$detected" ]; then
+      # 什么都没装：按推荐布局写共享目录
+      DIRS="agents"
+    elif [ "$own" -ge 2 ]; then
+      # 装了多个：写共享目录，避免同一个 skill 被两个目录各发现一次
+      DIRS="agents"
+    else
+      DIRS="$(echo $detected)"
+    fi
+    if [ -n "$has_claude" ]; then DIRS="$DIRS claude"; fi
+    DIRS="$(echo $DIRS | tr ' ' ',')"
   fi
-  if [ -n "$has_claude" ]; then DIRS="$DIRS claude"; fi
-  DIRS="$(echo $DIRS | tr ' ' ',')"
 fi
-
-echo "仓库：$REPO"
-echo "语言：$LANG_SEL"
-echo "目标：$DIRS"
 
 for s in $(echo "$DIRS" | tr ',' ' '); do
   case " $SIDE_NAMES " in
     *" $s "*) ;;
     *) echo "未知目标：${s}（可选 ${SIDE_NAMES}）" >&2; exit 2 ;;
   esac
+done
+
+if [ "$UNINSTALL" = "1" ]; then
+  echo "版本：$VERSION"
+  echo "仓库：$REPO"
+  echo "目标：$DIRS"
+  removed=0
+  kept=0
+  for s in $(echo "$DIRS" | tr ',' ' '); do
+    target="$(dir_for "$s")"
+    [ -d "$target" ] || continue
+    for d in "$REPO"/*/; do
+      name="$(basename "$d")"
+      [ -f "$d/BODY.md" ] || continue
+      file="$target/$name/SKILL.md"
+      man="$target/$name/.generated"
+      # 只删 dist.mjs 写下的东西（.generated 清单），本机自有文件与别人同名 skill 都不动
+      if [ -f "$man" ]; then
+        if [ -n "$DRY_RUN" ]; then
+          echo "  将按 .generated 清理 ${target}/${name}（$(grep -c . "$man") 个文件）"
+          continue
+        fi
+        while IFS= read -r rel; do
+          [ -n "$rel" ] && rm -f "$target/$name/$rel"
+        done < "$man"
+        rm -f "$man"
+        find "$target/$name" -mindepth 1 -type d -empty -delete 2>/dev/null || true
+        if rmdir "$target/$name" 2>/dev/null; then
+          removed=$((removed + 1))
+        else
+          echo "  保留 ${target}/${name}（里面还有本机自有文件）"
+          kept=$((kept + 1))
+        fi
+      elif [ -f "$file" ] && grep -q "GENERATED" "$file"; then
+        # 老版本没写清单：退回到「按标记删 SKILL.md + assets/」
+        if [ -n "$DRY_RUN" ]; then
+          echo "  将删除 ${target}/${name}/SKILL.md"
+          continue
+        fi
+        rm -f "$file"
+        rm -rf "$target/$name/assets"
+        if rmdir "$target/$name" 2>/dev/null; then
+          removed=$((removed + 1))
+        else
+          echo "  保留 ${target}/${name}（里面还有本机自有文件）"
+          kept=$((kept + 1))
+        fi
+      fi
+    done
+  done
+  if [ -n "$DRY_RUN" ]; then
+    echo "（dry-run，未删除）"
+    exit 0
+  fi
+  git -C "$REPO" config --unset core.hooksPath 2>/dev/null || true
+  rm -f "$REPO/.installed"
+  echo "已清理 ${removed} 个 skill 目录；${kept} 个因含本机文件被保留。"
+  exit 0
+fi
+
+echo "版本：$VERSION"
+echo "仓库：$REPO"
+echo "语言：$LANG_SEL"
+echo "目标：$DIRS"
+
+for s in $(echo "$DIRS" | tr ',' ' '); do
   target="$(dir_for "$s")"
   if [ -n "$DRY_RUN" ]; then
     echo "  ${s} -> ${target}（将创建 $(ls -d "$REPO"/*/ | wc -l | tr -d ' ') 个 skill 目录）"
@@ -114,6 +187,7 @@ pick() {
 }
 
 printf '%s\n' "$LANG_SEL" > "$REPO/.skill-lang"
+printf '%s\n' "$DIRS" > "$REPO/.installed"
 
 run_dist
 

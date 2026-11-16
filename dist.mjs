@@ -154,6 +154,20 @@ for (const name of readdirSync(SRC)) {
         written++;
       }
     }
+
+    // 生成物清单：--uninstall 照着它删，本机自有文件才不会跟着走。
+    const manifest = join(outRoot, name, ".generated");
+    const wanted = ["SKILL.md", ...assets.map((a) => a.rel)].sort().join("\n") + "\n";
+    const listed = existsSync(manifest) ? readFileSync(manifest, "utf8") : null;
+    if (listed !== wanted) {
+      if (check) {
+        console.error(`drift: ${manifest}`);
+        drifted++;
+      } else {
+        writeFileSync(manifest, wanted);
+        written++;
+      }
+    }
   }
 }
 

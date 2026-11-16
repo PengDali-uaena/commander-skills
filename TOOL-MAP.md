@@ -1,7 +1,7 @@
 # 工具与调用方式对照（Pi / DSH / Cursor / Codex / Claude Code）
 
-公共 skill 的正文只有一份（`~/.agents/skill-src/<name>/BODY.md`）。各家允许出现的差异只有本表这两类；
-正文里不写某一侧的路径或工具名，需要时用 `{{SKILL_DIR}}` / `{{SKILLS_ROOT}}` 占位，由 `dist.mjs` 按侧替换。
+公共 skill 的正文只有一份（源仓里的 `<name>/BODY.md`；正文里用 `{{SRC_ROOT}}` 指回源仓，克隆在哪都对）。各家允许出现的差异只有本表这两类；
+正文里不写某一侧的路径或工具名，需要时用 `{{SKILL_DIR}}` / `{{SKILLS_ROOT}}` / `{{SRC_ROOT}}` 占位，由 `dist.mjs` 按侧替换。
 
 | 能力 | Pi | DSH | Cursor | Codex | Claude Code |
 |---|---|---|---|---|---|

@@ -55,6 +55,8 @@ the pre-commit drift check keep using it without repeating `--lang`.
 install.sh               # one-shot installer: detects agents, creates dirs, renders, sets the hook
 dist.mjs                 # renderer: BODY + META + assets -> per-agent skill directory
 TOOL-MAP.md              # tool names and invocation syntax per agent; never inlined into a body
+TOOL-MAP.en.md           # English version of the same table
+VERSION                  # release number, printed by install.sh --version
 ```
 
 `migrate.mjs`, `normalize.mjs` and `add-side.mjs` are one-off scripts from building this repo. They
@@ -78,6 +80,8 @@ sets `core.hooksPath`, and re-runs the drift check at the end. Useful flags:
 ./install.sh --lang en          # render English
 ./install.sh --dirs agents,claude   # write only these (pi / cursor / dsh / agents / claude)
 ./install.sh --no-hooks         # leave git config alone
+./install.sh --uninstall        # remove the generated files again (local skill files stay)
+./install.sh --version          # print VERSION
 ```
 
 Where it writes when you pass no `--dirs`: a single detected agent gets its own directory; two or more
@@ -134,7 +138,7 @@ node ~/.agents/skill-src/dist.mjs --check   # exits non-zero when output drifted
 |---|---|
 | Criteria, flow, output contract | `<name>/BODY.md` |
 | One agent's frontmatter (description language, `disable-model-invocation`) | `<name>/META.json` |
-| Tool names and invocation syntax | `TOOL-MAP.md` (never in a body) |
+| Tool names and invocation syntax | `TOOL-MAP.md` / `TOOL-MAP.en.md` (never in a body) |
 | A skill only one agent has | that agent's skills directory, not this repo |
 
 Two placeholders may appear in a body and are replaced per agent at render time:
@@ -194,8 +198,10 @@ inside a body is a bug.
   skills fell back. `--strict` turns the fallback into an error.
 - `prd-to-task` uses the codegraph MCP server and asks for Figma node IDs; without them it stops and asks
   instead of guessing.
-- Uninstall: delete the generated `SKILL.md` / `assets/` from the skills directories, or remove the skill
-  folders. The only thing written outside a skills directory is `git config core.hooksPath .githooks`.
+- Uninstall: `./install.sh --uninstall` removes the generated `SKILL.md` and `assets/` from every side it
+  wrote to; files a skill owns locally (`learned.md`, `tune-log.md`) stay, and a skill directory is only
+  removed when it is empty. The only thing written outside a skills directory is
+  `git config core.hooksPath .githooks`, which `--uninstall` also clears.
 
 ## Layout notes
 
