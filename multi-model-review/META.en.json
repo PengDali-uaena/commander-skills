@@ -1,5 +1,11 @@
 {
   "pi": {
     "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless pi -p reviewers over the same diff, then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
+  },
+  "agents": {
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless pi -p reviewers over the same diff, then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Run parallel headless pi -p reviewers over the same diff, then synthesize consensus and lone-model findings. Use only when the user explicitly asks for a multi-model or adversarial review.\ndisable-model-invocation: true"
   }
 }

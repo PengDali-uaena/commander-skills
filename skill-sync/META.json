@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: skill-sync\ndescription: \"从 Cursor 搬回路由与输出判据，单向、记日志。触发：同步技能 / 从 cursor 学 / 对比两边\""
+  },
+  "agents": {
+    "frontmatter": "name: skill-sync\ndescription: \"从 Cursor 搬回路由与输出判据，单向、记日志。触发：同步技能 / 从 cursor 学 / 对比两边\""
+  },
+  "claude": {
+    "frontmatter": "name: skill-sync\ndescription: \"从 Cursor 搬回路由与输出判据，单向、记日志。触发：同步技能 / 从 cursor 学 / 对比两边\""
   }
 }

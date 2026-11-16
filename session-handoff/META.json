@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: session-handoff\ndescription: \"把这段对话无损交给另一个 agent：目标、事实、决定、未决、原文、下一步。触发：交接对话 / 换个会话继续\""
+  },
+  "agents": {
+    "frontmatter": "name: session-handoff\ndescription: \"把这段对话无损交给另一个 agent：目标、事实、决定、未决、原文、下一步。触发：交接对话 / 换个会话继续\""
+  },
+  "claude": {
+    "frontmatter": "name: session-handoff\ndescription: \"把这段对话无损交给另一个 agent：目标、事实、决定、未决、原文、下一步。触发：交接对话 / 换个会话继续\""
   }
 }

@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: reply-brief\ndescription: \"直接给短答：结论 + 支撑理由，不铺过程。触发：简短回答 / 是否题 / 根因+修复建议 / 有没有做 / 审计盘点 / 对不上产物表的其余问答兜底\""
+  },
+  "agents": {
+    "frontmatter": "name: reply-brief\ndescription: \"直接给短答：结论 + 支撑理由，不铺过程。触发：简短回答 / 是否题 / 根因+修复建议 / 有没有做 / 审计盘点 / 对不上产物表的其余问答兜底\""
+  },
+  "claude": {
+    "frontmatter": "name: reply-brief\ndescription: \"直接给短答：结论 + 支撑理由，不铺过程。触发：简短回答 / 是否题 / 根因+修复建议 / 有没有做 / 审计盘点 / 对不上产物表的其余问答兜底\""
   }
 }

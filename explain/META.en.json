@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: explain\ndescription: >-\n  Unpack the previous reply, or expand only the item the user names, without new investigation. Use when the previous reply was unclear or the user points at one item in it."
+  },
+  "agents": {
+    "frontmatter": "name: explain\ndescription: >-\n  Unpack the previous reply, or expand only the item the user names, without new investigation. Use when the previous reply was unclear or the user points at one item in it.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: explain\ndescription: >-\n  Unpack the previous reply, or expand only the item the user names, without new investigation. Use when the previous reply was unclear or the user points at one item in it.\ndisable-model-invocation: true"
   }
 }

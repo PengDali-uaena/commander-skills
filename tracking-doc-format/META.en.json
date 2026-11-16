@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: tracking-doc-format\ndescription: >-\n  Turn an analytics-events .csv into readable text segmented by event key (name, timing, params, report point), checked one event at a time. Use when asked to format an events doc or to verify implemented events."
+  },
+  "agents": {
+    "frontmatter": "name: tracking-doc-format\ndescription: >-\n  Turn an analytics-events .csv into readable text segmented by event key (name, timing, params, report point), checked one event at a time. Use when asked to format an events doc or to verify implemented events."
+  },
+  "claude": {
+    "frontmatter": "name: tracking-doc-format\ndescription: >-\n  Turn an analytics-events .csv into readable text segmented by event key (name, timing, params, report point), checked one event at a time. Use when asked to format an events doc or to verify implemented events."
   }
 }

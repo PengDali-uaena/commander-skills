@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: coding-handoff-plan\ndescription: \"把改代码的请求写成一份自包含 Handoff。触发：先别写代码 / 写交接稿 / 先规划\""
+  },
+  "agents": {
+    "frontmatter": "name: coding-handoff-plan\ndescription: \"把改代码的请求写成一份自包含 Handoff。触发：先别写代码 / 写交接稿 / 先规划\""
+  },
+  "claude": {
+    "frontmatter": "name: coding-handoff-plan\ndescription: \"把改代码的请求写成一份自包含 Handoff。触发：先别写代码 / 写交接稿 / 先规划\""
   }
 }

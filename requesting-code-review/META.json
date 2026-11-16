@@ -1,5 +1,11 @@
 {
   "pi": {
     "frontmatter": "name: requesting-code-review\ndescription: >-\n  Use when completing tasks, implementing major features, or before merging to\n  verify work meets requirements — dispatch a focused reviewer with SHAs and plan\n  context (not full chat history).\ndisable-model-invocation: true"
+  },
+  "agents": {
+    "frontmatter": "name: requesting-code-review\ndescription: >-\n  Use when completing tasks, implementing major features, or before merging to\n  verify work meets requirements — dispatch a focused reviewer with SHAs and plan\n  context (not full chat history).\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: requesting-code-review\ndescription: >-\n  Use when completing tasks, implementing major features, or before merging to\n  verify work meets requirements — dispatch a focused reviewer with SHAs and plan\n  context (not full chat history).\ndisable-model-invocation: true"
   }
 }

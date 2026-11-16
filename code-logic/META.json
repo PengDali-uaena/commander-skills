@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: code-logic\ndescription: \"讲清一条代码路径怎么走：入口、流程、关键分支。触发：怎么走 / 从哪进 / 哪个分支处理\""
+  },
+  "agents": {
+    "frontmatter": "name: code-logic\ndescription: \"讲清一条代码路径怎么走：入口、流程、关键分支。触发：怎么走 / 从哪进 / 哪个分支处理\""
+  },
+  "claude": {
+    "frontmatter": "name: code-logic\ndescription: \"讲清一条代码路径怎么走：入口、流程、关键分支。触发：怎么走 / 从哪进 / 哪个分支处理\""
   }
 }

@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: commit-message\ndescription: \"写一行英文 commit message：type(module): description。触发：commit message / 提交说明\""
+  },
+  "agents": {
+    "frontmatter": "name: commit-message\ndescription: \"写一行英文 commit message：type(module): description。触发：commit message / 提交说明\""
+  },
+  "claude": {
+    "frontmatter": "name: commit-message\ndescription: \"写一行英文 commit message：type(module): description。触发：commit message / 提交说明\""
   }
 }

@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
+  },
+  "agents": {
+    "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
+  },
+  "claude": {
+    "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
   }
 }

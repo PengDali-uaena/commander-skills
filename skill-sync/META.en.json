@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: skill-sync\ndescription: >-\n  Carry proven criteria from the other agent side into this one, one direction per turn, with a log entry. Use when asked to sync or compare skills across sides."
+  },
+  "agents": {
+    "frontmatter": "name: skill-sync\ndescription: >-\n  Carry proven criteria from the other agent side into this one, one direction per turn, with a log entry. Use when asked to sync or compare skills across sides.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: skill-sync\ndescription: >-\n  Carry proven criteria from the other agent side into this one, one direction per turn, with a log entry. Use when asked to sync or compare skills across sides.\ndisable-model-invocation: true"
   }
 }

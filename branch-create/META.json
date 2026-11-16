@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: branch-create\ndescription: \"从 dev 或 release 开分支并 checkout：按 type/version_slug 起名、确认基线、检查工作区。触发：建分支 / 开分支 / 从 dev 拉分支 / 从 release 开 hotfix / 切个分支做 xxx\""
+  },
+  "agents": {
+    "frontmatter": "name: branch-create\ndescription: \"从 dev 或 release 开分支并 checkout：按 type/version_slug 起名、确认基线、检查工作区。触发：建分支 / 开分支 / 从 dev 拉分支 / 从 release 开 hotfix / 切个分支做 xxx\""
+  },
+  "claude": {
+    "frontmatter": "name: branch-create\ndescription: \"从 dev 或 release 开分支并 checkout：按 type/version_slug 起名、确认基线、检查工作区。触发：建分支 / 开分支 / 从 dev 拉分支 / 从 release 开 hotfix / 切个分支做 xxx\""
   }
 }

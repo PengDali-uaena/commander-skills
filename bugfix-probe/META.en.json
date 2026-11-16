@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: bugfix-probe\ndescription: >-\n  Localize a failure: read code against hypotheses, add tagged diagnostic logs when evidence is thin, hand over platform filters (logcat / iOS Console / Web), and name the root cause only once logs point at a line. Use when the user asks to localize, debug or add logs, or pastes logs back."
+  },
+  "agents": {
+    "frontmatter": "name: bugfix-probe\ndescription: >-\n  Localize a failure: read code against hypotheses, add tagged diagnostic logs when evidence is thin, hand over platform filters (logcat / iOS Console / Web), and name the root cause only once logs point at a line. Use when the user asks to localize, debug or add logs, or pastes logs back.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: bugfix-probe\ndescription: >-\n  Localize a failure: read code against hypotheses, add tagged diagnostic logs when evidence is thin, hand over platform filters (logcat / iOS Console / Web), and name the root cause only once logs point at a line. Use when the user asks to localize, debug or add logs, or pastes logs back.\ndisable-model-invocation: true"
   }
 }

@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
+  },
+  "agents": {
+    "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
+  },
+  "claude": {
+    "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
   }
 }

@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: session-handoff\ndescription: >-\n  Hand this conversation to another agent as a lossless brief: goal, facts, decisions, open items, verbatim quotes, next step. Use when the conversation is handed to another session."
+  },
+  "agents": {
+    "frontmatter": "name: session-handoff\ndescription: >-\n  Hand this conversation to another agent as a lossless brief: goal, facts, decisions, open items, verbatim quotes, next step. Use when the conversation is handed to another session.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: session-handoff\ndescription: >-\n  Hand this conversation to another agent as a lossless brief: goal, facts, decisions, open items, verbatim quotes, next step. Use when the conversation is handed to another session.\ndisable-model-invocation: true"
   }
 }

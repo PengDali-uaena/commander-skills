@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
+  },
+  "agents": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
+  },
+  "claude": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
   }
 }

@@ -44,10 +44,14 @@ side — two languages in one skills directory collide by name.
 ## Layout
 
 ```
-<name>/BODY.md     # the text: criteria, flow, output contract — the only place to edit
-<name>/META.json   # per-agent frontmatter (name / description / flags)
-dist.mjs           # renderer: BODY.md + META.json -> per-agent SKILL.md
-TOOL-MAP.md        # tool names and invocation syntax per agent; never inlined into a body
+<name>/BODY.md           # the text: criteria, flow, output contract — the only place to edit
+<name>/BODY.<lang>.md    # localized body (e.g. BODY.en.md), optional
+<name>/META.json         # per-agent frontmatter
+<name>/META.<lang>.json  # localized frontmatter, optional
+<name>/assets/**         # scripts and references, synced next to SKILL.md verbatim
+install.sh               # one-shot installer: detects agents, creates dirs, renders, sets the hook
+dist.mjs                 # renderer: BODY + META + assets -> per-agent skill directory
+TOOL-MAP.md              # tool names and invocation syntax per agent; never inlined into a body
 ```
 
 `migrate.mjs`, `normalize.mjs` and `add-side.mjs` are one-off scripts from building this repo. They
@@ -60,7 +64,29 @@ bodies into your agent's skills directory.
 
 ```bash
 git clone <repo-url> ~/.agents/skill-src
-node ~/.agents/skill-src/dist.mjs
+cd ~/.agents/skill-src && ./install.sh
+```
+
+`install.sh` detects which agents are installed, creates the skill directories it needs, renders them,
+sets `core.hooksPath`, and re-runs the drift check at the end. Useful flags:
+
+```bash
+./install.sh --dry-run          # print what it would do
+./install.sh --lang en          # render English
+./install.sh --dirs agents,claude   # write only these (pi / cursor / dsh / agents / claude)
+./install.sh --no-hooks         # leave git config alone
+```
+
+Where it writes when you pass no `--dirs`: a single detected agent gets its own directory; two or more
+of Pi / Cursor / DSH get the shared `~/.agents/skills` (so one skill is not discovered twice); nothing
+detected falls back to `~/.agents/skills`. `~/.claude/skills` is added whenever `~/.claude` exists,
+because Claude Code reads no other location.
+
+Rendering by hand works too — `dist.mjs` skips any target directory that does not exist:
+
+```bash
+node dist.mjs --lang en
+node dist.mjs --check
 ```
 
 By default it renders to the three locations below and skips any that do not exist. Override with
@@ -68,6 +94,8 @@ environment variables:
 
 | Variable | Default output directory |
 |---|---|
+| `AGENTS_SKILLS_DIR` | `~/.agents/skills` (shared by Pi, Cursor and Codex) |
+| `CLAUDE_SKILLS_DIR` | `~/.claude/skills` |
 | `PI_SKILLS_DIR` | `~/.pi/agent/skills` |
 | `DSH_SKILLS_DIR` | `~/.dsh/skills` |
 | `CURSOR_SKILLS_DIR` | `~/.cursor/skills` |
@@ -76,9 +104,9 @@ environment variables:
 Then let the agent rescan: `/reload` in Pi (also applies after editing a skill), or start a new
 session. `/skill:<name>` loads a named skill directly.
 
-Pi, Cursor and Codex all read `~/.agents/skills`, so point every variable at that one directory if
-you want a single copy (`PI_SKILLS_DIR=~/.agents/skills CURSOR_SKILLS_DIR=~/.agents/skills ...`).
-Claude Code only reads `~/.claude/skills`, so supporting it means rendering a second copy.
+Pi, Cursor and Codex all read `~/.agents/skills`, so `--dirs agents` is enough for all three.
+Codex has no separate skills directory of its own; it also accepts a project `.agents/skills`.
+Claude Code only reads `~/.claude/skills`, so add `claude` when you want it too.
 
 Installing a single agent is fine too — point the unused variables at a directory that does not
 exist and those sides are skipped:
@@ -111,9 +139,9 @@ Two placeholders may appear in a body and are replaced per agent at render time:
 - `{{SKILL_DIR}}` -> this skill's directory on that agent, e.g. `~/.pi/agent/skills/reply-brief/`
 - `{{SKILLS_ROOT}}` -> that agent's skills root, e.g. `~/.pi/agent/skills/`
 
-Editing a rendered `SKILL.md` is a no-op: the next `dist.mjs` run overwrites it and `--check` reports
-drift. Files other than `SKILL.md` in an agent's skill directory (scripts, `references/`) are owned by
-that agent; to share them across agents, send a PR here.
+Editing a rendered `SKILL.md` or a file under `assets/` is a no-op: the next `dist.mjs` run overwrites
+it and `--check` reports drift. Anything else in an agent's skill directory (`learned.md`,
+`tune-log.md`, local notes) is yours and is never touched.
 
 ## Before you commit
 

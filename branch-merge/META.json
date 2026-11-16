@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: branch-merge\ndescription: \"合并分支：先讲双方意图与合并意见，确认后才动文件。触发：合并分支 / 解冲突 / merge\""
+  },
+  "agents": {
+    "frontmatter": "name: branch-merge\ndescription: \"合并分支：先讲双方意图与合并意见，确认后才动文件。触发：合并分支 / 解冲突 / merge\""
+  },
+  "claude": {
+    "frontmatter": "name: branch-merge\ndescription: \"合并分支：先讲双方意图与合并意见，确认后才动文件。触发：合并分支 / 解冲突 / merge\""
   }
 }

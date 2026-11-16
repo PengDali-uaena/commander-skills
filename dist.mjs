@@ -1,15 +1,18 @@
 #!/usr/bin/env node
-// 把 <本仓>/<name>/BODY[.<lang>].md + META[.<lang>].json 分发成 Pi / DSH / Cursor 三侧的 SKILL.md。
+// 把 <本仓>/<name>/BODY[.<lang>].md + META[.<lang>].json 分发成各 agent 侧的 SKILL.md，
+// 并把 <name>/assets/** 原样同步过去。
 // 用法：
-//   node dist.mjs                    写入三侧（目标目录不存在就跳过），默认中文
+//   node dist.mjs                    写入全部已存在的目标目录，默认中文
 //   node dist.mjs --lang en          渲染英文版（缺 BODY.en.md 的 skill 回落中文并提示）
 //   node dist.mjs --lang en --strict 缺英文版就非 0 退出，不回落
 //   node dist.mjs --check            只检查，生成物与主体不一致就非 0 退出
-//   PI_SKILLS_DIR / DSH_SKILLS_DIR / CURSOR_SKILLS_DIR 覆盖默认的输出目录。
-// 三侧目录里只有 SKILL.md 是生成物，其余附件（脚本、references/）由各侧自己维护。
+//   目标目录用环境变量覆盖：PI_SKILLS_DIR / DSH_SKILLS_DIR / CURSOR_SKILLS_DIR /
+//   AGENTS_SKILLS_DIR / CLAUDE_SKILLS_DIR。目标目录不存在就跳过；
+//   ~/.agents/skills 是 Pi / Cursor / Codex 共用的那个。
+// 侧里只有 SKILL.md 和 assets/ 是生成物，其余文件（learned.md、tune-log.md 等）本机自己维护。
 
-import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, mkdirSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { homedir } from "node:os";
 
 const SRC = process.env.SKILL_SRC || join(homedir(), ".agents", "skill-src");
@@ -23,8 +26,27 @@ const SIDES = {
   pi: side("PI_SKILLS_DIR", ".pi", "agent", "skills"),
   dsh: side("DSH_SKILLS_DIR", ".dsh", "skills"),
   cursor: side("CURSOR_SKILLS_DIR", ".cursor", "skills"),
+  agents: side("AGENTS_SKILLS_DIR", ".agents", "skills"),
+  claude: side("CLAUDE_SKILLS_DIR", ".claude", "skills"),
 };
 const MARK = "<!-- GENERATED：本文件由 ~/.agents/skill-src/dist.mjs 生成，改 BODY.md 后重跑；手改会被覆盖 -->";
+
+// <name>/assets/** 里的附件（脚本、references/）同样分发，路径原样保留，只去掉 assets/ 这一层。
+function collectAssets(root) {
+  if (!existsSync(root)) return [];
+  const out = [];
+  const walk = (dir, prefix) => {
+    for (const entry of readdirSync(dir)) {
+      if (entry.startsWith(".")) continue;
+      const full = join(dir, entry);
+      const rel = prefix ? prefix + "/" + entry : entry;
+      if (statSync(full).isDirectory()) walk(full, rel);
+      else out.push({ rel, content: readFileSync(full, "utf8") });
+    }
+  };
+  walk(root, "");
+  return out;
+}
 const check = process.argv.includes("--check");
 const langArg = process.argv.indexOf("--lang");
 const lang = (langArg > -1 ? process.argv[langArg + 1] : process.env.SKILL_LANG || "zh").toLowerCase();
@@ -55,6 +77,7 @@ for (const name of readdirSync(SRC)) {
 
   const body = readFileSync(bodyPath, "utf8").replace(/\s+$/, "");
   const meta = JSON.parse(readFileSync(metaPath, "utf8"));
+  const assets = collectAssets(join(dir, "assets"));
 
   for (const [side, { dir: outRoot, root }] of Object.entries(SIDES)) {
     const front = meta[side]?.frontmatter;
@@ -69,14 +92,28 @@ for (const name of readdirSync(SRC)) {
       .join(root)}\n`;
 
     const current = existsSync(outPath) ? readFileSync(outPath, "utf8") : null;
-    if (current === rendered) continue;
+    if (current !== rendered) {
+      if (check) {
+        console.error(`drift: ${outPath}`);
+        drifted++;
+      } else {
+        writeFileSync(outPath, rendered);
+        written++;
+      }
+    }
 
-    if (check) {
-      console.error(`drift: ${outPath}`);
-      drifted++;
-    } else {
-      writeFileSync(outPath, rendered);
-      written++;
+    for (const { rel, content } of assets) {
+      const target = join(outRoot, name, rel);
+      const existing = existsSync(target) ? readFileSync(target, "utf8") : null;
+      if (existing === content) continue;
+      if (check) {
+        console.error(`drift: ${target}`);
+        drifted++;
+      } else {
+        mkdirSync(dirname(target), { recursive: true });
+        writeFileSync(target, content);
+        written++;
+      }
     }
   }
 }

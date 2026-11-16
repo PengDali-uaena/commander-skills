@@ -39,10 +39,14 @@ SKILL_LANG=en node dist.mjs        # 同一个开关的环境变量写法
 ## 目录
 
 ```
-<name>/BODY.md     # 正文（判据、流程、输出合同），唯一要改的地方
-<name>/META.json   # 每一侧的 frontmatter（name / description / 开关）
-dist.mjs           # 渲染器：BODY.md + META.json → 各侧 SKILL.md
-TOOL-MAP.md        # 各侧工具名与显式调用方式的对照，正文里不写某侧的写法
+<name>/BODY.md           # 正文（判据、流程、输出合同），唯一要改的地方
+<name>/BODY.<lang>.md    # 译文正文，可选（如 BODY.en.md）
+<name>/META.json         # 每一侧的 frontmatter（name / description / 开关）
+<name>/META.<lang>.json  # 译文 frontmatter，可选
+<name>/assets/**         # 脚本与 references，原样同步到 SKILL.md 旁边
+install.sh               # 一键安装：探测 agent、建目录、渲染、设 hook
+dist.mjs                 # 渲染器：BODY + META + assets → 各侧 skill 目录
+TOOL-MAP.md              # 各侧工具名与显式调用方式的对照，正文里不写某侧的写法
 ```
 
 `migrate.mjs`、`normalize.mjs`、`add-side.mjs` 是建立本仓时的一次性脚本，保留只为可追溯，日常不用。
@@ -53,13 +57,33 @@ TOOL-MAP.md        # 各侧工具名与显式调用方式的对照，正文里�
 
 ```bash
 git clone <repo-url> ~/.agents/skill-src
-node ~/.agents/skill-src/dist.mjs
+cd ~/.agents/skill-src && ./install.sh
 ```
 
-默认输出三侧，目标目录不存在就跳过；想换位置用环境变量覆盖：
+`install.sh` 会探测本机装了哪些 agent、建出需要的 skill 目录、渲染、设 `core.hooksPath`，最后再跑一次漂移检查。常用参数：
+
+```bash
+./install.sh --dry-run               # 只打印将要做什么
+./install.sh --lang en               # 渲染英文
+./install.sh --dirs agents,claude    # 只写这两处（pi / cursor / dsh / agents / claude）
+./install.sh --no-hooks              # 不动 git 配置
+```
+
+不给 `--dirs` 时的落点规则：只探测到一个 agent 就写它自己的目录；Pi / Cursor / DSH 探到两个及以上就写共享的
+`~/.agents/skills`（避免同一个 skill 被两个目录各发现一次）；一个都没探到也回落到 `~/.agents/skills`。
+只要 `~/.claude` 存在就额外写 `~/.claude/skills`，因为 Claude Code 不读别的位置。
+
+也可以手工渲染，`dist.mjs` 会跳过不存在的目标目录：
+
+```bash
+node dist.mjs --lang en
+node dist.mjs --check
+```
 
 | 环境变量 | 默认输出目录 |
 |---|---|
+| `AGENTS_SKILLS_DIR` | `~/.agents/skills`（Pi / Cursor / Codex 共用） |
+| `CLAUDE_SKILLS_DIR` | `~/.claude/skills` |
 | `PI_SKILLS_DIR` | `~/.pi/agent/skills` |
 | `DSH_SKILLS_DIR` | `~/.dsh/skills` |
 | `CURSOR_SKILLS_DIR` | `~/.cursor/skills` |
@@ -68,8 +92,8 @@ node ~/.agents/skill-src/dist.mjs
 渲染完让 agent 重新扫描：Pi 里 `/reload`（改 skill 后同样适用），或重开一次会话。
 `/skill:<name>` 可以直接点名加载某个 skill。
 
-Pi、Cursor、Codex 都读 `~/.agents/skills`，想只维护一份就把它当唯一目标（`PI_SKILLS_DIR=~/.agents/skills` 之类）；
-Claude Code 只认 `~/.claude/skills`，要支持它就再渲染一份。默认仍按上表三处输出，可按需覆盖。
+Pi、Cursor、Codex 都读 `~/.agents/skills`，所以 `--dirs agents` 一份就够三家；Codex 没有自己独立的 skills 目录，
+项目内也认 `.agents/skills`。Claude Code 只认 `~/.claude/skills`，需要它就加上 `claude`。
 
 只装一侧也可以，把不需要的变量指向不存在的目录即可跳过，例如：
 
@@ -101,8 +125,8 @@ node ~/.agents/skill-src/dist.mjs --check   # 生成物与 BODY.md 不一致时�
 - `{{SKILL_DIR}}` → 本 skill 在该侧的目录，如 `~/.pi/agent/skills/reply-brief/`
 - `{{SKILLS_ROOT}}` → 该侧 skills 根目录，如 `~/.pi/agent/skills/`
 
-直接改各侧的 `SKILL.md` 属于无效修改：下一次 `dist.mjs` 会覆盖，`--check` 也会报 drift。
-各侧目录里除 `SKILL.md` 之外的附件（脚本、`references/`）由各侧自己维护，跨侧共用时请提 PR 进本仓。
+直接改各侧的 `SKILL.md` 或 `assets/` 下的文件属于无效修改：下一次 `dist.mjs` 会覆盖，`--check` 也会报 drift。
+各侧目录里其它文件（`learned.md`、`tune-log.md`、本机笔记）属于你自己，渲染不会碰。
 
 ## 提交前自查
 

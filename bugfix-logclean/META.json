@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: bugfix-logclean\ndescription: \"收掉本轮诊断日志：找到 Tag，删、降级或保留。触发：清理日志 / 收日志 / 删 probe\""
+  },
+  "agents": {
+    "frontmatter": "name: bugfix-logclean\ndescription: \"收掉本轮诊断日志：找到 Tag，删、降级或保留。触发：清理日志 / 收日志 / 删 probe\""
+  },
+  "claude": {
+    "frontmatter": "name: bugfix-logclean\ndescription: \"收掉本轮诊断日志：找到 Tag，删、降级或保留。触发：清理日志 / 收日志 / 删 probe\""
   }
 }

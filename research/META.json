@@ -7,5 +7,11 @@
   },
   "dsh": {
     "frontmatter": "name: research\ndescription: \"比较两种以上做法并推荐一个，只读不改。触发：哪个好 / 选哪个 / 两种做法 / 利弊\""
+  },
+  "agents": {
+    "frontmatter": "name: research\ndescription: \"比较两种以上做法并推荐一个，只读不改。触发：哪个好 / 选哪个 / 两种做法 / 利弊\""
+  },
+  "claude": {
+    "frontmatter": "name: research\ndescription: \"比较两种以上做法并推荐一个，只读不改。触发：哪个好 / 选哪个 / 两种做法 / 利弊\""
   }
 }
