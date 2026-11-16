@@ -80,12 +80,17 @@ sets `core.hooksPath`, and re-runs the drift check at the end. Useful flags:
 ./install.sh --lang en          # render English
 ./install.sh --dirs agents,claude   # write only these (pi / cursor / dsh / agents / claude)
 ./install.sh --no-hooks         # leave git config alone
+./install.sh --clean-old        # after adding an agent, clean the side it no longer writes to
 ./install.sh --uninstall        # remove the generated files again (local skill files stay)
 ./install.sh --version          # print VERSION
 ```
 
 Requirements: `bash` and `node` (>= 18). macOS, Linux and WSL are supported; native Windows is not —
 `install.sh` is a bash script and the side directories are POSIX paths. Run it from WSL or Git Bash.
+
+If a rerun switches sides — say Pi was the only agent before and Cursor appeared since — the new run
+warns that the old side still holds a copy, because two directories holding the same skill means it is
+discovered twice. `./install.sh --clean-old` removes exactly those stale copies.
 
 Where it writes when you pass no `--dirs`: a single detected agent gets its own directory; two or more
 of Pi / Cursor / DSH get the shared `~/.agents/skills` (so one skill is not discovered twice); nothing

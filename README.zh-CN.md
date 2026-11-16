@@ -71,12 +71,16 @@ cd ~/.agents/skill-src && ./install.sh
 ./install.sh --lang en               # 渲染英文
 ./install.sh --dirs agents,claude    # 只写这两处（pi / cursor / dsh / agents / claude）
 ./install.sh --no-hooks              # 不动 git 配置
+./install.sh --clean-old             # 换了目标侧后，清掉上次装过、这次不再写的侧
 ./install.sh --uninstall             # 撤掉生成物（本机自有文件不动）
 ./install.sh --version               # 打印 VERSION
 ```
 
 依赖：`bash` 与 `node`（>= 18）。支持 macOS、Linux、WSL；Windows 原生不行——`install.sh` 是 bash 脚本，
 侧目录也是 POSIX 路径，请在 WSL 或 Git Bash 里跑。
+
+重跑时目标侧变了（比如原来只有 Pi，后来装了 Cursor），脚本会提示旧那一侧还留着副本——两个目录各有一份会被
+发现两次；`./install.sh --clean-old` 只清这些旧副本。
 
 不给 `--dirs` 时的落点规则：只探测到一个 agent 就写它自己的目录；Pi / Cursor / DSH 探到两个及以上就写共享的
 `~/.agents/skills`（避免同一个 skill 被两个目录各发现一次）；一个都没探到也回落到 `~/.agents/skills`。

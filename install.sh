@@ -7,6 +7,7 @@
 #   ./install.sh --dirs agents,claude   只写这两处（可选：pi / cursor / dsh / agents / claude）
 #   ./install.sh --dry-run       只打印将要做什么
 #   ./install.sh --no-hooks      不设置 core.hooksPath
+#   ./install.sh --clean-old     清掉上次装过、这次没选的侧（否则同一个 skill 会被两个目录各发现一次）
 #   ./install.sh --uninstall     删掉装进去的 SKILL.md 与 assets/，本机自有文件不动
 #   ./install.sh --version       打印版本
 #
@@ -27,6 +28,7 @@ DIRS=""
 DRY_RUN=""
 HOOKS=1
 UNINSTALL=0
+CLEAN_OLD=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -36,12 +38,58 @@ while [ $# -gt 0 ]; do
     --dirs=*) DIRS="${1#*=}"; shift ;;
     --dry-run|-n) DRY_RUN=1; shift ;;
     --no-hooks) HOOKS=0; shift ;;
+    --clean-old) CLEAN_OLD=1; shift ;;
     --uninstall) UNINSTALL=1; shift ;;
     --version) echo "commander-skills $VERSION"; exit 0 ;;
-    -h|--help) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "未知参数：$1" >&2; exit 2 ;;
   esac
 done
+
+# 按 .generated 清单删掉某一侧装进去的东西；本机自有文件与别人同名 skill 都不动。
+removed=0
+kept=0
+remove_side() {
+  target="$(dir_for "$1")"
+  [ -d "$target" ] || return 0
+  for d in "$REPO"/*/; do
+    name="$(basename "$d")"
+    [ -f "$d/BODY.md" ] || continue
+    file="$target/$name/SKILL.md"
+    man="$target/$name/.generated"
+    if [ -f "$man" ]; then
+      if [ -n "$DRY_RUN" ]; then
+        echo "  将按 .generated 清理 ${target}/${name}（$(grep -c . "$man") 个文件）"
+        continue
+      fi
+      while IFS= read -r rel; do
+        [ -n "$rel" ] && rm -f "$target/$name/$rel"
+      done < "$man"
+      rm -f "$man"
+      find "$target/$name" -mindepth 1 -type d -empty -delete 2>/dev/null || true
+      if rmdir "$target/$name" 2>/dev/null; then
+        removed=$((removed + 1))
+      else
+        echo "  保留 ${target}/${name}（里面还有本机自有文件）"
+        kept=$((kept + 1))
+      fi
+    elif [ -f "$file" ] && grep -q "GENERATED" "$file"; then
+      # 老版本没写清单：退回到「按标记删 SKILL.md + assets/」
+      if [ -n "$DRY_RUN" ]; then
+        echo "  将删除 ${target}/${name}/SKILL.md"
+        continue
+      fi
+      rm -f "$file"
+      rm -rf "$target/$name/assets"
+      if rmdir "$target/$name" 2>/dev/null; then
+        removed=$((removed + 1))
+      else
+        echo "  保留 ${target}/${name}（里面还有本机自有文件）"
+        kept=$((kept + 1))
+      fi
+    fi
+  done
+}
 
 dir_for() {
   case "$1" in
@@ -94,46 +142,7 @@ if [ "$UNINSTALL" = "1" ]; then
   removed=0
   kept=0
   for s in $(echo "$DIRS" | tr ',' ' '); do
-    target="$(dir_for "$s")"
-    [ -d "$target" ] || continue
-    for d in "$REPO"/*/; do
-      name="$(basename "$d")"
-      [ -f "$d/BODY.md" ] || continue
-      file="$target/$name/SKILL.md"
-      man="$target/$name/.generated"
-      # 只删 dist.mjs 写下的东西（.generated 清单），本机自有文件与别人同名 skill 都不动
-      if [ -f "$man" ]; then
-        if [ -n "$DRY_RUN" ]; then
-          echo "  将按 .generated 清理 ${target}/${name}（$(grep -c . "$man") 个文件）"
-          continue
-        fi
-        while IFS= read -r rel; do
-          [ -n "$rel" ] && rm -f "$target/$name/$rel"
-        done < "$man"
-        rm -f "$man"
-        find "$target/$name" -mindepth 1 -type d -empty -delete 2>/dev/null || true
-        if rmdir "$target/$name" 2>/dev/null; then
-          removed=$((removed + 1))
-        else
-          echo "  保留 ${target}/${name}（里面还有本机自有文件）"
-          kept=$((kept + 1))
-        fi
-      elif [ -f "$file" ] && grep -q "GENERATED" "$file"; then
-        # 老版本没写清单：退回到「按标记删 SKILL.md + assets/」
-        if [ -n "$DRY_RUN" ]; then
-          echo "  将删除 ${target}/${name}/SKILL.md"
-          continue
-        fi
-        rm -f "$file"
-        rm -rf "$target/$name/assets"
-        if rmdir "$target/$name" 2>/dev/null; then
-          removed=$((removed + 1))
-        else
-          echo "  保留 ${target}/${name}（里面还有本机自有文件）"
-          kept=$((kept + 1))
-        fi
-      fi
-    done
+    remove_side "$s"
   done
   if [ -n "$DRY_RUN" ]; then
     echo "（dry-run，未删除）"
@@ -149,6 +158,29 @@ echo "版本：$VERSION"
 echo "仓库：$REPO"
 echo "语言：$LANG_SEL"
 echo "目标：$DIRS"
+
+# 上次装过、这次没选的侧：留着会让同一个 skill 被两个目录各发现一次
+prev="$(cat "$REPO/.installed" 2>/dev/null || true)"
+stale=""
+if [ -n "$prev" ]; then
+  for s in $(echo "$prev" | tr ',' ' '); do
+    case ",$DIRS," in
+      *",$s,"*) ;;
+      *) stale="$stale $s" ;;
+    esac
+  done
+  stale="${stale# }"
+fi
+if [ -n "$stale" ]; then
+  if [ "$CLEAN_OLD" = "1" ]; then
+    echo "清理上次装过的侧：$stale"
+    for s in $stale; do remove_side "$s"; done
+    prev="$DIRS"
+  else
+    echo "注意：这些侧上次装过、这次没选，旧文件仍在，同一个 skill 会被重复发现：$stale" >&2
+    echo "      清理：./install.sh --clean-old（本机自有文件不会被动）" >&2
+  fi
+fi
 
 for s in $(echo "$DIRS" | tr ',' ' '); do
   target="$(dir_for "$s")"
@@ -187,7 +219,8 @@ pick() {
 }
 
 printf '%s\n' "$LANG_SEL" > "$REPO/.skill-lang"
-printf '%s\n' "$DIRS" > "$REPO/.installed"
+# 记录「装过哪些侧」，含这次没选但还没清的那些，下次才能提示 --clean-old
+printf '%s\n' "$(echo "$prev" | tr ',' '\n' | { cat; echo "$DIRS" | tr ',' '\n'; } | grep -v '^$' | sort -u | paste -sd, -)" > "$REPO/.installed"
 
 run_dist
 

@@ -2,6 +2,13 @@
 
 Format: newest first. Versions follow `VERSION`; every release is tagged.
 
+## 1.1.1
+
+- `install.sh` records every side it has written to (`.installed`) and warns when a rerun drops a side,
+  since two directories holding the same skill means the agent discovers it twice; `--clean-old` removes
+  exactly those stale copies.
+- `--uninstall` and `--clean-old` share one manifest-based removal routine.
+
 ## 1.1.0
 
 - Both code-review skills now ship a Chinese body (`BODY.md`) next to the English one (`BODY.en.md`),
