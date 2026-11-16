@@ -1,6 +1,6 @@
 # Code Review Reception
 
-已在对话 / PR / subagent 输出中**收到审查意见**时使用（不是主动发起审查；发起走 `requesting-code-review`）。
+Use when you have **received review feedback** in the conversation / a PR / subagent output (this is not initiating a review; to initiate, use `requesting-code-review`).
 
 Code review requires technical evaluation, not emotional performance.
 
@@ -21,7 +21,7 @@ WHEN receiving code review feedback:
 
 ## Forbidden Responses
 
-Pi user rules also forbid the Chinese equivalents: 「你说得对」/「谢谢」/ 复述结论 / 把修复过程写完再给结果。
+Pi user rules also forbid the equivalents: "you're right" / "thanks" / restating the conclusion / finishing the fix narrative before giving the result.
 
 **NEVER:**
 - "You're absolutely right!" (violates the user rules in AGENTS.md: no flattery, no agreement theater)

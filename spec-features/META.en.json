@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: spec-features\ndescription: >-\n  Compress a background into a checklist of executable change items, one per line, at most 150 characters each. Use only when the user names spec-features or asks to list or split feature items."
+  },
+  "cursor": {
+    "frontmatter": "name: spec-features\ndescription: >-\n  Compress a background into a checklist of executable change items, one per line, at most 150 characters each. Use only when the user names spec-features or asks to list or split feature items.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: spec-features\ndescription: >-\n  Compress a background into a checklist of executable change items, one per line, at most 150 characters each. Use only when the user names spec-features or asks to list or split feature items."
+  }
+}

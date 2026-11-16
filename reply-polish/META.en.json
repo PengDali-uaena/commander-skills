@@ -1,0 +1,11 @@
+{
+  "pi": {
+    "frontmatter": "name: reply-polish\ndescription: >-\n  Formatting close-out: one bold overall verdict first, parallel items one per line, no bare URLs, emphasis via bold. Use only when the user asks for formatting or says the output is a mess or too long."
+  },
+  "cursor": {
+    "frontmatter": "name: reply-polish\ndescription: >-\n  Formatting close-out: one bold overall verdict first, parallel items one per line, no bare URLs, emphasis via bold. Use only when the user asks for formatting or says the output is a mess or too long."
+  },
+  "dsh": {
+    "frontmatter": "name: reply-polish\ndescription: >-\n  Formatting close-out: one bold overall verdict first, parallel items one per line, no bare URLs, emphasis via bold. Use only when the user asks for formatting or says the output is a mess or too long."
+  }
+}
