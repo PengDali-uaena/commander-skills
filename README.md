@@ -6,6 +6,17 @@
 正文只写一份，`BODY.md` 是唯一源，`dist.mjs` 把它渲染成各 agent 侧可发现的 `SKILL.md`。
 本仓不含任何个人信息、公司信息与密钥；机器相关的路径与仓库名一律由使用者在自己的规则文件里补。
 
+## 适配状态
+
+| Agent | 状态 | 说明 |
+|---|---|---|
+| Pi | 完整适配 | 目录、`/skill:` 命令、`{{SKILL_DIR}}` 附件、`disable-model-invocation` 均实机验证过 |
+| Cursor | 部分适配 | 目录与 frontmatter 可用；附件路径与自动路由行为未逐条验证 |
+| Codex | 未验证 | 按官方文档写了目录（`~/.agents/skills`）与 frontmatter，行为未实测 |
+| Claude Code | 未验证 | 只认 `~/.claude/skills`，需单独一份；行为未实测 |
+
+正文目前只有中文版；英文版与其余 agent 的实测按需补。
+
 ## 目录
 
 ```
@@ -37,6 +48,9 @@ node ~/.agents/skill-src/dist.mjs
 
 渲染完让 agent 重新扫描：Pi 里 `/reload`（改 skill 后同样适用），或重开一次会话。
 `/skill:<name>` 可以直接点名加载某个 skill。
+
+Pi、Cursor、Codex 都读 `~/.agents/skills`，想只维护一份就把它当唯一目标（`PI_SKILLS_DIR=~/.agents/skills` 之类）；
+Claude Code 只认 `~/.claude/skills`，要支持它就再渲染一份。默认仍按上表三处输出，可按需覆盖。
 
 只装一侧也可以，把不需要的变量指向不存在的目录即可跳过，例如：
 

@@ -1,5 +1,5 @@
 {
   "pi": {
-    "frontmatter": "name: multi-model-review\ndescription: >-\n  Pick models (inline question), then run parallel headless `pi -p` reviewers on the\n  same diff; parent agent synthesizes consensus and lone-model findings.\ndisable-model-invocation: false"
+    "frontmatter": "name: multi-model-review\ndescription: >-\n  Pick models (inline question), then run parallel headless `pi -p` reviewers on the\n  same diff; parent agent synthesizes consensus and lone-model findings.\ndisable-model-invocation: true"
   }
 }
