@@ -28,7 +28,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 **2. 派 code-reviewer 子 agent**
 
-1. 读本 skill 目录下的 [`code-reviewer.md`](code-reviewer.md)，按占位符填好。
+1. 读本 skill 目录下的 `code-reviewer.md`（源仓里在 `requesting-code-review/assets/code-reviewer.md`），按占位符填好。
 2. 当前侧没有子 agent 工具时：起一个 headless、只读的 reviewer 子进程。只给读文件权限——他能开文件看上下文，不能改文件、不能跑命令。
 
 ```bash

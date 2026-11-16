@@ -83,7 +83,22 @@ for (const name of skills) {
     if (!m) continue;
     const translated = readFileSync(join(dir, file), "utf8");
     if (headings(translated) !== headings(zh)) errors.push(`${name}: BODY.${m[1]}.md 的标题树与 BODY.md 不一致`);
-    if (!existsSync(join(dir, `META.${m[1]}.json`))) errors.push(`${name}: 有 ${file} 但缺 META.${m[1]}.json`);
+    const localizedMeta = join(dir, `META.${m[1]}.json`);
+    if (!existsSync(localizedMeta)) { errors.push(`${name}: 有 ${file} 但缺 META.${m[1]}.json`); continue; }
+    let lm;
+    try {
+      lm = JSON.parse(readFileSync(localizedMeta, "utf8"));
+    } catch (e) {
+      errors.push(`${name}: META.${m[1]}.json 无法解析：${e.message}`);
+      continue;
+    }
+    // 少一侧就等于那一侧悄悄没有英文版，渲染时静默跳过
+    for (const side of Object.keys(meta)) {
+      if (!lm[side]) errors.push(`${name}: META.${m[1]}.json 缺 ${side} 侧（META.json 有）`);
+    }
+    for (const side of Object.keys(lm)) {
+      if (!meta[side]) errors.push(`${name}: META.${m[1]}.json 多出 ${side} 侧（META.json 没有）`);
+    }
   }
 }
 

@@ -28,7 +28,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 **2. Dispatch code-reviewer subagent**
 
-1. Read [`code-reviewer.md`](code-reviewer.md) in this skill's directory and fill in the placeholders.
+1. Read `code-reviewer.md` in this skill's directory (in the source repo it lives at `requesting-code-review/assets/code-reviewer.md`) and fill in the placeholders.
 2. Pi (no Task/subagent tool): run a headless, read-only reviewer subprocess. `-t read` is the read-only tool set — the reviewer can open files for context, and cannot edit files or run commands.
 
 ```bash

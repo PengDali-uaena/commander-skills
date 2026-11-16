@@ -2,6 +2,13 @@
 
 Format: newest first. Versions follow `VERSION`; every release is tagged.
 
+## 1.1.2
+
+- `tools/verify.mjs` now compares the side set of `META.<lang>.json` against `META.json`, so an English
+  file that silently drops a side fails the check instead of rendering one agent short.
+- `requesting-code-review` no longer carries a relative markdown link that only resolves after install;
+  the body names the file and its source-repo location instead.
+
 ## 1.1.1
 
 - `install.sh` records every side it has written to (`.installed`) and warns when a rerun drops a side,
