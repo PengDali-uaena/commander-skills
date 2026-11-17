@@ -1,0 +1,14 @@
+{
+  "pi": {
+    "frontmatter": "name: requesting-code-review\ndescription: >-\n  完成任务、做完大功能或合并前，派一个只读 reviewer 拿 SHA 与需求上下文（不给完整对话史）核对交付物。触发：请求评审 / 合并前评审 / 让别人 review 一下\ndisable-model-invocation: true"
+  },
+  "cursor": {
+    "frontmatter": "name: requesting-code-review\ndescription: >-\n  完成任务、做完大功能或合并前，派一个只读 reviewer 拿 SHA 与需求上下文（不给完整对话史）核对交付物。触发：请求评审 / 合并前评审 / 让别人 review 一下\ndisable-model-invocation: true"
+  },
+  "agents": {
+    "frontmatter": "name: requesting-code-review\ndescription: >-\n  完成任务、做完大功能或合并前，派一个只读 reviewer 拿 SHA 与需求上下文（不给完整对话史）核对交付物。触发：请求评审 / 合并前评审 / 让别人 review 一下\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: requesting-code-review\ndescription: >-\n  完成任务、做完大功能或合并前，派一个只读 reviewer 拿 SHA 与需求上下文（不给完整对话史）核对交付物。触发：请求评审 / 合并前评审 / 让别人 review 一下\ndisable-model-invocation: true"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: branch-merge\ndescription: >-\n  Merge branches: state both sides intent and a merge opinion first, then resolve and complete only after the user confirms. Use when the user asks to merge branches or resolve conflicts."
+  },
+  "cursor": {
+    "frontmatter": "name: branch-merge\ndescription: >-\n  Merge branches: state both sides intent and a merge opinion first, then resolve and complete only after the user confirms. Use when the user asks to merge branches or resolve conflicts.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: branch-merge\ndescription: >-\n  Merge branches: state both sides intent and a merge opinion first, then resolve and complete only after the user confirms. Use when the user asks to merge branches or resolve conflicts."
+  },
+  "agents": {
+    "frontmatter": "name: branch-merge\ndescription: >-\n  Merge branches: state both sides intent and a merge opinion first, then resolve and complete only after the user confirms. Use when the user asks to merge branches or resolve conflicts.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: branch-merge\ndescription: >-\n  Merge branches: state both sides intent and a merge opinion first, then resolve and complete only after the user confirms. Use when the user asks to merge branches or resolve conflicts.\ndisable-model-invocation: true"
+  }
+}

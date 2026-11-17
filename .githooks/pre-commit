@@ -1,0 +1,24 @@
+#!/bin/sh
+# 提交前三道闸：结构自检、不许带个人信息 / 公司信息 / 密钥、改了 BODY 必须重跑 dist.mjs。
+set -e
+root=$(git rev-parse --show-toplevel)
+pat='pengdali|kitar|@gmail|prod_aws_deploy|deploy_web_prod|sk-[A-Za-z0-9]{24,}|api[_-]?key'
+
+if git grep -nIE "$pat" -- . ':(exclude).githooks' ':(exclude)tools/verify.mjs' ':(exclude)legacy' ':(exclude)LICENSE' >/tmp/leak-scan.$$ 2>/dev/null; then
+  echo "pre-commit: 命中敏感词，先脱敏再提交：" >&2
+  cat /tmp/leak-scan.$$ >&2
+  rm -f /tmp/leak-scan.$$
+  exit 1
+fi
+rm -f /tmp/leak-scan.$$
+
+node "$root/tools/verify.mjs" || {
+  echo "pre-commit: 结构自检不过，按上面的提示修" >&2
+  exit 1
+}
+
+lang=$(cat "$root/.skill-lang" 2>/dev/null || echo zh)
+node "$root/dist.mjs" --check --lang "$lang" || {
+  echo "pre-commit: BODY.md / META.json 改了但没重跑 dist.mjs" >&2
+  exit 1
+}

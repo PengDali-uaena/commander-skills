@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: research\ndescription: >-\n  Compare two or more approaches and recommend one, read-only. Use when the user asks which is better, which to pick, or the pros and cons."
+  },
+  "cursor": {
+    "frontmatter": "name: research\ndescription: >-\n  Compare two or more approaches and recommend one, read-only. Use when the user asks which is better, which to pick, or the pros and cons.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: research\ndescription: >-\n  Compare two or more approaches and recommend one, read-only. Use when the user asks which is better, which to pick, or the pros and cons."
+  },
+  "agents": {
+    "frontmatter": "name: research\ndescription: >-\n  Compare two or more approaches and recommend one, read-only. Use when the user asks which is better, which to pick, or the pros and cons.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: research\ndescription: >-\n  Compare two or more approaches and recommend one, read-only. Use when the user asks which is better, which to pick, or the pros and cons.\ndisable-model-invocation: true"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
+  },
+  "cursor": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: >-\n  Implements a pasted Handoff in order and runs its acceptance checks.\n  Use when the user pastes a Handoff, says 按稿实现, 执行交接稿,\n  按方案开发, or names coding-handoff-execute. Does not replan or expand scope.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
+  },
+  "agents": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
+  },
+  "claude": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: \"按贴来的 Handoff 逐步实现并跑验收，不重规划。触发：按稿实现 / 执行交接稿\""
+  }
+}

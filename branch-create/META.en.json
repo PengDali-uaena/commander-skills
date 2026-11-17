@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: branch-create\ndescription: >-\n  Open a new branch from dev or release, named type/version_slug, and switch to it. Use when the user asks to create or open a branch for a purpose."
+  },
+  "cursor": {
+    "frontmatter": "name: branch-create\ndescription: >-\n  Open a new branch from dev or release, named type/version_slug, and switch to it. Use when the user asks to create or open a branch for a purpose.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: branch-create\ndescription: >-\n  Open a new branch from dev or release, named type/version_slug, and switch to it. Use when the user asks to create or open a branch for a purpose."
+  },
+  "agents": {
+    "frontmatter": "name: branch-create\ndescription: >-\n  Open a new branch from dev or release, named type/version_slug, and switch to it. Use when the user asks to create or open a branch for a purpose.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: branch-create\ndescription: >-\n  Open a new branch from dev or release, named type/version_slug, and switch to it. Use when the user asks to create or open a branch for a purpose.\ndisable-model-invocation: true"
+  }
+}

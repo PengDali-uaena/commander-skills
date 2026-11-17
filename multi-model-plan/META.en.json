@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  Use only when the user explicitly asks for a multi-model plan, a plan cross-review or plan calibration: write a brief, let several models blind-review the draft or draft their own, then calibrate into a v2 on evidence.\ndisable-model-invocation: true"
+  },
+  "cursor": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  Use only when the user explicitly asks for a multi-model plan, a plan cross-review or plan calibration: write a brief, let several models blind-review the draft or draft their own, then calibrate into a v2 on evidence.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  Use only when the user explicitly asks for a multi-model plan, a plan cross-review or plan calibration: write a brief, let several models blind-review the draft or draft their own, then calibrate into a v2 on evidence.\ndisable-model-invocation: true"
+  },
+  "agents": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  Use only when the user explicitly asks for a multi-model plan, a plan cross-review or plan calibration: write a brief, let several models blind-review the draft or draft their own, then calibrate into a v2 on evidence.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  Use only when the user explicitly asks for a multi-model plan, a plan cross-review or plan calibration: write a brief, let several models blind-review the draft or draft their own, then calibrate into a v2 on evidence.\ndisable-model-invocation: true"
+  }
+}

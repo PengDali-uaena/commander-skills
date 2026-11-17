@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: reply-brief\ndescription: >-\n  Answers briefly and reads clean: a bold verdict first, then at most three supports. Use when the question is why / how come / can it / is it enough, when only a root cause plus a fix is wanted, when checking whether something shipped, or as the default for a question that matches no more specific skill."
+  },
+  "cursor": {
+    "frontmatter": "name: reply-brief\ndescription: >-\n  Answers briefly and reads clean: a bold verdict first, then at most three supports. Use when the question is why / how come / can it / is it enough, when only a root cause plus a fix is wanted, when checking whether something shipped, or as the default for a question that matches no more specific skill.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: reply-brief\ndescription: >-\n  Answers briefly and reads clean: a bold verdict first, then at most three supports. Use when the question is why / how come / can it / is it enough, when only a root cause plus a fix is wanted, when checking whether something shipped, or as the default for a question that matches no more specific skill."
+  },
+  "agents": {
+    "frontmatter": "name: reply-brief\ndescription: >-\n  Answers briefly and reads clean: a bold verdict first, then at most three supports. Use when the question is why / how come / can it / is it enough, when only a root cause plus a fix is wanted, when checking whether something shipped, or as the default for a question that matches no more specific skill.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: reply-brief\ndescription: >-\n  Answers briefly and reads clean: a bold verdict first, then at most three supports. Use when the question is why / how come / can it / is it enough, when only a root cause plus a fix is wanted, when checking whether something shipped, or as the default for a question that matches no more specific skill.\ndisable-model-invocation: true"
+  }
+}

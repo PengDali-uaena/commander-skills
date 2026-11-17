@@ -1,0 +1,14 @@
+{
+  "pi": {
+    "frontmatter": "name: receiving-code-review\ndescription: >-\n  Use when receiving code review feedback, before implementing suggestions —\n  verify against the codebase first; no performative agreement or blind implementation.\ndisable-model-invocation: true"
+  },
+  "cursor": {
+    "frontmatter": "name: receiving-code-review\ndescription: >-\n  Use when receiving code review feedback, before implementing suggestions —\n  verify against the codebase first; no performative agreement or blind implementation.\ndisable-model-invocation: true"
+  },
+  "agents": {
+    "frontmatter": "name: receiving-code-review\ndescription: >-\n  Use when receiving code review feedback, before implementing suggestions —\n  verify against the codebase first; no performative agreement or blind implementation.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: receiving-code-review\ndescription: >-\n  Use when receiving code review feedback, before implementing suggestions —\n  verify against the codebase first; no performative agreement or blind implementation.\ndisable-model-invocation: true"
+  }
+}

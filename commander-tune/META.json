@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
+  },
+  "cursor": {
+    "frontmatter": "name: commander-tune\ndescription: >-\n  Audits recent chat logs across all repos (Pi sessions under\n  ~/.pi/agent/sessions by default) to count per-skill invocations, the user's\n  next-message reaction, and formatting violations; then diagnoses\n  ~/.cursor/skills/commander/SKILL.md routing and the personal skill catalog\n  and proposes concrete edits. Invoke when the user @names commander-tune,\n  asks to optimize commander routing, fix wrong skill picks, audit skill\n  usage, or evolve the skill set. Proposes or applies edits only after\n  explicit apply confirmation unless the user says to apply directly.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
+  },
+  "agents": {
+    "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
+  },
+  "claude": {
+    "frontmatter": "name: commander-tune\ndescription: \"扫最近全部会话（跨仓库）统计 commander 与各 skill 的调用轮次、你的反馈与版式违约，再诊断路由问题并给出改法。触发：优化路由 / 选错 skill / 技能集评估 / 审计技能使用\""
+  }
+}

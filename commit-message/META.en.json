@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: commit-message\ndescription: >-\n  Write one English commit message line in the form type(module): description from the conversation, without reading the working tree. Use when the user asks for a commit message."
+  },
+  "cursor": {
+    "frontmatter": "name: commit-message\ndescription: >-\n  Write one English commit message line in the form type(module): description from the conversation, without reading the working tree. Use when the user asks for a commit message.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commit-message\ndescription: >-\n  Write one English commit message line in the form type(module): description from the conversation, without reading the working tree. Use when the user asks for a commit message."
+  },
+  "agents": {
+    "frontmatter": "name: commit-message\ndescription: >-\n  Write one English commit message line in the form type(module): description from the conversation, without reading the working tree. Use when the user asks for a commit message.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: commit-message\ndescription: >-\n  Write one English commit message line in the form type(module): description from the conversation, without reading the working tree. Use when the user asks for a commit message.\ndisable-model-invocation: true"
+  }
+}

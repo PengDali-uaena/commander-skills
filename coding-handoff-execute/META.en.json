@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: >-\n  Execute an already written coding Handoff step by step and run its acceptance, without replanning. Use when the user pastes a handoff and asks to implement it."
+  },
+  "cursor": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: >-\n  Execute an already written coding Handoff step by step and run its acceptance, without replanning. Use when the user pastes a handoff and asks to implement it.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: >-\n  Execute an already written coding Handoff step by step and run its acceptance, without replanning. Use when the user pastes a handoff and asks to implement it."
+  },
+  "agents": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: >-\n  Execute an already written coding Handoff step by step and run its acceptance, without replanning. Use when the user pastes a handoff and asks to implement it.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: coding-handoff-execute\ndescription: >-\n  Execute an already written coding Handoff step by step and run its acceptance, without replanning. Use when the user pastes a handoff and asks to implement it.\ndisable-model-invocation: true"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: commander\ndescription: >-\n  Routes each turn to at most one personal skill by the artifact the user wants (a file path, how the code flows, diagnostic logs, research, a short answer, an explanation, a handoff, a branch, a commit message). Use when the user rules require commander-first or the user names commander: read this file, pick one skill, then read its SKILL.md. Does not score keywords."
+  },
+  "cursor": {
+    "frontmatter": "name: commander\ndescription: >-\n  Routes each turn to at most one personal skill by the artifact the user wants (a file path, how the code flows, diagnostic logs, research, a short answer, an explanation, a handoff, a branch, a commit message). Use when the user rules require commander-first or the user names commander: read this file, pick one skill, then read its SKILL.md. Does not score keywords.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commander\ndescription: >-\n  Routes each turn to at most one personal skill by the artifact the user wants (a file path, how the code flows, diagnostic logs, research, a short answer, an explanation, a handoff, a branch, a commit message). Use when the user rules require commander-first or the user names commander: read this file, pick one skill, then read its SKILL.md. Does not score keywords."
+  },
+  "agents": {
+    "frontmatter": "name: commander\ndescription: >-\n  Routes each turn to at most one personal skill by the artifact the user wants (a file path, how the code flows, diagnostic logs, research, a short answer, an explanation, a handoff, a branch, a commit message). Use when the user rules require commander-first or the user names commander: read this file, pick one skill, then read its SKILL.md. Does not score keywords.\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: commander\ndescription: >-\n  Routes each turn to at most one personal skill by the artifact the user wants (a file path, how the code flows, diagnostic logs, research, a short answer, an explanation, a handoff, a branch, a commit message). Use when the user rules require commander-first or the user names commander: read this file, pick one skill, then read its SKILL.md. Does not score keywords.\ndisable-model-invocation: true"
+  }
+}

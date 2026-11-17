@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  用户明确要求多模型出方案 / 方案对审 / 校准方案时使用：写清 brief 后让多个模型盲审草稿或各自出方案，主 agent 按证据逐条校准成 v2。触发：多模型出方案 / 方案对审 / 校准方案\ndisable-model-invocation: true"
+  },
+  "cursor": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  用户明确要求多模型出方案 / 方案对审 / 校准方案时使用：写清 brief 后让多个模型盲审草稿或各自出方案，主 agent 按证据逐条校准成 v2。触发：多模型出方案 / 方案对审 / 校准方案\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  用户明确要求多模型出方案 / 方案对审 / 校准方案时使用：写清 brief 后让多个模型盲审草稿或各自出方案，主 agent 按证据逐条校准成 v2。触发：多模型出方案 / 方案对审 / 校准方案\ndisable-model-invocation: true"
+  },
+  "agents": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  用户明确要求多模型出方案 / 方案对审 / 校准方案时使用：写清 brief 后让多个模型盲审草稿或各自出方案，主 agent 按证据逐条校准成 v2。触发：多模型出方案 / 方案对审 / 校准方案\ndisable-model-invocation: true"
+  },
+  "claude": {
+    "frontmatter": "name: multi-model-plan\ndescription: >-\n  用户明确要求多模型出方案 / 方案对审 / 校准方案时使用：写清 brief 后让多个模型盲审草稿或各自出方案，主 agent 按证据逐条校准成 v2。触发：多模型出方案 / 方案对审 / 校准方案\ndisable-model-invocation: true"
+  }
+}

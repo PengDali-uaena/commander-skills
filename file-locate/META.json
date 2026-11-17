@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
+  },
+  "cursor": {
+    "frontmatter": "name: file-locate\ndescription: >-\n  Finds which repo file implements a named UI component, page section, or\n  symbol. Returns a single primary path by default, not a call chain. Use when\n  the user asks which file, where is the widget, or locates a component path\n  without asking for logs, flow, or multi-option comparison.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
+  },
+  "agents": {
+    "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
+  },
+  "claude": {
+    "frontmatter": "name: file-locate\ndescription: \"给出实现某个组件或页面的主路径，不讲链路。触发：哪个文件 / 在哪 / 找一下组件\""
+  }
+}
