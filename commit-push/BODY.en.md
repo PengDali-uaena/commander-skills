@@ -24,26 +24,14 @@ Stop on any of these and ask one question: unrelated changes staged, current bra
 
 ## Visible reply
 
-Field block: every line starts with `- `, the field name is bold and followed by a full-width colon, no blank lines inside a group, no code fence, no opening sentence and no closing summary outside the block.
-
-On success:
+After committing and pushing, emit exactly these two lines, each starting with `- `, no field names, no code fence, no opening sentence and no closing summary outside them. Use the short hash (`git rev-parse --short HEAD`).
 
 ```
-- **Commit**: type(module): description
-- **Files**: <staged paths, one line each>
-- **Push**: <branch> → origin/<branch>
+- <local branch> -> <remote branch>
+- <commit hash> : <commit message>
 ```
 
-On failure, list only the steps that happened, then the failure fields:
-
-```
-- **Commit**: type(module): description
-- **Failed**: <which step> `git ...`
-- **Output**: <first line of the verbatim error>
-- **To confirm**: <switch branch / pull first / fix the hook, which one>
-```
-
-When only asking, emit one line: `- **To confirm**: <question>`.
+Committed but push failed: keep both lines and add one more, `- Push failed: <first line of the verbatim error>`. When only asking, emit one line, `- To confirm: <question>`.
 
 ## Forbidden
 
