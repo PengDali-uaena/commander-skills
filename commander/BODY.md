@@ -52,7 +52,7 @@
 ## 硬规则
 
 1. 工具调用和正文之前完成意图整理与路由。选中后立刻 读 目标 skill。
-2. 至多 1 个 skill。一条消息点了两个：只执行先出现的那个，另一个请下条 @。读第二个 skill 前先确认它和第一个的可见回复合同不冲突（典型冲突：bugfix-probe 的字段块 vs reply-brief 的两行）。**例外**：prd-to-task 写埋点章节时按 tracking-doc-format 的版式输出，算同一轮，不另选 skill。
+2. 至多 1 个 skill。一条消息点了两个：只执行先出现的那个，另一个请下条 @。读第二个 skill 前先确认它和第一个的可见回复合同不冲突（典型冲突：bugfix-probe 的字段块 vs reply-brief 的两行）。**例外**：prd-to-task 写埋点章节时按 tracking-doc-format 的版式输出，算同一轮，不另选 skill；commit-push 取说明时按 commit-message 写那一行，同样算同一轮。
 3. 显式 `@`、`/skill-name` 或 attach：直接用它；深度仍看用户是否要求完整层，否则默认总结层（该 skill 支持递进时）。
 4. 怎么改代码、能否跑测试：以当前仓库规范为准（**要改代码**时）。这一轮回复的字段和分段：以选中的 skill 为准。
 5. 对不上表，或用户是在直接改代码：不选 personal skill，遵守当前仓库规范（如 `AGENTS.md`）。**项目 skill**（如 `issue-driven-fix`、`*-code-review`、`openspec-*`）在用户**点名**，或产物明确对上其流程（PR / 合并前审查 / diff / 漏洞审核）时优先于本表；「研究 / 评估 / 盘点 / 是否符合逻辑」不算明确匹配 → 走本表 → **reply-brief（审计层：Top 5、正文 ≤ 20 行，用户说展开才放开）**。项目 skill 定动作与输出结构；本表只补默认篇幅。仓库 AGENTS.md 的强制流程压过本表。
@@ -84,6 +84,7 @@
 | 合并分支：先说明冲突双方意图和合并意见，确认前不执行 | branch-merge |
 | 从 dev / release 开新分支：按目的起名、创建并切过去。改名、切已有分支、建 worktree 不进 | branch-create |
 | 按对话写一句英文 commit message，格式 `type(module): description` | commit-message |
+| 真正提交并推送：取 commit-message 的一行，只暂存本次改动、`git commit`、`git push` 当前分支。只要说明、没说要提交的不进 | commit-push |
 | 用户点名要排版，或说「整理格式 / 输出太乱 / 太长没重点」（**仅**这些情况，不是每轮步骤） | reply-polish |
 | 用最近全部会话（跨仓库）审计 skill 调用与你的反馈，再优化 commander 路由表与 `{{SKILLS_ROOT}}` 技能集合 | commander-tune（用户 @；本轮不走路由） |
 | 从对侧同步 / 对比两边技能 | skill-sync（用户点名；本轮不走路由） |
@@ -108,7 +109,7 @@
 - 上轮给了 task 文档 / 埋点文档，这轮说「实现完了 / 审一下 / 有没有漏 / 参数对不对」→ 要核对清单就给对应 skill 的「实现核对」（埋点核对走 tracking-doc-format，整个功能走 prd-to-task）；只问一句「做了吗」仍走 reply-brief
 - 上轮在等合并确认，这轮明确确认 → branch-merge，可以执行。这轮只改意见、没确认 → 仍不执行  
 - 上轮在等建分支确认，这轮明确确认 → branch-create，可以执行。这轮只改分支名或基线、没确认 → 仍不执行  
-- 要的是那句提交说明 → commit-message。要的是把功能做完 → 不选 skill  
+- 要的是那句提交说明 → commit-message。要的是真的提交并推送 → commit-push。要的是把功能做完 → 不选 skill  
 
 ## 分不清时只问一句
 
@@ -118,5 +119,6 @@
 - 交接的是这段对话，还是一份可执行开发稿？  
 - 先把需求拆成 task 文档，还是直接写交接稿？  
 - 从 dev/release 开新分支，还是只切到已有分支？  
+- 只要那句提交说明，还是要真的提交并推送？  
 
 问完即停。

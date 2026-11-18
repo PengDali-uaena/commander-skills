@@ -52,7 +52,7 @@ A field block = the whole reply consists of "field name: value", with no paragra
 ## Hard rules
 
 1. Settle intent and route before any tool call or body text. Read the target skill immediately after picking it.
-2. At most 1 skill. If one message names two: execute only the first, and ask for the other with an `@` next turn. Before reading a second skill, confirm its visible-reply contract does not conflict with the first's (the classic clash: bugfix-probe's field block vs reply-brief's two lines). **Exception**: when prd-to-task writes the events section it uses tracking-doc-format's layout within the same turn and does not pick another skill.
+2. At most 1 skill. If one message names two: execute only the first, and ask for the other with an `@` next turn. Before reading a second skill, confirm its visible-reply contract does not conflict with the first's (the classic clash: bugfix-probe's field block vs reply-brief's two lines). **Exception**: when prd-to-task writes the events section it uses tracking-doc-format's layout within the same turn and does not pick another skill; commit-push writes its line per commit-message within the same turn.
 3. Explicit `@`, `/skill-name` or attach: use it directly; depth still follows whether the user asked for the full layer, otherwise the summary layer (when the skill has depth).
 4. How to edit code and whether tests may run: follow the current repo's rules (**code change** turns). Field names and segmentation of this turn's reply follow the selected skill.
 5. Off the table, or the user is directly editing code: pick no personal skill and follow the current repo's rules (e.g. `AGENTS.md`). **Project skills** (e.g. `issue-driven-fix`, `*-code-review`, `openspec-*`) take precedence over this table when the user **names** them, or the artifact clearly matches their flow (PR / pre-merge review / diff / vulnerability review); "research / evaluate / take stock / does this make sense" is not a clear match → use this table → **reply-brief (audit layer: top 5, body ≤ 20 lines, expand only on request)**. Project skills decide actions and output structure; this table only supplies the default length. A repo AGENTS.md's mandatory flow overrides this table.
@@ -84,6 +84,7 @@ Classify by what the user wants to take away, not by wording score. When the sen
 | Merge branches: state both sides' intent and your merge opinion first, execute only after confirmation | branch-merge |
 | Open a new branch from dev / release: name it by purpose, create and switch. Renaming, switching to an existing branch and worktrees do not enter | branch-create |
 | Write one English commit message from the conversation, format `type(module): description` | commit-message |
+| Actually commit and push: take the commit-message line, stage only this change, `git commit`, `git push` the current branch. Asking only for the line, without committing, does not enter | commit-push |
 | The user asks for formatting, or says "clean up the format / the output is a mess / too long, no point" (**only** these, not a per-turn step) | reply-polish |
 | Audit skill usage and your feedback across all recent sessions (any repo), then improve the commander routing table and the `{{SKILLS_ROOT}}` skill set | commander-tune (`@` by the user; no routing this turn) |
 | Sync from the other side / compare skills across sides | skill-sync (named by the user; no routing this turn) |
@@ -108,7 +109,7 @@ Classify by what the user wants to take away, not by wording score. When the sen
 - Last turn delivered a task doc / events doc and this turn says "implemented / review it / anything missing / are the params right" → a checklist goes to the matching skill's implementation check (events check via tracking-doc-format, the whole feature via prd-to-task); a single "did you do it" still goes to reply-brief
 - Last turn was waiting for merge confirmation and this turn confirms clearly → branch-merge, may execute. Changing only the opinion without confirming → still no execution
 - Last turn was waiting for branch-creation confirmation and this turn confirms clearly → branch-create, may execute. Only changing the branch name or base without confirming → still no execution
-- What is wanted is the commit line → commit-message. What is wanted is the feature finished → no skill
+- What is wanted is the commit line → commit-message. What is wanted is an actual commit and push → commit-push. What is wanted is the feature finished → no skill
 
 ## When unsure, ask one question
 
@@ -118,5 +119,6 @@ Classify by what the user wants to take away, not by wording score. When the sen
 - Is the handoff this conversation, or an executable development draft?
 - Split the requirement into a task doc first, or write the handoff directly?
 - Open a new branch from dev/release, or only switch to an existing branch?
+- Only the commit line, or an actual commit and push?
 
 Ask and stop.

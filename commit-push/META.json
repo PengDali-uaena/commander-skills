@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: commit-push\ndescription: \"取 commit-message 的一行说明后提交并推送：只暂存本次改动、git commit、push 当前分支。触发：提交并推送 / 提交推送 / commit & push / commit and push / 帮我提交 / 提交一下\""
+  },
+  "cursor": {
+    "frontmatter": "name: commit-push\ndescription: >-\n  Takes the commit line from commit-message, stages only this change, commits\n  it and pushes the current branch. Use when the user asks to commit and push.\n  Stops and asks on integration branches, unrelated staged changes, force\n  pushes, or hook failures. Does not create branches, merge, or change code.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commit-push\ndescription: \"取 commit-message 的一行说明后提交并推送：只暂存本次改动、git commit、push 当前分支。触发：提交并推送 / 提交推送 / commit & push / commit and push / 帮我提交 / 提交一下\""
+  },
+  "agents": {
+    "frontmatter": "name: commit-push\ndescription: \"取 commit-message 的一行说明后提交并推送：只暂存本次改动、git commit、push 当前分支。触发：提交并推送 / 提交推送 / commit & push / commit and push / 帮我提交 / 提交一下\""
+  },
+  "claude": {
+    "frontmatter": "name: commit-push\ndescription: \"取 commit-message 的一行说明后提交并推送：只暂存本次改动、git commit、push 当前分支。触发：提交并推送 / 提交推送 / commit & push / commit and push / 帮我提交 / 提交一下\""
+  }
+}

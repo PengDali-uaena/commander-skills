@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: commit-push\ndescription: >-\n  Take the commit line from commit-message, then stage this change, commit it and push the current branch. Use when the user asks to commit and push."
+  },
+  "cursor": {
+    "frontmatter": "name: commit-push\ndescription: >-\n  Take the commit line from commit-message, then stage this change, commit it\n  and push the current branch. Stops and asks on integration branches,\n  unrelated staged changes, force pushes, or hook failures. Use when the user\n  asks to commit and push.\ndisable-model-invocation: true"
+  },
+  "dsh": {
+    "frontmatter": "name: commit-push\ndescription: >-\n  Take the commit line from commit-message, then stage this change, commit it and push the current branch. Use when the user asks to commit and push."
+  },
+  "agents": {
+    "frontmatter": "name: commit-push\ndescription: >-\n  Take the commit line from commit-message, then stage this change, commit it and push the current branch. Use when the user asks to commit and push."
+  },
+  "claude": {
+    "frontmatter": "name: commit-push\ndescription: >-\n  Take the commit line from commit-message, then stage this change, commit it and push the current branch. Use when the user asks to commit and push."
+  }
+}
