@@ -18,6 +18,7 @@ import json
 import os
 import re
 import statistics
+import time
 from collections import Counter
 
 SESSIONS = os.path.expanduser("~/.pi/agent/sessions")  # 可被 --sessions 覆盖
@@ -25,7 +26,11 @@ SKILLS = os.path.expanduser("~/.pi/agent/skills")  # 可被 --skills 覆盖
 SKILL_PATH = re.compile(r"skills/([a-z0-9][a-z0-9-]*)/SKILL\.md")
 ATTACHED = re.compile(r"^<skill name=")
 ACK = re.compile(r"^(好|好的|好滴|嗯+|ok|okay|行|可以|继续|是|对|谢谢|收到|y|yes|no|不|别|等一下|稍等)[。！!,.，\s]*$", re.I)
-REJECT = re.compile(r"不对|不是这|不是我说|错了|重新|废话|太啰嗦|太长|太多了|简短|精简|看不懂|没改|还是没|又错|都说了|说错|搞错|删掉|别加|不用加|多余|为什么没|信息太多")
+REJECT = re.compile(r"不对|不是这|不是我说|错了|重新|废话|太啰嗦|太长|太多了|简短|精简|看不懂|没改|还是没|又错|都说了|说错|搞错|别加|不用加|多余|信息太多")
+REJECT_HEAD = re.compile(r"^(不对|错了|不是这|不是我说|太啰嗦|太长|太多了|简短|精简|看不懂|没改|还是没|又错|说错|搞错|别加|不用加|多余|信息太多)")
+# 只有真正把 SKILL.md 内容读出来的命令才算读取；grep / ls / diff / wc 这类只提路径的命令不算。
+READ_CMD = re.compile(r"^\s*((cat|bat|less|head|tail|sed\s+-n|nl)\b|\S*\s+(cat|bat|less|head|tail|sed\s+-n)\s)")
+SHORT_REJECT_MAX = 60
 REPO = re.compile(r"^--(.+)--$")
 
 
@@ -33,6 +38,23 @@ def repos_label(path):
     m = REPO.match(os.path.basename(os.path.dirname(path)))
     home_slug = os.path.expanduser("~").replace("/", "-")
     return m.group(1).replace(home_slug, "").strip("-") or "(home)" if m else "?"
+
+
+def skill_reads(tool, args):
+    """只把「真正把 SKILL.md 读出来」的 toolCall 算作一次读取。
+
+    grep / ls / diff / wc 这类只是在参数里提到路径的命令不算；同参数的重复调用
+    （重试同一条命令）由 load_turns 去重。
+    """
+    paths = SKILL_PATH.findall(json.dumps(args, ensure_ascii=False))
+    if not paths:
+        return []
+    if tool == "read":
+        return paths
+    if tool == "bash":
+        cmd = str(args.get("command", ""))
+        return paths if READ_CMD.match(cmd) else []
+    return paths
 
 
 def load_turns(path, known):
@@ -52,12 +74,15 @@ def load_turns(path, known):
                 continue
             if cur:
                 turns.append(cur)
-            cur = {"ts": obj.get("timestamp", "")[:10], "user": text, "reads": [], "answer": ""}
+            cur = {"ts": obj.get("timestamp", "")[:10], "user": text, "reads": [], "seen": set(), "answer": ""}
         elif role == "assistant" and cur is not None and isinstance(content, list):
             for part in content:
                 if part.get("type") == "toolCall":
-                    blob = json.dumps(part.get("arguments", {}), ensure_ascii=False)
-                    for name in SKILL_PATH.findall(blob):
+                    key = (part.get("name"), json.dumps(part.get("arguments", {}), ensure_ascii=False, sort_keys=True))
+                    if key in cur["seen"]:
+                        continue
+                    cur["seen"].add(key)
+                    for name in skill_reads(part.get("name"), part.get("arguments", {})):
                         if name in known:
                             cur["reads"].append(name)
                 elif part.get("type") == "text" and part.get("text", "").strip():
@@ -69,13 +94,29 @@ def load_turns(path, known):
                     cur["reads"].append(name)
     if cur:
         turns.append(cur)
+    for t in turns:
+        t.pop("seen", None)
+    return turns
+
+
+def drop_live_turn(path, turns, live_window=900):
+    """丢掉最后一个还没结束的轮次（会话文件刚写过、该轮还没出文字）。"""
+    if not turns:
+        return turns
+    try:
+        age = time.time() - os.path.getmtime(path)
+    except OSError:
+        return turns
+    if age < live_window and not turns[-1]["answer"].strip():
+        return turns[:-1]
     return turns
 
 
 def reaction(text):
-    if ACK.match(text.strip()):
+    text = text.strip()
+    if ACK.match(text):
         return "ack"
-    if REJECT.search(text):
+    if REJECT_HEAD.match(text) or (len(text) <= SHORT_REJECT_MAX and REJECT.search(text)):
         return "reject"
     return "next"
 
@@ -99,7 +140,7 @@ def main():
 
     sessions, turns = 0, []
     for path in files:
-        rows = load_turns(path, known)
+        rows = drop_live_turn(path, load_turns(path, known))
         if not rows:
             continue
         sessions += 1

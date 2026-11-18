@@ -9,6 +9,7 @@ Compresses the background the user gives (what they want, why, where they fear i
 - No repo reads, no file lookups, no code changes, no logs, no file writes.
 - No feasibility judgment, no comparison of approaches, no implementation steps.
 - Never invent a feature that is not in the background; inferred items are listed separately and marked `(inferred)`.
+- **Stay in scope**: scenarios the background never mentions (other tabs, other branches, other experiment groups, other pages) do not become items; name them at most one line under "Not included"; never decide on the user's behalf to change something else.
 
 ## Execution
 
@@ -31,8 +32,12 @@ One item per line, starting with `-`, stating only **what to do**; no file to to
 
 Contradictions, ambiguous referents and missing boundary conditions from the background go after the list, starting one line with "To confirm:" — at most 5, each one question. Omit the section when there are none.
 
+## Not included
+
+Changes outside this background (other tabs / branches / scenarios, or parts the user never asked to touch) are listed here, one line each, statements only, no action. Omit the section when there are none.
+
 ## Visible reply
 
-- No headings, no "Conclusion:"; fixed order: alignment sentence → list → to confirm → confirmation question.
+- No headings, no "Conclusion:"; fixed order: alignment sentence → list → to confirm → not included → confirmation question.
 - No verification checklist, no implementation details such as naming, constants or comments.
 - No cap on item count; if the background supports only 3 items, write 1–2 instead of padding.

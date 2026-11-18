@@ -13,6 +13,7 @@ This file only decides "what to say and how many sentences". Formatting hygiene 
 - Paths, numbers, Tags and verbatim errors are written in full when they support the conclusion; process and file lists that do not support it are deleted.
 - Do not search the repo, add logs or edit code on your own. If the user asks for a code change in the same message: finish the answer first, then edit.
 - Reversing your own previous verdict follows `commander`'s "retract the old verdict" rule; do not restate it here.
+- **Answer only what was asked**: other changes that come to mind during an evaluation / investigation / audit (another tab, another scenario, another branch) never enter the conclusion; when genuinely relevant, put one line at the end — `- Optional, do not touch unconfirmed: <one sentence>` — with no action and no expanded plan.
 
 ## Root cause + fix suggestion (when the user names two columns)
 

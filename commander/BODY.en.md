@@ -35,6 +35,7 @@ Align the four dimensions below before picking a skill; do not re-ask what the u
 7. **Never drop negations**: when cutting words, keep 不 / 没 / 无 / 别 / 仅 / 除了 and not / never / no / only / except. Fewer words are fine; reversing the meaning is not.
 8. **Compression gives way**: safety warnings, confirmation of irreversible actions, step order, and cases where the user did not understand or is repeating the same question use full sentences. Code, comments, commit messages, docs, issues and PRs that land on disk are not written in chat-compressed style.
 9. **Keep the payload verbatim**: errors, commands, paths, numbers and API names keep their original characters. Comments you were not asked to change must not be shortened or deleted.
+10. **Skill / rule edits need proof**: when the turn changes a skill, a rule or generated output, the reply must carry three checkable facts — which source file changed, the generated path plus its write time (or md5), and the verification result (e.g. `dist.mjs --check` pass / fail). "Done" alone is not a delivery; add one line on when it takes effect if a reload is required.
 
 ### Field-block layout (shared by branch-merge, research full layer, explain A, code-logic full layer, bugfix-logclean, branch-create, bugfix-probe)
 
@@ -87,6 +88,7 @@ Classify by what the user wants to take away, not by wording score. When the sen
 | Actually commit and push: take the commit-message line, stage only this change, `git commit`, `git push` the current branch. Asking only for the line, without committing, does not enter | commit-push |
 | The user asks for formatting, or says "clean up the format / the output is a mess / too long, no point" (**only** these, not a per-turn step) | reply-polish |
 | Audit skill usage and your feedback across all recent sessions (any repo), then improve the commander routing table and the `{{SKILLS_ROOT}}` skill set | commander-tune (`@` by the user; no routing this turn) |
+| Ask what holes a specific skill (or a few skills) has, or whether it needs changing (the object is the skill itself, judged against recent sessions) | commander-tune (`@` by the user; no routing this turn) |
 | Sync from the other side / compare skills across sides | skill-sync (named by the user; no routing this turn) |
 | Turn an events `.csv` into readable text segmented by key (event name / report timing / params / report point, bold + blank lines; check item by item by default, output the full text only after all are confirmed, write a file only when the user says so); or, after events are implemented, ask "are all events implemented / anything missing" | tracking-doc-format |
 | Implement or modify functionality directly | no skill |
@@ -107,6 +109,7 @@ Classify by what the user wants to take away, not by wording score. When the sen
 - Last turn was a compressed conclusion and **the user says they cannot tell what it means** → explain
 - Last turn was task-doc Q&A and this turn gives answers or adds events / copy → prd-to-task. Saying "start developing" this turn → no skill (run it in a separate turn)
 - Last turn delivered a task doc / events doc and this turn says "implemented / review it / anything missing / are the params right" → a checklist goes to the matching skill's implementation check (events check via tracking-doc-format, the whole feature via prd-to-task); a single "did you do it" still goes to reply-brief
+- **Confirmation turns** ("ok merge it / commit for me / go ahead / do it"): do not re-read that skill's body, but reuse the visible-reply format and the prohibitions it gave last turn; when the format is unclear, read only that skill's "visible reply" section.
 - Last turn was waiting for merge confirmation and this turn confirms clearly → branch-merge, may execute. Changing only the opinion without confirming → still no execution
 - Last turn was waiting for branch-creation confirmation and this turn confirms clearly → branch-create, may execute. Only changing the branch name or base without confirming → still no execution
 - What is wanted is the commit line → commit-message. What is wanted is an actual commit and push → commit-push. What is wanted is the feature finished → no skill

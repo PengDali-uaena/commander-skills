@@ -1,17 +1,17 @@
 {
   "pi": {
-    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage or evaluate the skill set."
+    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage, evaluate the skill set, or find holes in one specific skill."
   },
   "cursor": {
-    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage or evaluate the skill set.\ndisable-model-invocation: true"
+    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage, evaluate the skill set, or find holes in one specific skill.\ndisable-model-invocation: true"
   },
   "dsh": {
-    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage or evaluate the skill set."
+    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage, evaluate the skill set, or find holes in one specific skill."
   },
   "agents": {
-    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage or evaluate the skill set.\ndisable-model-invocation: true"
+    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage, evaluate the skill set, or find holes in one specific skill.\ndisable-model-invocation: true"
   },
   "claude": {
-    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage or evaluate the skill set.\ndisable-model-invocation: true"
+    "frontmatter": "name: commander-tune\ndescription: >-\n  Audit recent sessions for how commander and each skill were used, then propose routing and skill-set changes; applying them needs approval. Use when asked to tune routing, review skill usage, evaluate the skill set, or find holes in one specific skill.\ndisable-model-invocation: true"
   }
 }
