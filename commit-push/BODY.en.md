@@ -24,11 +24,11 @@ Stop on any of these and ask one question: unrelated changes staged, current bra
 
 ## Visible reply
 
-After committing and pushing, emit exactly these two lines, each starting with `- `, no field names, no code fence, no opening sentence and no closing summary outside them. Use the short hash (`git rev-parse --short HEAD`).
+After committing and pushing, emit exactly these two lines, each starting with `- `, no field names, no code fence, no opening sentence and no closing summary outside them. Use the short hash (`git rev-parse --short HEAD`) and wrap the commit message in double quotes.
 
 ```
 - <local branch> -> <remote branch>
-- <commit hash> : <commit message>
+- <commit hash> : "<commit message>"
 ```
 
 Committed but push failed: keep both lines and add one more, `- Push failed: <first line of the verbatim error>`. When only asking, emit one line, `- To confirm: <question>`.

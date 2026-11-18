@@ -24,11 +24,11 @@
 
 ## 可见回复
 
-提交并推送后只出这两行，每行 `- ` 开头，不加字段名，不用代码围栏，块外不加首句和总结段。hash 用短 hash（`git rev-parse --short HEAD`）。
+提交并推送后只出这两行，每行 `- ` 开头，不加字段名，不用代码围栏，块外不加首句和总结段。hash 用短 hash（`git rev-parse --short HEAD`），commit message 用双引号包住。
 
 ```
 - <本地分支> -> <远端分支>
-- <commit hash> : <commit message>
+- <commit hash> : "<commit message>"
 ```
 
 只提交成功、推送失败：两行照写，再加一行 `- 推送失败：<报错原文第一行>`。只问一句时只出一行 `- 待确认：<问题>`。
