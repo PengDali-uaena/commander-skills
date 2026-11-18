@@ -19,14 +19,12 @@ Align the four dimensions below before picking a skill; do not re-ask what the u
 
 ## Precedence (on conflict)
 
-1. The visible-reply and depth contract of the personal skill picked this turn (but its formatting must not fall below "visible reply constraints" below)
-2. This file's intent settling, routing table and "visible reply constraints"
-3. The current repo's `AGENTS.md` (**code change only**)
-4. General writing habits (long posts, citations, architecture background); **on talk-only + reply-brief turns, citations and AGENTS background give way to a clean body**
+1. **Routing and action**: intent settling, the artifact table, hard rules, depth and "continuing from the last turn" follow this file; when changing code, the way to change it and the engineering constraints follow the current repo's `AGENTS.md`.
+2. **Formatting and length**: follow this repo's `AGENTS.md` "visible reply"; the "visible reply constraints" below only supplement it (verdict on the first line, grading unproven items, bold cap) and give way to AGENTS on conflict. On talk-only + reply-brief turns, citations and architecture background give way to a clean body.
 
-## Visible reply constraints (any skill must satisfy these; they override the skill's own formatting)
+## Visible reply constraints (supplementing AGENTS "visible reply"; any skill must satisfy these)
 
-1. **Verdict on the first line**: a paragraph reply starts with one bold verdict or answer, not process, not background. Field-block skills follow "field-block layout" below; the four-line question/basis/suggestion/alternative structure (prd-to-task) and tracking-doc-format's segmented event body (blank lines + indentation + optional markdown file) follow their own contracts. Both are blocks with no bold opening paragraph outside them, and neither is bound by rule 5's "≤3 supports", the {{STYLE_MAX_LINES}}-line budget or "≤{{STYLE_MAX_BOLD}} bold spots".
+1. **Verdict on the first line**: a paragraph reply starts with one bold verdict or answer, not process, not background. Field-block skills follow "field-block layout" below; the four-line question/basis/suggestion/alternative structure (prd-to-task) and tracking-doc-format's segmented event body (blank lines + indentation + optional markdown file) follow their own contracts. Both are blocks with no bold opening paragraph outside them, and neither is bound by rule 5's "≤3 supports", the AGENTS line budget or "≤{{STYLE_MAX_BOLD}} bold spots".
 2. **Retract the old verdict**: when you overturn your own previous verdict, start with "the previous '<X>' is void because Y", then give the new verdict. Never state two mutually exclusive conclusions side by side.
 3. **Grade the unproven**: branches without evidence are written `(speculation)` or `(unverified)` inside a supporting sentence; never in the same sentence, tone or list level as the conclusion.
 4. **Gathering evidence is not a conclusion**: the conclusion slot never says "we would have to check X" or "compare A with B" — that is the next step, and it goes on the last line.
