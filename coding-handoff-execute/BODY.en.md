@@ -12,6 +12,10 @@ Executes a Handoff that is already written. No redesign.
 
 ## Order
 
+0. When the Handoff points at a task document, run its two gates before touching anything:
+   `python3 {{SKILLS_ROOT}}prd-to-task/scripts/validate_task_doc.py <task doc in docs> --repo <repo root> --nodes <nodes.tsv> --manifest <asset manifest>` and
+   `bash {{SKILLS_ROOT}}prd-to-task/scripts/check_assets.sh --repo <repo root> <asset manifest>`.
+   On any FAIL, stop and paste the output as is (never fix the document yourself); wait until the document is complete.
 1. No complete Handoff in the message: reply only "Handoff missing" and stop.
 2. Check that all fields are present, in this order: Goal, Repo, Constraints, Forbidden, Files, Steps, Acceptance, Open.
 3. If any field is empty, or "Open" is not "none": list only the missing items and stop.
@@ -26,6 +30,10 @@ Executes a Handoff that is already written. No redesign.
 - Read only the files the step names. To implement the step you may open a definition it references directly, and stop once read.
 - When a step gives a minimal replacement snippet, replace exactly that.
 - When a step states only the outcome, achieve it in the style the file already uses.
+- When a step names a Figma node and the document ships a `nodes.tsv`, check the frame and visibility against the dump first (does the parent chain belong to this design version, and is the node not `hidden`) before writing code.
+- When a step names a Figma node, read that node once for its values (size / type size / color / radius / gaps / asset logical size) before writing code; never take framework defaults: no `TextField` without a `style`, no container without radius and padding, no eyeballed thumbnail size.
+- When the handoff gives a node link but no visual values: treat it as "Open" per Order step 3, stop and ask for the visual spec table instead of guessing (guessing is how a 154px example image ships as 67px and a 0-alpha app bar renders black).
+- Before delivering a UI step, put the node export and the implementation screenshot side by side and run three must-checks: is the app bar / status bar fill visible, is any copy cut off with an ellipsis, do thumbnail logical sizes match the design. Fix the differences yourself; anything you cannot fix goes under "Next" in the reply.
 
 ## Acceptance fails
 

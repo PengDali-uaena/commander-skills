@@ -76,7 +76,7 @@
 | **只要**根因 + 修复建议（两栏、各一句为主）；或用户给出了期望回复句式/字数 | reply-brief |
 | 追问「有没有做 / 不是说…吗 / 没实现吗」（核对上轮承诺，不要新方案表） | reply-brief |
 | 上一句看不懂、指代不明；单独说「解释一下」；或只点名上轮总结里的某一项要细看（整段展开仍是原 skill 的完整层） | explain |
-| 导入 PRD、拆需求、多轮对齐需求细节、给 task 文档补埋点或双语（只对话不改代码，产出 `task-<feature>.md`；开写前先质疑改动边界、把 UI 资产与状态全枚举定死，埋点按 tracking-doc-format 版式落进 task 文档）；或拿着已写的 task 文档问「实现有没有漏 / 代码跟文档对不对」 | prd-to-task |
+| 导入 PRD、拆需求、多轮对齐需求细节、给 task 文档补埋点或双语（只对话不改代码，产出 `task-<feature>.md`；先落视觉骨架再逐控件，开写前先质疑改动边界、把 UI 资产与状态全枚举定死，埋点按 tracking-doc-format 版式落进 task 文档，落盘前跑 `validate_task_doc.py` / `check_assets.sh` 贴输出）；或拿着已写的 task 文档问「实现有没有漏 / 代码跟文档对不对」 | prd-to-task |
 | 把本对话交给另一个对话或 agent（**必须**是跨对话移交；出现「新建 / 继续 / 交接给别的仓库」不算） | session-handoff |
 | 写成另一模型可执行的交接稿 | coding-handoff-plan |
 | 按已写好的交接稿改代码 | coding-handoff-execute |

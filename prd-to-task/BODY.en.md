@@ -2,19 +2,21 @@
 
 Turns a PRD into one `task-<feature>.md` that can be developed from, through several rounds of Q&A.
 
-Conversation only, code reading only, and only this one document. No business code.
+Conversation only, code reading only, and only this document, the question queue, the node evidence dump and the new assets. No business code.
 
-Triggers: importing a PRD / splitting requirements / pinning down requirement details / listing feature points / adding events or copy to a task / the user names prd-to-task.
+Triggers: importing a PRD / splitting requirements / pinning down requirement details / listing feature points / adding events or copy to a task / pasting a Figma link with a page description / the user names prd-to-task.
+
+**`Implement this design from Figma` changes nothing**: while the round is about requirements, documents or the design, only the task document and its assets change — never `lib/`. Writing code waits for an explicit "start implementing".
 
 ## Boundaries
 
 - No business code, no editing the PRD source, no branches, no builds.
 - Read only code the PRD points at: pages and components it names, same-name or adjacent features, API definitions, l10n files, event constants. Stop once the current question is answered.
-- Write one file only: `docs/{{DOC_PREFIX}}<date>-task-<feature>.md`. `<date>` is `YYYYMMDD`, `<feature>` is a short English kebab-case name; create `docs/` when the project has none.
-- **When the same feature has a document in several clones**, write only this repo's copy; never copy to or track the others, and when sharing is needed write "read-only reference to this document" in the current one. Same-name documents must keep an empty diff, or differ only in repo-local paths.
-- Document state machine: `in progress` → `pending input` → `executable` → `implemented` → `verified`. The state is never written by hand; derive it from the counts and check results of "check before writing".
+- Write exactly four places: the task document `docs/{{DOC_PREFIX}}<date>-task-<feature>.md`, the question queue `docs/{{DOC_PREFIX}}<date>-queue-<feature>.md` (this round's questions plus the open list, kept short), the node evidence `docs/<feature>/nodes.tsv`, and the new `assets/`. Existing assets are read-only.
+- **When the same feature has a document in several clones**, write only this repo's copy; never copy to or track the others.
+- Document state machine: `in progress` → `pending input` → `executable` → `implemented` → `verified`. The state is never written by hand; derive it from the "check before writing" scripts.
 - Events and bilingual text may be `pending`; logic and UI must reach a conclusion on every item, and undecided APIs still need their fallback written down.
-- Values marked "suggested / candidate / to verify" in the backend contract (message type numbers, field names, content structure) are listed as **blockers** in the document and must be filled in before integration; when the contract changes during development, write the change back into the document and the change log on the spot.
+- Values marked "suggested / candidate / to verify" in the backend contract are **blockers** and must be filled in before integration; when the contract changes during development, write it back on the spot.
 - When the user says "start implementing" → stop and say this round only produces the document; execution is a separate turn.
 
 ## No information means pending (hard constraint)
@@ -22,334 +24,214 @@ Triggers: importing a PRD / splitting requirements / pinning down requirement de
 When the PRD, backend contract, copy, events table or Figma is missing, **record it as pending — no association, no confirmation**.
 
 - Write what is missing as `pending (missing X; owner: product / backend / design / analytics; action after it arrives: …)` and keep a row in the pending table.
-- Never turn a missing field into a conclusion with "as usual / like the existing page / default first". Suggestions may only live inside the pending row, never as a conclusion.
-- When the backend gives no value list, state machine or enum, all state mapping is pending. **Never** backfill each state into some known value (mapping every review-card state to `okay` is exactly this failure), and never improvise a mapping from a nearby enum.
-- Copy without a key, without zh/en: `pending (missing copy key)`; do not substitute existing similar copy. Events without a table are pending — never invent event names.
+- Never turn a missing field into a conclusion with "as usual / like the existing page / default first". Suggestions may only live inside the pending row.
+- When the backend gives no value list, state machine or enum, all state mapping is pending. **Never** backfill each state into some known value (mapping every review-card state to `okay` is exactly this failure).
+- Copy without a key, without zh/en: `pending (missing copy key)`; events without a table are pending — never invent event names.
 - A verbal "it should be / probably" → `pending (verbal, not in the contract)`, never promoted to a conclusion.
-- Tag every pending item with a blocking level: **blocks development** / **blocks integration** (no effect on coding, must be filled before release) / **not blocking**.
-- The document header always carries `Blockers: dev <X> / integration <Y> / none <Z>`, counted from the pending table; recount on the spot after editing that table, never from memory.
-- When state and counts disagree, the counts win: `X>0` → in progress (or pending input); `X=0 and Y>0` → executable (fill before integration); `X=Y=0` → executable. When a hand-written "executable" is overruled, change the state and note it in the change log.
+- Tag every pending item with a blocking level: **blocks development** / **blocks integration** / **not blocking**.
+- The document header always carries `Blockers: dev <X> / integration <Y> / none <Z>`, counted from the pending table, recounted on the spot.
+- When state and counts disagree, counts win: `X>0` → in progress (or pending input); `X=0` → executable.
+
+**Exception: implementation details are not missing information.** Missing route params the app builds itself, URL / query length, external deep-link compatibility, toast component choice, retry counts, naming and layering only change how something is written: never ask, write the default and mark it `implementation default (no confirmation needed)`.
+
+## Skeleton first (the first two rounds do only this)
+
+Expanding into per-control tables before the structure is settled makes the implementer invent the layering — a transparent app bar over nothing, stacked cards, content under a fixed bar. Before per-control work, any feature point with a Figma design does three things:
+
+1. **Draw the layering**: list every layer bottom-up (page fill / gradient / fixed bar / scroll area / overlay / keyboard bar), and state which one scrolls, which is fixed, which is pushed up by the keyboard, which shows the layer below.
+2. **List the card order**: one row per card top-down inside the scroll area, marking which ones are their own container (white card / radius / padding); never flatten them into one row.
+3. **Confirm once with the user**: describe that skeleton in plain language (no node ids), and only then fill the per-control and asset tables.
+
+Write it into `### Visual skeleton`:
+
+| Layer / block | Position | Scrolls / fixed | Container (fill / radius / padding) | Relation to the neighbour layer |
+
+Do not fill `### Visual spec` or `### UI assets and icons` before the skeleton is complete. When the user already gave the structure (e.g. "gradient at the bottom, then TitleBar / ScrollView / BottomBar"), record it as given — do not re-ask.
 
 ## Change boundary (challenge it while writing: decide what changes first)
 
-Unexpected edits during execution happen because the boundary never made it into the document. Check the blast radius before writing each feature point and put the boundary in the table:
+Unexpected edits during execution happen because the boundary never made it into the document. Before writing each feature point:
 
-1. **Find callers**: use codegraph (`codegraph_explore`) first for the callers and reuse points of the target symbol / component / state-mapping function; with no index or no hit, use one targeted `rg`. Record only the call sites whose behavior changes because of this work, and do not lay out file lists.
-2. **Challenge first**: turn "changing it this way also touches N call sites / shared component X / shared mapping Y follows along" into one question in the four-line format. At most one scope question per feature point; never stack scope questions into a list.
-3. **Fill the table**: after the user decides, write it into the task document's "Change boundary" table. Files outside the table are not to be touched by default.
-4. **Conservative by default**: reuse the existing components, state mapping and event report points; no opportunistic refactors, no extracting shared components, no changing shared call sites' styles or defaults. Touching a shared point requires its own row with the blast radius written down.
-5. **Obey the table during execution**: only rows marked `change` / `add` may be edited; a diff anywhere else is out of bounds — go back, add the decision row, then act.
+1. **Find callers**: use codegraph (`codegraph_explore`) first for callers and reuse points of the target symbol / component / state-mapping function; with no index or no hit, use one targeted `rg`. Record only the call sites whose behavior changes.
+2. **Challenge first**: turn "changing it this way also touches N call sites / shared component X" into one question in the four-line format. At most one scope question per feature point.
+3. **Fill the table**: after the user decides, write it into the "Change boundary" table. Files outside the table are not to be touched.
+4. **Conservative by default**: reuse existing components, state mapping and event report points; no opportunistic refactors, no extracting shared components.
+5. **Respect the table while executing**: only rows marked `change` / `add` may be touched; a diff elsewhere is out of bounds and needs a decision row in the document first.
 
 ## Question layout (hard constraint)
 
-Every question to the user must use the **blank line between blocks + bold labels** shape below — never compressed into four consecutive lines:
+Every question to the user uses this blank-line separated, bold-label layout — never four consecutive lines:
 
-These four blocks are exempt from commander's "≤3 supports" and "≤{{STYLE_MAX_LINES}} lines" budget (they are listed as a field-block structure in commander's hard constraint 1 and AGENTS "field-block output" rule 6); still ask only 1 question per turn.
+These four blocks are exempt from commander's "≤3 supports" and "≤{{STYLE_MAX_LINES}} lines" budgets; at most 3 questions per round, one block each, one blank line between blocks.
 
-**Question**: <one sentence, landing on a field or a branch>
+**Question**: <one line, pinned to a field or a branch>
 
-**Basis**: <evidence from code or PRD: file:line / API path / existing key or event name>
+**Evidence**: <evidence from code or PRD: file:line / API path / existing key or event name; for UI, name the block, the control and the state in plain words>
 
-**Suggestion**: <what happens when the user gives no answer>
+**Suggested**: <what to take when the user gives no answer>
 
-**Alternatives**: <A / B / C>
+**Options**: <A / B / C>
 
-Example:
+Layout rules: bold labels as `**Question**`, blank line between blocks, full-width colon.
 
-**Question**: Does the support invitation card go out as an IM message or a backend push?
+**No node ids in the conversation**: questions and evidence use plain descriptions (which block, which control, which state, which design version); node ids and Figma links belong in the task document. When the user says the reference is unclear, restate the same question in plain language instead of explaining the node tree.
 
-**Basis**: `chat_page` already has a custom message type; the support-side source is undecided.
+## One round at a time
 
-**Suggestion**: send it as an IM message and make the backend delivery a separate task.
+0. **Read the queue**: read `-queue-<feature>.md` (this round's questions plus the open list) and the document header first; `grep` only the feature sections being touched this round, never the whole document.
+1. **Read the current state**: does what the PRD wants exist already, field names, API paths, existing l10n keys, existing events.
+2. **List the gaps**: where the PRD and the code disagree, and what the PRD never said but development needs; sort by blocking level.
+3. **At most 3 questions**: take the most blocking ones only, four-line format, then stop. With no blocking-development item, ask one question or close with defaults — never pad with non-blocking ones.
+4. **Write the queue first**: the moment a question is sent, record it in the queue file (keyword + `asked, awaiting answer`).
+5. **Write back after the answer**: run the backtracking below, edit the body, clear the queue, log the change, turn the queue row into a conclusion.
+6. **Move to the next batch**: `grep` the queue keywords before asking; anything already answered or defaulted is off the table.
 
-**Alternatives**: A IM message / B backend push / C both
+**Round budget**: a feature point gets **≤ 15 rounds** in the document phase. Still blocked at 15 rounds → write the suggested defaults, mark them `pending (defaulted by suggestion)`, and hand the remaining questions to the user in one go — another single-question round-trip costs more than the default. Only extend when the user explicitly says "keep asking".
 
-Layout notes: labels are written bold as `**Question**`, not `Question:`; one blank line between the four blocks; full-width colon after the label. This counts as a field block (commander "field-block layout" rule 8 exception: no `- ` prefix, blank line between blocks) and is not bound by the ≤{{STYLE_MAX_LINES}}-line body limit.
+Three questions per round is the ceiling; answering one of three is fine — update what came back and do not resend the rest.
 
-## What one turn does
+## Backtrack after every answer
 
-1. **Read the document**: read an existing task document first; never re-ask what is answered.
-2. **Read the current state**: check whether what the PRD wants exists today, plus field names, API paths, existing l10n keys and existing event names.
-3. **List the gaps**: where PRD and code disagree, and what development must decide but the PRD does not say.
-4. **Ask only 1**: pick the one that blocks most, ask it in the four-line format, then stop and wait.
-5. **Back-propagate and write**: after the answer, run the impact pass below, edit the body, clear the queue, record the change.
-6. **Ask the next 1**: advance one question per turn, never several at once.
-
-Write to disk at the end of every Q&A round; never batch it to the last round.
-
-## After an answer, back-propagate first
-
-Answers and extra information can overturn earlier conclusions. Do these four steps before editing the document:
+An answer can overrule earlier conclusions. Before editing the document, do four steps:
 
 1. **Scope the impact**: which feature points, APIs, field mappings, UI, events, copy and acceptance items this answer touches.
-2. **Edit the body**: rewrite the affected fields directly; the body never keeps old and new versions, and old conclusions go only into the change log.
-3. **Clear the queue**: delete void questions, drop or rewrite invalidated `pending` items, and queue newly discovered gaps as the next question.
-4. **Record it**: write `<old conclusion> → <new conclusion>` in the change log, then ask the next single question.
+2. **Rewrite the body**: rewrite the affected fields in place; the body never keeps two versions, only the change log keeps history.
+3. **Clear the queue**: delete voided questions, drop or rewrite `pending` items that no longer matter, queue the new gaps.
+4. **Log it**: `<old conclusion> → <new conclusion>` in the change log, set the queue row to `answered`, then ask the next batch (max 3).
 
-When the impact reaches "goal and scope", change the scope first, then the feature points. No round may skip back-propagation and go straight to a question.
+When the impact reaches "goal and scope", rewrite the scope first, then the feature points. Never skip backtracking and jump straight to the next question.
 
 ## How to ask
 
-All four labels are mandatory; layout per the section above.
+All four labels are mandatory; layout as above.
 
-- Do not ask what code or the PRD can answer; look it up first.
-- Never ask "should we add an event"; ask "use the existing `xxx` event with a new parameter, or add an event".
-- Never ask "should it be greyed out when out of quota"; ask "when the quota is used up and the user taps, is it silent or a `xxx` toast".
-- Never ask "what is the selected effect"; ask "does it change color on tap, or after the response arrives".
-- Never ask "will new enum values appear"; read the existing mapping and ask "when a value outside the document appears, drop it or render read-only".
-- Never ask "what if the API fails"; ask "when the review-card detail API fails, does the card show error copy + Retry (refetching that card only), or does the whole page become an error page".
-- Never ask "should we retry"; ask "is Retry single-flight disabled or can it be tapped repeatedly; what fallback after N failed retries".
-- Never ask "what if the response lacks fields"; ask "when PATCH returns only `permissions` and not `selection`, keep the local selection or clear it, and do we merge permissions before judging business fields".
-- Never ask "which id"; ask "the sending side uses `peerId` and the receiving side uses `conversationID` — are they equal, and if not, which one do we change".
-- Never ask "should we cache"; ask "on a cache hit do we still send GET; when the same object fires 5 requests within a second which key merges them; which keys are cleared on logout".
-- Never ask "is there a timeout"; ask "how many seconds at most do we wait for the send receipt; after the timeout which field resets and what does the user see".
-- "Don't know / later" → record `pending` with the owner and what is missing, then continue to the next question without stalling.
-- A vague answer → ask once more; still vague → `pending (answer was vague)` plus the suggested default.
-- One answer covering several questions or extra information: land each item into its field by impact, back-propagate, then ask the next single question.
-- The same question twice with no conclusion: write the suggestion into the document and mark `pending (defaulted to the suggestion)`.
+- Never ask what the code or PRD already answers — look it up first.
+- Never ask "should we add an event"; ask "does this exposure reuse `xxx` with a param, or a new event".
+- Never ask "should we grey it out"; ask "after the quota runs out, is a tap silent or does it show toast `xxx`".
+- Never ask "what does selection look like"; ask "does it recolor on tap, or wait for the response".
+- Never ask "might the enum grow"; read the existing mapping, then ask "on a value outside the document, drop it or read-only".
+- Never ask "what if the API fails"; ask "when the detail API fails, is it in-card error copy + Retry (that card only) or a full-page error page".
+- Never ask "what if the response is partial"; ask "when PATCH returns `permissions` but not `selection`, keep the local selection or clear it".
+- Never ask "do we need caching"; ask "does a cache hit still fire the GET; which key merges 5 triggers in a second".
+- Never ask "is there a timeout"; ask "how many seconds do we wait for the ack; which field resets, and what does the user see".
+- An answer of "not sure / later" → record `pending` with owner and what is missing, move on.
+- Several answers or extra context at once: apply each by blast radius, backtrack, then ask the next batch (max 3).
+- Two rounds without a conclusion on the same question: write the suggestion into the document and mark `pending (defaulted by suggestion)`.
+
+### What not to ask (decide implementation details yourself)
+
+Anything that only changes how it is written, not what the user sees:
+
+- **App-built route params**: a missing `orderId` / `productId` is an implementation bug — write "required, treat as implementation error", no toast / error-page branch.
+- **URL and query length**: in-app navigation has no hard limit, always `encodeComponent`, no `extra` fallback.
+- **Route compatibility**: replace the old entry point; no redirect, dual-track or param repair for external deep links.
+- **Toast component choice** (SnackBar / CenterToast / dialog), retry counts, skeleton style: follow the repo convention, mark `implementation default`.
+- **Code structure and naming** (extract or not, class names, file locations): follow the repo rules, never a question.
+
+One rule: changes what the user sees, what the backend receives or how data is computed → ask; only changes how it is written → do not.
 
 ## Splitting feature points
 
-- One item = one entry point + one outcome, verifiable by the user on its own.
-- Number them `F1 / F2`; when it spans two pages or changes more than 3 files, split into sub-items `F1.1`.
-- Never split client and backend into two items; backend dependencies go under "data sources and APIs".
-- API failure states do not become their own feature point, but every API must leave one failure path in acceptance (offline / 5xx / timeout).
-- List high-risk items that change old behavior first, pure additions after.
+- One item = one entry point + one outcome the user can verify alone.
+- Number them `F1 / F2`; split into `F1.1` when it spans two pages or touches more than 3 files.
+- Never split client and backend into two items; the backend dependency goes under "data source and API".
+- A failure state is not its own item, but every API gets a failure path in acceptance (offline / 5xx / timeout).
+- List the items that change existing behavior first, pure additions after.
 
-## Four question categories
+## The four question classes
 
-### Logic
+**Logic**: current state (file:line), what changes, entry point, data source (method + path, request timing, params), new field or changed field, field → UI mapping, empty / failure / logged-out / repeated tap, cache and refresh timing, shared call sites affected, experiment or rollout needed.
 
-Must state: current state (file:line), what changes, trigger entry point, data source (API method + path, request timing, parameters), whether fields are new or changed, field→UI mapping, empty data / failure / unauthenticated / repeated taps, caching and refresh timing, whether shared call sites are affected, whether an experiment or rollout is needed.
+**Function and UI**: UI and interaction are written together. Three steps — list the elements (PRD copy, Figma blocks, existing interactive elements: one row each); run the matrix (every element gets a row in "interaction state"; a missing row is unfinished, and "same as above" never covers a difference); tag the assets (every icon / image gets its source in the "UI assets and icons" table; a lookalike is never a source).
 
-Two more are missed most often and must be their own sentences:
+**Events**: whether, event name (reuse or new), report timing, non-report conditions, params and where values come from, exposure rule, channel, report point. Layout per tracking-doc-format.
 
-- **Repeated tap on the same value**: tapping an already-selected option — does it send a request, does the client block it locally, and is the user told when it is blocked.
-- **In-flight race**: for "read then write" on the same object (detail GET in parallel with submit PATCH), can a stale response overwrite a new submission; choose and pin down one of request sequence number, in-flight marker, or discarding stale responses.
+**Bilingual**: three classes of keys — backend-provided copy, client fallback copy, error and hint copy. Writing only the first is a gap; a fallback branch without a key is `pending (missing fallback copy key)`.
 
-### Features and UI
+Full criteria, counter-examples and the four recurring traps (wrong icon / wrong state mapping / missing interaction / drifting anchor) live in {{SKILL_DIR}}references/checklists.md.
 
-UI and interaction cannot be written apart: the same element needs both "what it looks like" and "what happens when tapped". Three steps per feature point:
+## Required tables (checklist in references/checklists.md)
 
-1. **List the elements**: derive what interactive elements this page needs from three sources — actions mentioned in the PRD copy, blocks and icons in the Figma frame, and buttons / options / inputs / scroll containers / dialogs / placeholders already present in existing components. One element per line, at the start of the feature point.
-2. **Walk the matrix**: every element in the list must have a row in the "interaction state matrix"; a missing row is not done, and "same as above" may never absorb a different element's differences.
-3. **Tag the assets**: every icon / image / illustration gets its source in the "UI assets and icons" table; never leave "use a similar icon".
+Eleven tables plus 6b visual spec. Headers and criteria are not duplicated here; read the matching section of {{SKILL_DIR}}references/checklists.md when filling one:
 
-Must state: page and area position, appearance conditions, layout structure (horizontal scroll / list / fixed height / dialog height), spacing and size units, reused shared components, loading / empty / error states, scrolling and keyboard, interactions (tap / long press / swipe / back / second confirmation / toast), tap targets, Figma link including node-id.
+1. Interaction state matrix · 2. Permission and quota two-state · 3. Backend enum and unknown value · 4. API failure and degradation · 5. UI assets and icons · 6. State → visual · 6b. Visual spec per block · 7. Partial response and missing fields · 8. Identifiers and external input · 9. Request budget and cache · 10. Awaiting an external callback · 11. New abstraction contract
 
-Style and state are written apart: color values, borders and radii are only what it looks like "after the response"; the tap instant, pre-response and failure rollback are unfinished if unwritten — fill them per the "required tables" below, control by control.
-The API layer goes through tables too: every request (including detail, stats and recommendation slots fetched inside a card) needs its failure landing spot, copy and retry conclusion, per "4. API failure and degradation".
+A table that does not apply is not deleted and not padded: write `Table applicability: skip permission (no backend field in this feature)` and `validate_task_doc.py` accepts it; a skip without a reason is a WARN.
 
-**Figma is mandatory**: when a link exists and Figma tools (figma MCP) are available, read the node first and put sizes, spacing, radii, colors, font sizes, weights, icon names and node-ids into "layout" and "UI assets and icons"; when it cannot be read (no permission / node missing / login needed) write `pending (missing figma node <id>)` and do not guess pixels from PRD prose.
+## Figma evidence and asset pipeline
 
-**Four common UI-restoration traps, pinned down in this section**:
+**Evidence first, conclusions after.** With a Figma link and Figma tools (figma MCP) available:
 
-- **Wrong icon**: only three sources — an icon inside Figma (node-id) / an existing repo asset or iconfont (file:line) / to be added (size, format, naming). No free improvisation beyond the third.
-- **Wrong state mapping**: **every** value of a backend field needs a visual and a tappability; never write only the normal state, and never backfill an unknown value into a valid state — see "6. State → visual mapping".
-- **Missed interaction**: the element list and the matrix row count must match; non-tap behaviors such as closing a dialog, going back, scrolling to the end, keyboard occlusion and second confirmation are elements too.
-- **Anchor drift**: any element positioned by copy width or by "the content area" (badges, indicators, bubbles, dividers) must state its position in both en and id copy, or be re-anchored to the icon / fixed coordinates; "relative to the content area" is not pinned down — `Messages` and `Pesan` have different widths, so the element shifts, and a geometry fix is only found in self-test.
+1. **Dump once**: dump every node the document needs per {{SKILL_DIR}}references/figma-node-dump.md into `docs/<feature>/nodes.tsv` (id / type / visible / name / parent chain / text / fills / size / position).
+2. **Read the dump before writing**: `type=TEXT` with text is copy, not an asset; `visible=hidden` is reference only and never a source of copy or visuals; the parent chain must name this feature's frame — a mixed frame is invented UI.
+3. When the node cannot be read (no permission / missing node / login required) write `pending (missing figma node <id>)` and never guess pixels from PRD prose. When MCP copy conflicts with the user or the visible frame, the user wins — note the source.
 
-### Events (linked with tracking-doc-format, may be pending)
+**Compare and land the assets** (done in the document phase, never deferred):
 
-Must state: whether they are needed, event name (reused or new), report timing, non-report conditions (dedup / re-entry / collapsed / unauthenticated), parameters and their value sources, impression criteria (visible ratio / dwell time), reporting channel, report point.
+1. `download_assets { fileKey, nodeId, defaultScale: 3 }`, read back `export.sizeBytes` (PNG@3x) and `svgAssets[0].sizeBytes`.
+2. **Compare bytes only**: take the smaller one (SVG on a tie).
+3. **PNG** → download the @3x original from `rawImages` (alpha preserved); **never** the flattened `export` (no alpha, white or black baked in). Then run `{{SKILLS_ROOT}}figma-mcp-assets/scripts/optimize_png.sh` (lossless only); the file must not grow.
+4. **SVG** → download as is, no compression, no PNG conversion.
+5. Land under `assets/images/<feature>/...`; subdirectories must be declared in `pubspec.yaml`; filenames match the asset table.
+6. **Run the gate**: write a manifest (path / logical width / logical height / `alpha` or `opaque`) and run
+   `bash {{SKILL_DIR}}scripts/check_assets.sh --repo <repo root> <manifest>`, pasting the output into the reply.
+   `RGBA + transparent pixels + size = logical × 3` passes; `no alpha channel = flattened export` must not land — go back to `rawImages` or ask design for a transparent export.
+   When the node itself is an opaque screenshot (a full example photo), mark it `opaque` in the manifest and note "container clips the radius" in the asset table; never treat it as a transparent asset.
 
-Write per tracking-doc-format's layout and flow, with the content going straight into the task document — see "Events linked with tracking-doc-format" below. When the PRD ships an events table, follow it; when it does not, ask the owner and record pending — never invent event names.
+## When the environment lacks a tool
 
-### Bilingual (may be pending)
+Without shell / network / Figma tools, neither pretend nor leave a command template and call it done:
 
-Must state: which copy is new, whether user-visible, whether keys already exist, that a shared call point with only the current page changing gets **a new key rather than editing the old one**, key naming suggestions, whether en / id both need translation, placeholders and concatenation, date and currency formats, whether backend copy is multilingual.
+- Mark the step `pending (no <shell / network / figma> tool in this session; owner: implementation round; action: …)` with blocking level **blocks development** — assets that never landed block the work.
+- Say plainly in the reply that assets were not landed this round and that the implementation round must run the pipeline and `check_assets` first; write the same line into the handoff.
+- The implementation round starts by filling that step (see "Implementation check"), not by writing UI.
 
-List keys in three categories; writing only the first is incomplete:
+## Events via tracking-doc-format
 
-1. **Backend-delivered copy**: API field name + whether it varies with the `locale` parameter; the fallback when the backend does not deliver.
-2. **Client fallback copy**: local enum fallbacks, empty data, placeholders after an unknown value is dropped, single-field degraded defaults — every fallback branch needs a key, otherwise `pending (missing fallback copy key)`.
-3. **Error and toast copy**: network failure, timeout, business error codes, insufficient permission, retry button — one line each.
+Writing `### Events` follows tracking-doc-format's layout and flow, but the output lands in this task document:
 
-Hardcoded strings are forbidden: never write bare `'Retry'` or `'OK'` in code; fallback copy goes through l10n too.
-
-## Required tables (every tappable control, every API, every async chain)
-
-Filling the visuals does not mean the states are clear. Single choice, multi-select, exclusive groups, switches and submit buttons all need the first three tables; every API (including ones nested in a card) needs the fourth; every icon / image needs the fifth; every backend state field needs the sixth; every API with a write operation needs the seventh; every id passed across platforms or built into a URL needs the eighth; every request that can fire repeatedly needs the ninth; every chain waiting on an external callback needs the tenth; every constant / resolver / factory added by this requirement and referenced from several places needs the eleventh. A missing table is not done.
-
-Tables 7–11 cause the most incidents in this repo: "succeeded but missing fields", "wrong id", "request storm", "callback never returns" and "a new abstraction's default value splitting one meaning into two algorithms" are not API failures and the first six tables cannot cover them.
-
-### 1. Interaction state matrix
-
-One row per control:
-
-| Control | Type | Tap instant | Before response | After response | Failure / over limit | Repeated tap on selected |
-
-- **Tap instant**: optimistic selection (color changes immediately) or wait for the API. If it waits, state what tells the user the tap was received (pressed state / loading / whole group disabled).
-- **Before response**: can other options be tapped, can the user scroll away, can the server data be overwritten right now.
-- **After response**: does the rendered selection follow the API or keep the local one; when the returned selection differs from local, which side renders.
-- **Failure / over limit**: roll back to which version (pre-tap / last success), which toast, which copy key.
-- **Repeated tap on selected**: send / block locally / deselect — pick one and pin it; also state whether tapping the selected option in a single-choice group equals deselecting.
-- **Multi-select**: any cap, any select-all / clear, are existing selections kept after a rejection.
-- **Group switching**: when the tier, tab or filter changes, is the other group's selection cleared or kept (cross-field coupling is the easiest to miss).
-
-### 2. Permission and capacity field states
-
-Backend `permissions`, `can_*`, `*_limit`, `*_count`, `expired` and `status` must never be dismissed as "reference only". One row per field:
-
-| Field | Source API | UI when false / exhausted | Feedback when tapped anyway |
-
-- "Tapped anyway" needs a conclusion: silent no-op / toast (copy key) / send the request and let the backend reject.
-- Local locks and backend rejections must give the same feedback: never greyed out in one place and silent in another, and never blocked locally without telling the user.
-- Client-derived lock states (computed from count and limit) need their rule written down, plus the default when the API omits the field.
-
-### 3. Backend enums and unknown values
-
-| Field | Values | Unknown value handling |
-
-- Unknown enums default to **dropped or read-only**; backfilling into a valid business value is forbidden (dirty data then impersonates a real choice — icon, highlight and submitted value all go wrong).
-- Client hardcoded mappings (icons, colors, event parameters) get one extra sentence: what the client does when the backend adds a value.
-- When the PRD or plan assumes "enums only ever merge, never grow", record it under "risks and dependencies" instead of treating it as fact.
-
-### 4. API failure and degradation
-
-One row per API; APIs fetched separately inside a card or module (review-card detail, product-card stats, order-card status, recommendation slot) each need their own row — a page-level error alone is not enough:
-
-| API | Failure landing spot | Copy (key) | Retry | Refresh scope after retry |
-
-- **Failure landing spot**: whole-page error / block error / error inside the card / single-field degraded default — pick one and pin it. "API fails means page error" is not allowed by default; for a card-internal failure also state whether the rest of the rendered card stays and whether the skeleton holds its height.
-- **Copy**: primary and secondary l10n keys, never reusing the list-page error copy; also state what shows at the instant of failure (skeleton / stale cache / placeholder).
-- **Retry**: whether there is one; whether the entry is inside the card or page-level; whether retry shows skeleton / button loading / whole component disabled; anti double-tap (single-flight + minimum interval); retry cap and the fallback once exhausted.
-- **Refresh scope after retry**: that card only / whole page / back to the list; whether the failure cache is cleared and dependent fields (counts, badges, quota) are refreshed too.
-- **Automatic retry**: whether pull-to-refresh, page re-visible or network recovery re-sends; not writing it means it does not.
-- **Empty vs failure**: 200 + empty data is the empty state, not a failure; write their copy and retry buttons separately.
-- **Business error codes skip retry**: no permission, deleted, delisted get a degraded or navigation path, never the network-failure copy set.
-- **Jitter threshold**: how long under a slow network before the failure state shows (so skeleton → error → data does not flash three times); write milliseconds or "no delay".
-- **Events**: whether failures and retry taps are reported; goes in the events section.
-
-When the PRD only says "show a failure toast" with no landing spot or retry, ask row by row through the table above; that is not confirmed.
-
-### 5. UI assets and icons
-
-One row per icon, image, illustration or placeholder:
-
-| Control / area | Reused component (file or class) | Icon / image | Source | Size and theme |
-
-- **Source is one of three**: a Figma icon (node-id) / an existing repo asset or iconfont (file:line) / to be added (format, naming, size). None of the three → `pending (missing icon source)`.
-- **Forbidden**: "use a similar icon", "download one", "placeholder for now", and naming something yourself so development has to guess.
-- Selected / disabled / light-dark theme adaptation goes on the same row; the default state alone is not done.
-- Reused components must name the existing file and class; components written in this iteration are marked `new` and added to the "Change boundary" table.
-- **Bitmap acceptance**: every new bitmap states "transparent background (no white fill / no full-frame white `rect` after export) + real pixels = design logical size × scale + lossless-compressed". When the Figma frame itself carries a white fill, the export steps must say how the white is removed or that the PNG is exported transparent; "the two files have different md5" alone is not an acceptance criterion.
-
-### 6. State → visual mapping
-
-One row per backend state field:
-
-| Backend field | Values (all enums) | Visual (color / icon / copy key) | Tappable | Reported |
-
-- **List every known value**, one per row; Loading, empty, failure, no permission and expired must be covered.
-- **Unknown value / null / missing field gets its own row** with "dropped or read-only" plus the concrete behavior (e.g. default icon, no dialog, not tappable).
-- **Never backfill an unknown or unconfirmed value into a valid business state** (e.g. rendering everything as an `okay` green check); with no value list, write `pending (missing backend enum, blocks integration)` and keep a row in the pending table.
-- Copy is l10n keys, never hardcoded Chinese; the same state behaving differently at different entry points gets separate rows.
-- Client-derived states (e.g. a lock computed from count and limit) need the rule and the default behavior when the field is missing.
-
-### 7. Partial responses and missing fields
-
-"Succeeded but the fields are incomplete" is easier to get wrong than a failure: when the server returns only `permissions`, only `selection`, or a single status field, whether the client keeps old values or clears them must be pinned down field by field. Every `PATCH` / `POST` / incremental update API needs a row:
-
-| API | Response field combination | Missing field handling | May it overwrite a newer local value |
-
-- List at least "A without B" and "B without A" combinations; without this row the implementation defaults to whole-payload replacement and drops the new permissions it just received.
-- **Parse order**: merge `permissions` / state fields first, then judge business fields (`selection` / detail body); never `return` the original object just because a business field is missing.
-- **Overwrite rule**: state whether a response older than the local version/timestamp is dropped or wins, and who wins between an in-flight request and a newer local write.
-- **List and cache sync**: after a single-item update, whether the list is rewritten, reordered, and whether parent caches are invalidated.
-
-### 8. Identifiers and external input
-
-Any value passed across platforms, built into a URL, used as a cache key or used to locate a message goes through this table (a historic bug hotspot in this repo):
-
-| Identifier / input | Source field (sending side) | Same key on the receiving side | Format constraints | Encoding and sanitizing | When missing / invalid |
-
-- **Send and receive must use the same key**: state whether "send with A, receive with B" really are equal; when unsure write `pending (needs one on-device log comparison)` and never assume equality.
-- **Message locator**: which key recall / dedup / ordering / navigation each use (`conversationId + msgSeq` or `messageId`); three inconsistent choices will mismatch.
-- **URL building**: the id must be `encode`d; write one sentence each for length limits, allowed character set, and handling of whitespace and control characters.
-- **External message bodies**: which shapes are accepted (string / JSON object / array / deep nesting), whether an abnormal shape drops the whole message or degrades, and no unbounded recursive parsing.
-- **Cache key composition**: `<domain>:<userId>:<id>`, with the cross-user isolation stated.
-
-### 9. Request budget and cache lifetime
-
-| Trigger | Requests | Dedup key | Cache TTL / freshness | Cleanup timing |
-
-- **Who fires the request**: first entry / list change / state change / returning to foreground / pull-to-refresh — write each; if "does a state change refetch" is unwritten it gets implemented as a full refetch.
-- **Does a cache hit still fetch**: pin "hit means use" or "hit still refreshes"; for refresh, state the minimum interval and single-flight (concurrent merge).
-- **Dedup key**: which key merges repeated triggers for the same object in a short window.
-- **Cache lifetime**: write timing, expiry, capacity cap, and what is cleared on logout / account switch / session end / successful submit; cross-user data must be isolated by userId — no `clearAll` wiping other accounts, and in-memory state resets too.
-- **What renders first**: when cache-then-remote, what shows before the response (skeleton / cache / empty), and whether the response rebuilds everything or updates locally.
-
-### 10. Timeouts and recovery while waiting on external callbacks
-
-Every "tap and wait for someone to answer" chain (HTTP, IM send receipt, `Completer`, platform channel, animation end) needs a row; an HTTP timeout alone is not enough:
-
-| Chain | Waiting on | Timeout | State restored after timeout | User-visible feedback |
-
-- **Timeout**: in seconds; also cover queue drops, network loss and background suspension — cases where nothing ever comes back.
-- **State restore**: after a timeout the "requesting / disabled / single-flight lock" must be reset in `finally`; entry-level locks are the easiest to wedge permanently — name the fields restored.
-- **User-visible feedback**: silent recovery / toast (copy key) / in-card error state — pick one and pin it.
-- **Retry and idempotency**: is resending after a timeout safe (is there an idempotency key); if not, only manual retry is allowed.
-
-### 11. New-abstraction contract
-
-Whenever the document tells the implementer to "add a centralized X" (index resolution, state mapping, route / URL building, cache-key factory), it must pass this table. As soon as the same meaning has two algorithms, a default value quietly decides for the second one:
-
-| New abstraction | Consumers (every call site) | Default parameter allowed | How it stays in sync with the single source of truth | Out of range / invalid |
-
-- **Default parameter**: a default is allowed only when there is no second layout or second enum; with a second shape it is forbidden — every call site passes it explicitly, and a missing argument must fail to compile or trip an assertion, never silently compute the old shape.
-- **List every call site**: `rg` all references into this table and mark each "passes it / to wire"; a call site missing from the table is a miss.
-- **Same source of truth**: state who renders, who resolves, and whether both read the same value (same provider / same snapshot / same argument); one side reading the live value while the other reads a default is not allowed.
-- **Range checks**: bounds, indices and limits follow the length of the set actually rendered — never a hardcoded constant or a carried-over default.
-- **Files added during implementation are boundary too**: any class / file created while executing (central constant, resolver, registry) must be added to the document as a `add` row before it is written; a "add centralized X" instruction must have a placeholder row in the change-boundary table, not only in the implementation steps.
-
-## Events linked with tracking-doc-format
-
-When writing the `### Events` section, use tracking-doc-format's layout and flow, but **the output lands in the task document**:
-
-- **Layout unchanged**: the event name is bold on its own line; `**Report timing:**`; `**Params:**`; parameter rows `- **name**: type. description`; value rows `  - Value: <expression> (<file>:<line>)`. Segments are separated by `-----------` with a blank line above and below.
-- **One at a time unchanged**: confirm one event per turn, then the next; the conversation carries only the current event plus the task document path.
-- **No separate document**: do not create `docs/{{DOC_PREFIX}}<date>-tracking-<feature>.md` and do not print the full events text in the conversation. Only when the user explicitly says "events should be their own document" does tracking-doc-format's own writing rule apply.
-- **The report point is the boundary**: every event states its `Report point` — an existing `file:line`, or `to be added` (naming which feature point's which entry). A file outside the "Change boundary" table may not be edited just to add an event.
-- **No invented parameters**: values need code evidence (`rg` the report key, then read the arguments); when nothing is found write `Value: not found` / `to implement (candidate X)` and never substitute an approximate field.
-- When the events table itself is missing, record pending first and do not fill the section with assumed parameters.
+- **Same layout**: the event name in bold on its own line; `**Report timing:**`; `**Params:**`; param rows `- **name**: type. description`; value rows `  - value: <expression> (file:line)`. Separate events with `-----------`.
+- **Same one-at-a-time review**: one event per round, next one after the user confirms; the conversation shows only that event plus the document path.
+- **No separate document**: no `docs/{{DOC_PREFIX}}<date>-tracking-<feature>.md` unless the user explicitly asks.
+- **The report point is the boundary**: every event names its report point — an existing `file:line`, or `to be added`; a file outside the change boundary table may not be edited for an event.
+- **Never invent params**: values need code evidence; when there is none write `value: not found` / `to implement (candidate X)`.
 
 ## The task document
 
-Copy field names and order exactly. When there is no content write `pending` or `none`, never leave blank placeholders.
+Copy the field names and order. Write `pending` or `none` instead of leaving a placeholder.
 
 ```markdown
 # task-<feature>
 
 State: in progress | pending input | executable | implemented | verified
-
 Blockers: dev <X> / integration <Y> / none <Z>
-Requirement source: <PRD file / link / Figma node-id>
-Updated: <YYYY-MM-DD> turn <N>
+Source: <PRD file / link / Figma node-id>
+Updated: <YYYY-MM-DD> round <N>
 
 ## Goal and scope
-Goal: <one sentence>
+Goal: <one line>
 In scope: <F1, F2…>
 Out of scope: <explicitly excluded>
-Affected modules: <page / component / API / events / copy>
+Modules affected: <page / component / API / events / copy>
 
 ## Change boundary
-| # | Feature point | File / module | Action | What this iteration does | Blast radius (call sites / sharers) | Decision source |
+| # | Feature point | File / module | Action | What changes here | Blast radius (call sites / shared) | Decision source |
 
-Action is only `change` / `add` / `read-only reference` / `forbidden`. Execution may touch only `change` / `add` rows; `forbidden` rows must name the shared components, mappings and configs that must not move.
+Action is only `change` / `add` / `read-only reference` / `forbidden`.
 
 ## F1 <feature name>
 State: confirmed | partly pending | implemented | verified
+Table applicability: skip <table> (<reason>)
 
 ### Logic
 - Current state:
 - Change:
-- Data sources and APIs:
+- Data source and API:
 - Mapping to UI:
-- Boundaries and exceptions:
+- Edges and errors:
 - Blast radius:
 
-### Features and UI
+### Function and UI
 - Position:
 - Trigger:
 - Layout:
@@ -359,62 +241,66 @@ State: confirmed | partly pending | implemented | verified
 - Figma:
 
 ### Element list
-- <button / option / icon / input / scroll container / dialog / placeholder>: behavior in one line
+- <button / option / icon / input / scroll container / dialog / placeholder>: behaviour in one line
 
-### Interaction states
-| Control | Type | Tap instant | Before response | After response | Failure / over limit | Repeated tap on selected |
+### Visual skeleton
+| Layer / block | Position | Scrolls / fixed | Container (fill / radius / padding) | Relation to the neighbour layer |
 
-### Permission and capacity
-| Field | Source API | UI when false / exhausted | Feedback when tapped anyway |
+### Visual spec
+| Block | Figma node | Text (size / line height / weight / colour) | Size and radius | Padding and gap | Asset logical size |
 
-### Enums and fallbacks
+### Interaction state
+| Control | Type | On tap | Before response | After response | Failure / over quota | Re-tap on selected |
+
+### Permission and quota
+| Field | Source API | UI when false / used up | Feedback when the user still taps |
+
+### Enum and fallback
 | Field | Values | Unknown value handling |
 
 ### State → visual
-| Backend field | Values | Visual (color / icon / copy key) | Tappable | Reported |
+| Backend field | Values | Visual (colour / icon / copy key) | Tappable | Reported |
 
 ### UI assets and icons
-| Control / area | Reused component | Icon / image | Source | Size and theme |
+| Control / area | Reused component | Icon / image | Source | Export | Size and theme fit |
 
 ### API failure and degradation
-| API | Failure landing spot | Copy (key) | Retry | Refresh scope after retry |
+| API | Failure scope | Copy (key) | Retry | Refresh range after retry |
 
-### Partial responses and missing fields
-| API | Response field combination | Missing field handling | May it overwrite a newer local value |
+### Partial response and missing fields
+| API | Response field set | Missing field handling | May override newer local value |
 
 ### Identifiers and external input
-| Identifier / input | Source field (sending side) | Same key on the receiving side | Format constraints | Encoding and sanitizing | When missing / invalid |
+| Identifier / input | Source field (sender) | Same key on the receiver | Format constraint | Encoding and sanitation | Missing / invalid |
 
 ### Request budget and cache
-| Trigger | Requests | Dedup key | Cache TTL / freshness | Cleanup timing |
+| Trigger | Requests | Dedupe key | Cache TTL / freshness | Cleanup timing |
 
-### Callback timeouts
-| Chain | Waiting on | Timeout | State restored after timeout | User-visible feedback |
+### Awaiting an external callback
+| Chain | Waits for | Timeout | State restored after timeout | User-visible feedback |
 
-### New-abstraction contract
-| New abstraction | Consumers (every call site) | Default parameter allowed | How it stays in sync with the single source of truth | Out of range / invalid |
+### New abstraction contract
+| New abstraction | Consumers (all call sites) | Default params allowed | Same source as the single truth | Out of range / invalid |
 
 ### Events
 
-Conclusion: needed or not / reused or new
+Conclusion: needed or not / reuse or new
 
-**<event_key>** (<name>)
+**<event_key>** (<short name>)
 
-**Report timing:** <one sentence>
+**Report timing:** <one line>
 
 **Params:**
 
-- **<param>**: <type> type. <description>
+- **<param>**: <type>. <description>
 
-  - Value: <expression> (<file>:<line>)
+  - value: <expression> (<file>:<line>)
 
-- **Report point**: <file:line> or to be added (<which feature point / entry>)
+**Report point**: <file>:<line> or to be added (<feature point / entry>)
 
 -----------
 
-(next event, same format)
-
-Non-report conditions: <dedup / re-entry / collapsed / unauthenticated>; write `none` when there are none.
+Non-report conditions: <dedupe / second visit / collapsed / logged out>; write `none` when there are none.
 
 ### Bilingual
 - Conclusion:
@@ -422,80 +308,89 @@ Non-report conditions: <dedup / re-entry / collapsed / unauthenticated>; write `
 - Key plan:
 
 ### Acceptance
-- <tap what → see what>, every line tappable into a result; sentences like "as the API returns" are not acceptance items
+- <tap this → see that>, every line reproducible by tapping; sentences such as "per the API response" are not acceptance criteria
 
 ## Pending items
 | # | Feature point | Category | What is missing | Blocking level | Owner | Action after it arrives |
+
+## Question log
+| Round | Question keyword | State | Conclusion / landing point |
+
+State is only `answered` / `defaulted` / `asked, awaiting answer` / `void`.
 
 ## Risks and dependencies
 - <risk / external dependency / party to integrate with>
 
 ## Change log
-- <YYYY-MM-DD> turn <N>: <what was added or changed this turn>
+- <YYYY-MM-DD> round <N>: <what this round added or changed>
 ```
 
-The change log keeps a rolling 20 turns; earlier ones are compressed into one line `<YYYY-MM-DD> turns 1–<N-20>: <one-line theme>`, without dropping the source of old conclusions.
+The queue file `docs/{{DOC_PREFIX}}<date>-queue-<feature>.md` holds only two sections and stays under 40 lines: `## This round` (at most 3 questions) and `## Open questions` (sorted by blocking level). The question log stays in the task document; the queue is a short-lived progress cache, cleared when the round closes.
 
-## Check before writing (run every turn, never from memory)
+The change log keeps the last 20 rounds; older ones collapse into one line `<YYYY-MM-DD> rounds 1–<N-20>: <one-line theme>`.
 
-Run the table after writing the document and put the result on this turn's first line; failing any row blocks the state change:
+## Check before writing (run the scripts, never self-attest)
 
-| Check | Command / criterion | When it fails |
-|---|---|---|
-| Blocker counts | count `blocks development` / `blocks integration` / `not blocking` rows in the pending table and compare with the header `Blockers:` line | rewrite the header |
-| Valid state | with a dev blocker → only "in progress / pending input"; otherwise "executable" is allowed | change the state + one line in the change log |
-| Pending items listed | `grep -c 'pending'` matches the pending table rows; every row has a blocking level / owner / follow-up action | fill it in before writing |
-| Tables not empty | every feature point's required tables 1–11 have a header row; when not applicable write `none (because …)` instead of an empty table | add the table or the not-applicable reason |
-| Tappable acceptance | acceptance contains no unobservable sentences such as "as the API returns" or "displays normally" | rewrite as "tap what → see what" |
-| Boundary obeys the table | every file mentioned in the document appears in the "Change boundary" table | add the row |
-| Assets deliverable | every new bitmap states transparent background, scale and size basis; when the Figma node carries a white fill, the export steps say how it is removed | write the acceptance criterion |
-| One behaviour, one definition | the same behaviour may appear only once across "body / implementation steps / forbidden list / acceptance / request budget": `grep` the keyword (loading, retry, pull-to-refresh, auto-refresh…) and check every hit against the last change-log turn | delete the old wording, keep only the decided one |
-| Handoff section not stale | walk every step of "Handoff to the implementing agent" and the "forbidden" list against the last change-log turn; anything a later turn overturned is rewritten on the spot | rewrite the steps; never keep an overturned conclusion as history |
+After editing the document **run the scripts and paste the output into the reply**; do not tick boxes from memory:
 
-Do not pile check results into the document body; only the counts go into the header and the first line.
+```bash
+python3 {{SKILL_DIR}}scripts/validate_task_doc.py docs/<task document> \
+  --repo <repo root> [--nodes docs/<feature>/nodes.tsv] [--manifest <asset manifest>]
+bash {{SKILL_DIR}}scripts/check_assets.sh --repo <repo root> <asset manifest>
+```
+
+- On `validator: N fail` the state may **not** change; fix each FAIL. `--legacy` downgrades structural problems for old documents only — assets, nodes and sizes are never downgraded.
+- Two things the scripts do not judge, check by hand and note in the reply: (1) each behaviour has exactly one definition across body / steps / forbidden list / acceptance / request budget; (2) the handoff steps do not contradict the last change-log round.
 
 ## Definition of done
 
-Ten conditions must all hold before the state becomes "executable":
+All eleven must hold before the state becomes `executable`:
 
-1. Every feature point has conclusions for logic, UI and acceptance; items without information are marked pending and no "blocks development" item remains.
-2. The change boundary table has at least one row per feature point, with `change` / `add` / `forbidden` stated; the blast radius comes from codegraph or a targeted search, not from guessing.
-3. Every control in the element list has an interaction-state row; every icon has a source (Figma node-id / existing asset / to be added), with no "similar icon".
-4. Every backend state field has a full-enum "state → visual" mapping, and unknown values have a drop-or-read-only conclusion; without the backend enum, it cannot be marked executable.
-5. Events are written into this document per tracking-doc-format's layout, each with a report point and value evidence; no events table means pending.
-6. Every API has a failure landing spot / copy / retry / refresh scope; every acceptance line is "tap what → see what", and every API has at least one failure path; when visuals are added or changed, acceptance carries one line each for en and id copy (badges, indicators and copy-anchored button widths need both).
-7. Every API with a write operation has a "partial responses and missing fields" row stating the parse order (permissions/state first, business fields after).
-8. Every cross-platform id has an "identifiers and external input" row: same key on both sides, encoding, abnormal shapes, cache key; anything uncertain is pending rather than assumed equal.
-9. Every request that can fire repeatedly has a "request budget and cache" row (dedup key / freshness / cleanup / cross-user), and every chain waiting on a callback has its timeout and state restore.
-10. Every abstraction added in this requirement and referenced from several places has a "new-abstraction contract" row: default-parameter policy, every call site, sync with the single source of truth, range handling; a document that says "add a centralized X" without that row may not be marked executable.
+1. Every feature point has conclusions for logic, UI and acceptance; missing input is marked pending and no "blocks development" item remains.
+2. `### Visual skeleton` is filled layer by layer and confirmed once by the user; every fixed bar, scroll area and overlay has an owner.
+3. The change boundary table has at least one row per feature point with `change` / `add` / `forbidden`; the blast radius comes from codegraph or a targeted search.
+4. Every listed element has an interaction-state row; every icon has a source and an export; every `add` asset **has landed** and passes `check_assets.sh` (RGBA + transparent pixels + size = logical × 3).
+5. Every backend status field has a full "state → visual" mapping with a decision for unknown values; without the enum the document cannot be executable.
+6. Events follow tracking-doc-format inside this document, each with a report point and value evidence.
+7. Every API has failure scope / copy / retry / refresh range; every acceptance line is "tap this → see that", with one failure path per API.
+8. Every write API has a "partial response" row and states the parse order (permissions and state first, business fields second).
+9. Every cross-boundary id has an "identifiers" row; unknown ones are pending, never assumed equal.
+10. Every repeatable request has a "request budget" row, every awaited chain has a timeout and state restoration, and every new abstraction has a contract row.
+11. `validate_task_doc.py` reports 0 fail; every node in the document exists in `nodes.tsv` and its parent chain belongs to this feature's frame.
 
-When these do not hold, keep "in progress" or "pending input" and name the highest blocking level items on the first line of the reply.
+## Implementation check
 
-## Implementation check (when the user says it is implemented / asks for a review)
+A written document does not mean the code followed it. Both cases use this section, read-only: the user says "implemented / review it / anything missing", or the document has been handed to an implementer.
 
-A finished document does not mean the code followed it. Both cases use this section, read-only: the user says "implemented / review it / anything missing"; or the document has been handed to an implementer (including another agent) — write "run the implementation check yourself before committing" into the handoff, so it does not wait for the user to ask; then output the W/I list and write the feature-point states back.
+**Three things at the start of the implementation round** (written into the handoff, not waiting for the user):
 
-1. **Locate**: read the document's "Change boundary" table first, then `rg` each row for its real location (`file:line`); any change not in the table is one out-of-bounds finding.
-2. **Check table by table**: go through required tables 1–10 against the code — interaction matrix against `onTap` and disable conditions; permission table against whether `can_*` is really enforced; enum table against unknown values being backfilled as valid; partial responses against parse order; identifiers against send/receive key equality; request budget against duplicate fetches; timeout table against `finally` restoring state.
-3. **Numbered output**: `W-001` (causes wrong behavior) / `I-001` (inconsistent or to confirm), one line each: symptom + `file:line` + what the document requires; give the numbered list first and let the user pick — never start fixing.
-4. **Conflict call**: when code and document disagree, first decide whether the implementation or the document is right; when the document is wrong, write it back on the spot (change log `<old conclusion> → <new conclusion>`); list W only for implementation errors.
-5. **Wrap up**: after checking, set each feature point's state to `implemented` (code exists, not checked item by item) or `verified` (all tables checked, W items cleared), and record the open items under "risks and dependencies".
+1. Run `validate_task_doc.py` and `check_assets.sh` and paste the output; on FAIL stop and fix the document first — never start with known defects.
+2. Walk the change boundary table with `rg` for every real landing point (`file:line`); a change not in the table is one out-of-bounds finding.
+3. Compare block by block against the visual spec: is the app bar / status bar fill visible, is copy cut off with an ellipsis, do thumbnails match the design's logical size.
+
+Then check the code table by table (matrix against `onTap` and disable conditions, permissions against enforced `can_*`, enums against values backfilled as valid, partial responses against parse order, identifiers against send/receive key equality, request budget against duplicate fetches, timeouts against `finally` restoring state) and number the findings:
+
+- `W-001` (causes wrong behavior) / `I-001` (inconsistent or to confirm), one line each: symptom + `file:line` + what the document requires; give the list and let the user pick — never start fixing.
+- When code and document disagree, first decide whether the implementation or the document is right; when the document is wrong, write it back on the spot (`<old conclusion> → <new conclusion>`); list W only for implementation errors.
+- After checking, set each feature point to `implemented` or `verified` and record open items under "risks and dependencies".
 
 ## Later additions
 
-- After the user provides events or copy: change only the matching sections, turn `pending` into conclusions, sync the pending table and change log, and re-derive the state.
-- An out-of-table change during execution: stop, add that file to the "Change boundary" table with its decision source, then continue; never widen scope by verbal permission.
-- When the backend contract or product definition changes during development (field names, message type numbers, content structure, state machine, enum values): immediately write back the affected feature points, required tables, change boundary and change log, with `<old conclusion> → <new conclusion>`.
-- Backfill after development: classify the fixed bugs by "which table was missing", add them to the matching sections so the next similar requirement can fill the table directly, and add a same-kind check to the definition of done for each missing table.
-- Continuing in another session: read the task document header (state, blocker counts) and pending table first, then the last few change log turns, and resume from the first unfinished field so the user never re-answers.
-- When the user wants to develop from the document: say this round only produces the document and execution is a separate turn; pin "the implementer runs the implementation check before committing and writes the W/I list plus feature-point states back" into the handoff, then review it after execution.
+- After the user provides events or copy: change only the matching sections, turn `pending` into conclusions, sync the pending table and the change log, re-derive the state.
+- An out-of-table change during execution: stop, add that file to the change boundary table with its decision source, then continue.
+- When the backend contract or product definition changes: immediately write back the affected feature points, required tables, change boundary and change log as `<old conclusion> → <new conclusion>`.
+- Backfill after development: classify the fixed bugs by "which table was missing", add them to the matching sections, and add a same-kind check to the definition of done.
+- Continuing in another session: read the queue file and the document header (state, blocker counts), the pending table, then the last few change-log rounds; resume from the first `asked, awaiting answer` row so the user never re-answers.
+- When the edit is larger than a third of the document, re-run `validate_task_doc.py` instead of reusing an old PASS.
 
 ## Visible reply
 
 - First line: one sentence of progress — how many items confirmed / how many remain + blocker counts + document path.
-- Then only this turn's 1 question, in the four-line format with bold labels and blank lines between blocks; no second question, no preview of later ones.
-- In an events turn, that 1 question is the current event itself, written out per tracking-doc-format's layout (event name / report timing / params / values / report point) instead of the four lines.
-- A check turn asks nothing: give the numbered W/I list first (wrong-behavior items first, at most 5 plus a total count), each line `W-00N symptom (file:line) → what the document requires`, and wait for the user to pick — never start fixing.
-- Right after the change boundary is set, add one line `- Change boundary: change N / add M / forbidden K`, naming the shared points that will be affected.
+- Then this round's questions (at most 3, sorted by blocking level; with no blocking-development item, one question or a direct close) in the four-line format, bold labels, blank lines between blocks, no preview of later ones.
+- A skeleton round shows only the skeleton table plus one line "is this the structure to build", never mixed with per-control questions.
+- In an events round that one question is the event itself, in tracking-doc-format's layout instead of the four lines.
+- A check round asks nothing: numbered W/I list first (wrong-behavior items first, at most 5 plus a total count).
+- A document-round reply carries three hard evidence lines: `validator: N fail / M warn`, `check_assets: N fail`, and the path of the added / changed document; whenever a script or an asset changed, add its generated path and write time.
+- Right after the change boundary is set, add one line `- Change boundary: change N / add M / forbidden K`, naming the shared points affected.
 - Never paste the whole document, never restate the PRD, no summary paragraph.
-- When there is no question, close with one line: document executable + path + next step (fill pending / start development in another turn).
+- With no questions, close with one line: document executable + path + next step.

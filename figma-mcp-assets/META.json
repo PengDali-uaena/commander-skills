@@ -1,0 +1,17 @@
+{
+  "pi": {
+    "frontmatter": "name: figma-mcp-assets\ndescription: \"个人技能（不进仓库）：用 Figma MCP 落图标 / 插图 / 示例图。按节点 download_assets（defaultScale 3），PNG 只取 rawImages 里的 @3x 原件（export 是展平图，hasAlpha: no、自带白底黑底），SVG 直接下载不压缩，两者只比 sizeBytes；整张截图类节点根上不透明，标 opaque 并在代码里 clip 圆角。落盘后跑 optimize_png.sh（oxipng 无损，体积不得变大）与 check_assets.sh（alpha 通道 + 真实透明像素 + 像素=逻辑×3 + 角像素），把输出贴进回复，FAIL 不进仓库。含 .cw/.csp 落码约定、download_assets 字段表、透明底与物理像素判据、常见错误清单。触发：使用 Figma MCP / get_design_context / download_assets / implement design from Figma / design-to-code 落切图时\""
+  },
+  "cursor": {
+    "frontmatter": "name: figma-mcp-assets\ndescription: \"个人技能（不进仓库）：用 Figma MCP 落图标 / 插图 / 示例图。按节点 download_assets（defaultScale 3），PNG 只取 rawImages 里的 @3x 原件（export 是展平图，hasAlpha: no、自带白底黑底），SVG 直接下载不压缩，两者只比 sizeBytes；整张截图类节点根上不透明，标 opaque 并在代码里 clip 圆角。落盘后跑 optimize_png.sh（oxipng 无损，体积不得变大）与 check_assets.sh（alpha 通道 + 真实透明像素 + 像素=逻辑×3 + 角像素），把输出贴进回复，FAIL 不进仓库。含 .cw/.csp 落码约定、download_assets 字段表、透明底与物理像素判据、常见错误清单。触发：使用 Figma MCP / get_design_context / download_assets / implement design from Figma / design-to-code 落切图时\"\ndisable-model-invocation: false"
+  },
+  "dsh": {
+    "frontmatter": "name: figma-mcp-assets\ndescription: \"个人技能（不进仓库）：用 Figma MCP 落图标 / 插图 / 示例图。按节点 download_assets（defaultScale 3），PNG 只取 rawImages 里的 @3x 原件（export 是展平图，hasAlpha: no、自带白底黑底），SVG 直接下载不压缩，两者只比 sizeBytes；整张截图类节点根上不透明，标 opaque 并在代码里 clip 圆角。落盘后跑 optimize_png.sh（oxipng 无损，体积不得变大）与 check_assets.sh（alpha 通道 + 真实透明像素 + 像素=逻辑×3 + 角像素），把输出贴进回复，FAIL 不进仓库。含 .cw/.csp 落码约定、download_assets 字段表、透明底与物理像素判据、常见错误清单。触发：使用 Figma MCP / get_design_context / download_assets / implement design from Figma / design-to-code 落切图时\""
+  },
+  "agents": {
+    "frontmatter": "name: figma-mcp-assets\ndescription: \"个人技能（不进仓库）：用 Figma MCP 落图标 / 插图 / 示例图。按节点 download_assets（defaultScale 3），PNG 只取 rawImages 里的 @3x 原件（export 是展平图，hasAlpha: no、自带白底黑底），SVG 直接下载不压缩，两者只比 sizeBytes；整张截图类节点根上不透明，标 opaque 并在代码里 clip 圆角。落盘后跑 optimize_png.sh（oxipng 无损，体积不得变大）与 check_assets.sh（alpha 通道 + 真实透明像素 + 像素=逻辑×3 + 角像素），把输出贴进回复，FAIL 不进仓库。含 .cw/.csp 落码约定、download_assets 字段表、透明底与物理像素判据、常见错误清单。触发：使用 Figma MCP / get_design_context / download_assets / implement design from Figma / design-to-code 落切图时\""
+  },
+  "claude": {
+    "frontmatter": "name: figma-mcp-assets\ndescription: \"个人技能（不进仓库）：用 Figma MCP 落图标 / 插图 / 示例图。按节点 download_assets（defaultScale 3），PNG 只取 rawImages 里的 @3x 原件（export 是展平图，hasAlpha: no、自带白底黑底），SVG 直接下载不压缩，两者只比 sizeBytes；整张截图类节点根上不透明，标 opaque 并在代码里 clip 圆角。落盘后跑 optimize_png.sh（oxipng 无损，体积不得变大）与 check_assets.sh（alpha 通道 + 真实透明像素 + 像素=逻辑×3 + 角像素），把输出贴进回复，FAIL 不进仓库。含 .cw/.csp 落码约定、download_assets 字段表、透明底与物理像素判据、常见错误清单。触发：使用 Figma MCP / get_design_context / download_assets / implement design from Figma / design-to-code 落切图时\""
+  }
+}
