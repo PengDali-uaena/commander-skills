@@ -2,6 +2,12 @@
 
 Format: newest first. Versions follow `VERSION`; every release is tagged.
 
+## 1.7.0
+
+- Body text shrank where duplication lived, not where contracts live. `prd-to-task` 442 → 291 lines: the 124-line document template moved to `references/template.md`, the "check before writing" table and the "definition of done" list merged (they were the same twelve constraints written twice), the twelve completion conditions now show which script judges them (`references/checklists.md` "definition of done → judge"), and the ask-vs-ask examples moved to a table. `tracking-doc-format` 199 → 127: layout sample, indentation, the no-colour rule, counter-examples and the pre-send checklist moved to `references/format.md`; the body keeps a five-line layout contract. `receiving-code-review` 225 → 166: reply scripts and the three real dialogues moved to `references/examples.md`, two sections collapsed to one-liners.
+- The measurable cause was repetition, not length: `视觉规格` appeared 9 times, `表适用性` 7, `待定` 29 inside one 442-line body, so editing one rule left three stale copies behind — the same failure that produced two co-existing `F5c` specifications and a self-contradicting `I-003`.
+- `tools/verify.mjs` now carries a soft budget: any `BODY.md` over 300 lines is printed as `warn:` after the ok line, with the instruction to move templates / examples / long tables into `assets/references/`. It never fails the build — runnability is the judge, not line count.
+
 ## 1.6.0
 
 - `multi-model-review`: providers are sorted into a fast group and a slow group by one timed 1KB probe (≤15s / >30s), and the slow group is now launched detached with `nohup` plus `wc -c` polling instead of a foreground `codemode` timeout. Reason: the first real run asked three opencode-go models (glm-5.3 / glm-5.2 / deepseek-v4.1-flash) for a four-dimension review; a single review takes 4–9 minutes of generation, `--mode text` emits zero bytes until it finishes, so a 6-minute foreground cap could never see any output. Round caps are now 6 minutes (fast) / 15 minutes (slow), per-reviewer 240s or 15 minutes respectively, and 0 bytes is read as "still generating" via `ps -p`, not as death — shrinking the input to a single 7KB file still took >100s, so input size is not the lever.

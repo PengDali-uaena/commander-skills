@@ -138,17 +138,11 @@ When the impact reaches "goal and scope", rewrite the scope first, then the feat
 All four labels are mandatory; layout as above.
 
 - Never ask what the code or PRD already answers — look it up first.
-- Never ask "should we add an event"; ask "does this exposure reuse `xxx` with a param, or a new event".
-- Never ask "should we grey it out"; ask "after the quota runs out, is a tap silent or does it show toast `xxx`".
-- Never ask "what does selection look like"; ask "does it recolor on tap, or wait for the response".
-- Never ask "might the enum grow"; read the existing mapping, then ask "on a value outside the document, drop it or read-only".
-- Never ask "what if the API fails"; ask "when the detail API fails, is it in-card error copy + Retry (that card only) or a full-page error page".
-- Never ask "what if the response is partial"; ask "when PATCH returns `permissions` but not `selection`, keep the local selection or clear it".
-- Never ask "do we need caching"; ask "does a cache hit still fire the GET; which key merges 5 triggers in a second".
-- Never ask "is there a timeout"; ask "how many seconds do we wait for the ack; which field resets, and what does the user see".
-- An answer of "not sure / later" → record `pending` with owner and what is missing, move on.
-- Several answers or extra context at once: apply each by blast radius, backtrack, then ask the next batch (max 3).
-- Two rounds without a conclusion on the same question: write the suggestion into the document and mark `pending (defaulted by suggestion)`.
+- Never ask "should we / would it"; pin it to a field or branch: reuse the existing event or add one, silent or toast after the quota, recolor on tap or after the response, failure inside the card or a full-page error.
+- "Not sure / later" → record `pending` with owner, move on; vague answer → ask once more, then write the suggestion and mark `pending (defaulted by suggestion)`.
+- Several answers at once: apply each by blast radius, backtrack, then the next batch. Two rounds without a conclusion on the same question: write the suggestion in.
+
+The wider ask-vs-ask table lives in {{SKILL_DIR}}references/checklists.md "loose question → concrete question".
 
 ### What not to ask (decide implementation details yourself)
 
@@ -232,140 +226,15 @@ Writing `### Events` follows tracking-doc-format's layout and flow, but the outp
 
 Copy the field names and order. Write `pending` or `none` instead of leaving a placeholder.
 
-```markdown
-# task-<feature>
-
-State: in progress | pending input | executable | implemented | verified
-Complexity tier: S | M | L
-Skill version: <first 8 chars of SKILL.md md5> / <YYYY-MM-DD HH:MM>
-Blockers: dev <X> / integration <Y> / none <Z>
-Source: <PRD file / link / Figma node-id>
-Updated: <YYYY-MM-DD> round <N>
-
-## Goal and scope
-Goal: <one line>
-In scope: <F1, F2…>
-Out of scope: <explicitly excluded>
-Modules affected: <page / component / API / events / copy>
-
-## Change boundary
-| # | Feature point | File / module | Action | What changes here | Blast radius (call sites / shared) | Decision source |
-
-Action is only `change` / `add` / `read-only reference` / `forbidden`.
-
-## F1 <feature name>
-State: confirmed | partly pending | implemented | verified
-Table applicability: skip <table> (<reason>)
-
-### Logic
-- Current state:
-- Change:
-- Data source and API:
-- Mapping to UI:
-- Edges and errors:
-- Blast radius:
-
-### Function and UI
-- Position:
-- Trigger:
-- Layout:
-- Components:
-- States:
-- Interaction:
-- Figma:
-
-### Element list
-- <button / option / icon / input / scroll container / dialog / placeholder>: behaviour in one line
-
-### Visual skeleton
-| Layer / block | Position | Scrolls / fixed | Container (fill / radius / padding) | Relation to the neighbour layer |
-
-### Visual spec
-| Block | Figma node | Text (size / line height / weight / colour) | Size and radius | Padding and gap | Asset logical size |
-
-### Interaction state
-| Control | Type | On tap | Before response | After response | Failure / over quota | Re-tap on selected |
-
-### Permission and quota
-| Field | Source API | UI when false / used up | Feedback when the user still taps |
-
-### Enum and fallback
-| Field | Values | Unknown value handling |
-
-### State → visual
-| Backend field | Values | Visual (colour / icon / copy key) | Tappable | Reported |
-
-### UI assets and icons
-| Control / area | Reused component | Icon / image | Source | Export | Size and theme fit |
-
-### API failure and degradation
-| API | Failure scope | Copy (key) | Retry | Refresh range after retry |
-
-### Partial response and missing fields
-| API | Response field set | Missing field handling | May override newer local value |
-
-### Identifiers and external input
-| Identifier / input | Source field (sender) | Same key on the receiver | Format constraint | Encoding and sanitation | Missing / invalid |
-
-### Request budget and cache
-| Trigger | Requests | Dedupe key | Cache TTL / freshness | Cleanup timing |
-
-### Awaiting an external callback
-| Chain | Waits for | Timeout | State restored after timeout | User-visible feedback |
-
-### New abstraction contract
-| New abstraction | Consumers (all call sites) | Default params allowed | Same source as the single truth | Out of range / invalid |
-
-### Events
-
-Conclusion: needed or not / reuse or new
-
-**<event_key>** (<short name>)
-
-**Report timing:** <one line>
-
-**Params:**
-
-- **<param>**: <type>. <description>
-
-  - value: <expression> (<file>:<line>)
-
-**Report point**: <file>:<line> or to be added (<feature point / entry>)
-
------------
-
-Non-report conditions: <dedupe / second visit / collapsed / logged out>; write `none` when there are none.
-
-### Bilingual
-- Conclusion:
-- Fields:
-- Key plan:
-
-### Acceptance
-- <tap this → see that>, every line reproducible by tapping; sentences such as "per the API response" are not acceptance criteria
-
-## Pending items
-| # | Feature point | Category | What is missing | Blocking level | Owner | Action after it arrives |
-
-## Question log
-| Round | Question keyword | State | Conclusion / landing point |
-
-State is only `answered` / `defaulted` / `asked, awaiting answer` / `void`.
-
-## Risks and dependencies
-- <risk / external dependency / party to integrate with>
-
-## Change log
-- <YYYY-MM-DD> round <N>: <what this round added or changed>
-```
+The template lives in {{SKILL_DIR}}references/template.en.md — copy it verbatim when creating a document; field names and order are fixed. Read the header fields first, then copy the section per feature point.
 
 The queue file `docs/{{DOC_PREFIX}}<date>-queue-<feature>.md` holds only two sections and stays under 40 lines: `## This round` (at most 3 questions) and `## Open questions` (sorted by blocking level). The question log stays in the task document; the queue is a short-lived progress cache, cleared when the round closes.
 
 The change log keeps the last 20 rounds; older ones collapse into one line `<YYYY-MM-DD> rounds 1–<N-20>: <one-line theme>`.
 
-## Check before writing (run the scripts, never self-attest)
+## Check before writing and definition of done (run the scripts, never self-attest)
 
-After editing the document **run the scripts and paste the output into the reply**; do not tick boxes from memory:
+**Run the scripts and paste the output into the reply**; do not tick boxes from memory:
 
 ```bash
 python3 {{SKILL_DIR}}scripts/validate_task_doc.py docs/<task document> \
@@ -373,26 +242,13 @@ python3 {{SKILL_DIR}}scripts/validate_task_doc.py docs/<task document> \
 bash {{SKILL_DIR}}scripts/check_assets.sh --repo <repo root> <asset manifest>
 ```
 
-- On `validator: N fail` the state may **not** change; fix each FAIL. `--legacy` downgrades structural problems for old documents only — assets, nodes and sizes are never downgraded.
-- Two things the scripts do not judge, check by hand and note in the reply: (1) each behaviour has exactly one definition across body / steps / forbidden list / acceptance / request budget; (2) the handoff steps do not contradict the last change-log round.
-- Tier consistency is script-checked too: at L, or with more than 20 nodes, fewer than 8 visual-spec rows is a FAIL; a `Table applicability` skip of a table that tier forbids skipping is a WARN.
+On `validator: N fail` the state may **not** change; `--legacy` downgrades structural problems for old documents only — assets, nodes and sizes are never downgraded.
 
-## Definition of done
+The mechanical half of the twelve conditions is script-judged (required sections, table columns, blocker counts, state, tier consistency, asset alpha and size, node dump, acceptance blacklist, question-log duplicates); the full mapping is in {{SKILL_DIR}}references/checklists.md "definition of done → judge". Three things stay human:
 
-All twelve must hold before the state becomes `executable`:
-
-1. Every feature point has conclusions for logic, UI and acceptance; missing input is marked pending and no "blocks development" item remains.
-2. `### Visual skeleton` is filled layer by layer and confirmed once by the user; every fixed bar, scroll area and overlay has an owner.
-3. The change boundary table has at least one row per feature point with `change` / `add` / `forbidden`; the blast radius comes from codegraph or a targeted search.
-4. Every listed element has an interaction-state row; every icon has a source and an export; every `add` asset **has landed** and passes `check_assets.sh` (RGBA + transparent pixels + size = logical × 3).
-5. Every backend status field has a full "state → visual" mapping with a decision for unknown values; without the enum the document cannot be executable.
-6. Events follow tracking-doc-format inside this document, each with a report point and value evidence.
-7. Every API has failure scope / copy / retry / refresh range; every acceptance line is "tap this → see that", with one failure path per API.
-8. Every write API has a "partial response" row and states the parse order (permissions and state first, business fields second).
-9. Every cross-boundary id has an "identifiers" row; unknown ones are pending, never assumed equal.
-10. Every repeatable request has a "request budget" row, every awaited chain has a timeout and state restoration, and every new abstraction has a contract row.
-11. `validate_task_doc.py` reports 0 fail; every node in the document exists in `nodes.tsv` and its parent chain belongs to this feature's frame.
-12. Tier matches content: no padded tables at S, an L document carries the sub-point or "separate session" handoff line, and the header's `Complexity tier` and `Skill version` are filled in.
+- `### Visual skeleton` was confirmed by the user once and every row traces back to structure / position / nodes.
+- Events and bilingual copy substitute nothing approximate (the script cannot judge meaning).
+- Handoff steps do not contradict the last change-log round.
 
 ## Implementation check
 

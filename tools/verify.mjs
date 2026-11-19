@@ -126,9 +126,19 @@ for (const file of tracked) {
   });
 }
 
+// 正文预算：SKILL.md 每轮都会被整读，超了就把模板 / 示例 / 长表移进 assets/references/。
+// 只提示不失败——真正的判据是能否跑通，不是行数。
+const BUDGET = 300;
+const fat = [];
+for (const name of skills) {
+  const lines = readFileSync(join(ROOT, name, "BODY.md"), "utf8").split("\n").length;
+  if (lines > BUDGET) fat.push(`${name} ${lines} 行（正文 ${BUDGET} 行上限；模板 / 示例 / 长表移入 assets/references/）`);
+}
+
 if (errors.length) {
   console.error(`verify: ${errors.length} 个问题`);
   for (const e of errors) console.error("  " + e);
   process.exit(1);
 }
+for (const f of fat) console.warn(`warn: ${f}`);
 console.log(`verify: ok（${skills.length} 个 skill）`);
