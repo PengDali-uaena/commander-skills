@@ -60,6 +60,7 @@ A field block = the whole reply consists of "field name: value", with no paragra
 8. The routing process and the intent table never appear in the visible reply. When the user only asks "which skill should this use", reply with one line: `Selected: <name>`.
 9. Do not pick a skill because the catalog contains it; judge the artifact against this table first. Repo skills still take precedence only when named or clearly matched.
 10. When changing code and needing project rules: read whatever the repo marks "must read first". When the repo names an entry point (e.g. a rules README), pick from it instead of scanning the directory; without an entry point, pick 1 file by task keyword. Stop once you can act; before reading a second file, decide what it adds. For a file over 200 lines, read only the matching section. Read only the current repo; read another repo only for a cross-repo task.
+11. **UI work needs three inputs first**: structure (layering / what scrolls / card order), position (which layer and card each element sits in), and design nodes (node id + frame name; without Figma, a screenshot plus logical sizes). When one is missing, ask for that one only — never guess the layout, never ship a first draft to be corrected; only with all three do you pick a skill or start editing. See prd-to-task's "UI gate" for the table.
 
 ## Artifacts
 

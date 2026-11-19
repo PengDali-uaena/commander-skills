@@ -18,6 +18,36 @@ Triggers: importing a PRD / splitting requirements / pinning down requirement de
 - Events and bilingual text may be `pending`; logic and UI must reach a conclusion on every item, and undecided APIs still need their fallback written down.
 - Values marked "suggested / candidate / to verify" in the backend contract are **blockers** and must be filled in before integration; when the contract changes during development, write it back on the spot.
 - When the user says "start implementing" → stop and say this round only produces the document; execution is a separate turn.
+- **UI work needs the three**: structure / position / nodes, or nothing starts (see "UI gate"); node ids are evidence, never the way you describe a position in chat.
+- **A document session does not implement**: hand the finished document to another session (the implementer runs the gates first, see "Implementation check"); writing the document and editing `lib/` in the same session is out of bounds — grading your own work is not a review.
+
+## Complexity tiers (decide in the first round, record in the header)
+
+The tier decides how much is mandatory; breadth is not a virtue. Decide after reading the PRD and Figma in round one, and upgrade on the spot when the requirement grows:
+
+| Tier | Decided by (any one) | Mandatory | May skip |
+|---|---|---|---|
+| **S** | ≤ 3 feature points, no new page, nodes ≤ 8 | logic / function and UI / element list / visual skeleton / interaction state / state → visual / UI assets / API failure / acceptance | permission and quota, identifiers, request budget, callback timeouts, new abstraction contract, partial response (each as `Table applicability: skip X (reason)`) |
+| **M** | 4–8 feature points, or 1 new page, nodes 9–20 | all eleven tables + visual spec with ≥ 6 rows per block + confirmed skeleton round + node dump | non-applicable ones skip with one `Table applicability` line and a reason |
+| **L** | > 8 feature points, or nodes > 20, or ≥ 2 new pages, or a new write-API chain | everything in M, plus: split into sub-points or a second document; implementation in a separate session; re-run the validator after every edit; visual spec with ≥ 8 rows per block | none |
+
+- When unsure take **L**, never S to save time: skipping a row saves five minutes, a wrong build costs half a day.
+- S-tier skips still need a reason — the script accepts them by the `Table applicability` line and WARNs when it is missing.
+- **Tiers only go up**: when S grows into M, fill the skipped tables; never keep a stale `Table applicability: skip` row.
+- The implementer reads the tier first: an L document with no split and no "separate session" line in the handoff is one document defect.
+
+## UI gate (all three or stop)
+
+Whenever this round touches UI (new page / new component / new layout / new visuals), collecting three things comes first — **without all three: no code, no guessed layering, no per-control questions**:
+
+1. **Structure**: the layering bottom-up, what scrolls and what is fixed, what the keyboard pushes up, the card order top-down.
+2. **Position**: which layer / card / section each element belongs to. "A button on the home page" is not a position; "right side of the bottom bar, 45 high" is.
+3. **Nodes**: design nodes (node id + frame name). Without Figma, give a screenshot plus logical sizes and record `pending (no Figma; screenshot <path> + sizes)`; never eyeball pixels.
+
+- Missing one: ask only for that one (four-line format, at most 3 questions per round), never mixed with other topics; the document stays in progress.
+- When the user only pasted node links without structure or position: read the node tree once and read your **candidate structure** back for confirmation ("I read it as A → B → C, correct?"); it counts as collected only after they confirm.
+- Only then enter "skeleton first" and the per-control tables; every skeleton row must trace back to those three inputs.
+- The implementation round is gated the same way: a handoff without them stops as "open" and goes back to the document — no guessing from code.
 
 ## No information means pending (hard constraint)
 
@@ -87,6 +117,8 @@ Layout rules: bold labels as `**Question**`, blank line between blocks, full-wid
 6. **Move to the next batch**: `grep` the queue keywords before asking; anything already answered or defaulted is off the table.
 
 **Round budget**: a feature point gets **≤ 15 rounds** in the document phase. Still blocked at 15 rounds → write the suggested defaults, mark them `pending (defaulted by suggestion)`, and hand the remaining questions to the user in one go — another single-question round-trip costs more than the default. Only extend when the user explicitly says "keep asking".
+
+**Check the version before starting**: read this skill's `SKILL.md` write time once; when it disagrees with the document's `Skill version` header, write it back and tell the user "this round runs on the <new> / <old> version". Cross-agent sessions (Cursor ⇄ Pi) especially need it — a skill updated on disk never reaches an already-open session, and a stale snapshot silently disables every new rule.
 
 Three questions per round is the ceiling; answering one of three is fine — update what came back and do not resend the rest.
 
@@ -204,6 +236,8 @@ Copy the field names and order. Write `pending` or `none` instead of leaving a p
 # task-<feature>
 
 State: in progress | pending input | executable | implemented | verified
+Complexity tier: S | M | L
+Skill version: <first 8 chars of SKILL.md md5> / <YYYY-MM-DD HH:MM>
 Blockers: dev <X> / integration <Y> / none <Z>
 Source: <PRD file / link / Figma node-id>
 Updated: <YYYY-MM-DD> round <N>
@@ -341,10 +375,11 @@ bash {{SKILL_DIR}}scripts/check_assets.sh --repo <repo root> <asset manifest>
 
 - On `validator: N fail` the state may **not** change; fix each FAIL. `--legacy` downgrades structural problems for old documents only — assets, nodes and sizes are never downgraded.
 - Two things the scripts do not judge, check by hand and note in the reply: (1) each behaviour has exactly one definition across body / steps / forbidden list / acceptance / request budget; (2) the handoff steps do not contradict the last change-log round.
+- Tier consistency is script-checked too: at L, or with more than 20 nodes, fewer than 8 visual-spec rows is a FAIL; a `Table applicability` skip of a table that tier forbids skipping is a WARN.
 
 ## Definition of done
 
-All eleven must hold before the state becomes `executable`:
+All twelve must hold before the state becomes `executable`:
 
 1. Every feature point has conclusions for logic, UI and acceptance; missing input is marked pending and no "blocks development" item remains.
 2. `### Visual skeleton` is filled layer by layer and confirmed once by the user; every fixed bar, scroll area and overlay has an owner.
@@ -357,6 +392,7 @@ All eleven must hold before the state becomes `executable`:
 9. Every cross-boundary id has an "identifiers" row; unknown ones are pending, never assumed equal.
 10. Every repeatable request has a "request budget" row, every awaited chain has a timeout and state restoration, and every new abstraction has a contract row.
 11. `validate_task_doc.py` reports 0 fail; every node in the document exists in `nodes.tsv` and its parent chain belongs to this feature's frame.
+12. Tier matches content: no padded tables at S, an L document carries the sub-point or "separate session" handoff line, and the header's `Complexity tier` and `Skill version` are filled in.
 
 ## Implementation check
 
@@ -393,4 +429,6 @@ Then check the code table by table (matrix against `onTap` and disable condition
 - A document-round reply carries three hard evidence lines: `validator: N fail / M warn`, `check_assets: N fail`, and the path of the added / changed document; whenever a script or an asset changed, add its generated path and write time.
 - Right after the change boundary is set, add one line `- Change boundary: change N / add M / forbidden K`, naming the shared points affected.
 - Never paste the whole document, never restate the PRD, no summary paragraph.
+- Close with three numbers: rounds used for this feature point, validator fails, and implementation-check W count — comparable across rounds instead of a feeling.
 - With no questions, close with one line: document executable + path + next step.
+- When the user asks how to hand over requirements, paste the matching section of {{SKILL_DIR}}references/input-spec.md instead of restating the whole file.

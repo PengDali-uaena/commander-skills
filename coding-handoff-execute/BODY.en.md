@@ -33,6 +33,7 @@ Executes a Handoff that is already written. No redesign.
 - When a step names a Figma node and the document ships a `nodes.tsv`, check the frame and visibility against the dump first (does the parent chain belong to this design version, and is the node not `hidden`) before writing code.
 - When a step names a Figma node, read that node once for its values (size / type size / color / radius / gaps / asset logical size) before writing code; never take framework defaults: no `TextField` without a `style`, no container without radius and padding, no eyeballed thumbnail size.
 - When the handoff gives a node link but no visual values: treat it as "Open" per Order step 3, stop and ask for the visual spec table instead of guessing (guessing is how a 154px example image ships as 67px and a 0-alpha app bar renders black).
+- A UI step missing any of the three — structure (layering / what scrolls / card order), position (which layer and card), nodes (node id + frame name) — stops as "Open"; ask for those three only, never ship a first draft to be corrected.
 - Before delivering a UI step, put the node export and the implementation screenshot side by side and run three must-checks: is the app bar / status bar fill visible, is any copy cut off with an ellipsis, do thumbnail logical sizes match the design. Fix the differences yourself; anything you cannot fix goes under "Next" in the reply.
 
 ## Acceptance fails

@@ -168,6 +168,22 @@ def main():
         if not re.search(rf"^{re.escape(field)}[：:]\s*\S", head_text, re.M):
             structural("头部", f"缺 `{field}：` 行（前 40 行内）")
 
+    # 1b. 复杂度档位 / 技能版本 / node 计数（档位决定必填多少）
+    tier = None
+    mtier = re.search(r"^复杂度档位[：:]\s*([SML])", head_text, re.M)
+    if not mtier:
+        structural("复杂度档位", "缺 `复杂度档位：S / M / L` 行（不判档就会要么全填要么全跳）")
+    else:
+        tier = mtier.group(1)
+    if not re.search(r"^技能版本[：:]\s*\S", head_text, re.M):
+        warn("技能版本", "缺 `技能版本：<md5 前 8 位> / <时间>` 行，跨 agent 时无法判断跑在哪版技能上")
+
+    doc_nodes = set()
+    for line in lines:
+        doc_nodes.update(NODE_ID.findall(line))
+
+    S_SKIPPABLE = {"权限与容量", "标识与外部输入", "请求预算与缓存", "等待回调的超时", "新增抽象契约", "部分回包与缺失"}
+
     # 2. 每个 F 功能点的小节
     feature_blocks = []
     for idx, (level, raw, ntitle, line_no) in enumerate(headings):
@@ -192,6 +208,8 @@ def main():
                     token = token.strip()
                     if not token:
                         continue
+                    if tier == "S" and norm(re.split(r"[（(]", token)[0]) not in {norm(x) for x in S_SKIPPABLE}:
+                        warn("表适用性", f"{name} 在 S 档跳过了 `{token.split('（')[0]}`，该表不在 S 档可跳过清单里")
                     if "（" not in token and "(" not in token:
                         warn("表适用性", f"{name} 跳过 `{token}` 没写原因，格式应为 `表适用性：跳过 权限与容量（本功能无后端字段）`")
                     skipped.add(norm(re.split(r"[（(]", token)[0]))
@@ -227,7 +245,25 @@ def main():
                     structural("缺列", f"{name} 的 `{sec}` 表头缺列 `{col}`")
             for header_cells, rows, _ in tables:
                 if rows == 0:
-                    warn("空表", f"{name} 的 `{sec}` 有表头无数据行")
+                    if sec == "视觉骨架":
+                        fail("UI 门禁", f"{name} 的 `视觉骨架` 有表头无数据行：结构没落表就开工，等于让实现自己拼层叠")
+                    else:
+                        warn("空表", f"{name} 的 `{sec}` 有表头无数据行")
+
+    # 3b. 档位一致性：L 档或 node>20 时视觉规格必须逐区块（≥8 行）
+    big = (tier == "L") or len(doc_nodes) > 20
+    if big:
+        for name, start, end in feature_blocks:
+            idx = find_section(headings, "视觉规格", within=(start + 1, end))
+            if idx is None:
+                continue
+            tables = tables_in(section_body(lines, headings, idx))
+            rows = sum(r for _, r, _ in tables)
+            if rows < 8:
+                structural(
+                    "档位一致性",
+                    f"{name} 是 L 档 / 文档含 {len(doc_nodes)} 个 node，`视觉规格` 只有 {rows} 行（要求 ≥8，逐可见区块）",
+                )
 
     # 4. 阻塞计数
     m = re.search(r"阻塞项[：:]\s*开发\s*(\d+)\s*/\s*联调\s*(\d+)\s*/\s*不阻塞\s*(\d+)", head_text)
@@ -290,9 +326,6 @@ def main():
                     fail("资产", f"`{token}` 不在 check_assets 清单里，未经透明底 / 尺寸核对")
 
     # 7. node 取证
-    doc_nodes = set()
-    for line in lines:
-        doc_nodes.update(NODE_ID.findall(line))
     if args.nodes:
         if not os.path.isfile(args.nodes):
             fail("node 取证", f"读不到 {args.nodes}")
@@ -352,6 +385,7 @@ def main():
         print(f"WARN [{check}] {detail}")
     print(
         f"validator: {len(fails)} fail / {len(warns)} warn"
+        + (f" | 档位 {tier or '?'}，node {len(doc_nodes)}" if tier or doc_nodes else "")
         + ("（--legacy：结构问题按 WARN 计）" if args.legacy else "")
     )
     return 1 if fails else 0

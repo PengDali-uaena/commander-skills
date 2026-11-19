@@ -2,6 +2,21 @@
 
 Format: newest first. Versions follow `VERSION`; every release is tagged.
 
+## 1.6.0
+
+- `prd-to-task`: new "UI gate" — whenever a round touches UI, three inputs come first and nothing starts without them: structure (layering, what scrolls, what the keyboard pushes, card order), position (which layer / card / section, not "there is a button on the page"), and nodes (node id + frame name; without Figma, a screenshot plus logical sizes, never eyeballed pixels). Missing one, the skill asks only for that one and stays in progress; when the user pastes node links only, it reads the node tree and reads its candidate structure back for confirmation.
+- `validate_task_doc.py`: an empty `视觉骨架` table is now a FAIL, not a WARN — the gate artifact cannot be a header with no rows. Verified with a negative fixture (removing the single skeleton row fails the doc while the compliant fixture stays at 0 fail).
+- `coding-handoff-execute`: a UI step missing structure / position / nodes stops as "Open" and asks for those three only, instead of shipping a first draft to be corrected.
+- `commander` gained hard rule 11: any UI request needs structure / position / nodes first, so the gate fires even on turns that pick no skill or edit code directly — it lives in the skill layer, not in a repo's AGENTS.md.
+
+## 1.5.0
+
+- `prd-to-task`: version stamping. The document header now carries `技能版本：<SKILL.md md5 first 8> / <time>` and the first round re-reads the installed skill's write time, telling the user which version it runs on. Reason: the three review rounds all ran inside one long Cursor session, so skill edits made on disk never reached it — a stale snapshot silently disables every new rule.
+- `prd-to-task`: complexity tiers. `复杂度档位：S / M / L` is decided in round one from feature-point count, node count and new-page count, and it decides how much is mandatory — S may skip six tables with a reasoned `表适用性` line, M requires all eleven plus a six-row visual spec, L requires splitting, a separate implementation session and an eight-row visual spec. The validator enforces the L/node>20 case and WARNs when an S document skips a table outside the S list. Reason: a 10-feature, 42-node page was graded with the same checklist as a 3-feature page.
+- `prd-to-task`: a document session no longer implements — the handoff says implementation runs in its own session and the implementer opens with both gates; writing the document and editing `lib/` in one session counts as out of bounds (self-graded work is not a review).
+- `prd-to-task`: closing reply carries three comparable numbers — rounds used, validator fails, implementation-check W count — so "it feels worse" becomes a trend.
+- New `references/input-spec.md`: the requester-side input spec (structure first, node list with the frame version, change labels, acceptance as tap → see, version check, rework-to-missing-input table). The skill points to it instead of restating it in chat.
+
 ## 1.4.0
 
 - `prd-to-task`: the self-check is now a script, not a tick-box. New `scripts/validate_task_doc.py` fails the document when a feature block misses a required section, a table header misses a column, the header blocker counts disagree with the pending table, the state is illegal for those counts, an asset row says `export`, a listed asset file is absent, a node id is missing from the evidence dump, an acceptance line is unverifiable, or a question keyword is logged twice. `--legacy` downgrades structural problems for old documents only; assets, nodes and sizes are never downgraded. First run against the real 2026-11 review document: 30+ FAIL, including `视觉规格` and `导出方式` missing everywhere while the document had been marked executable.
